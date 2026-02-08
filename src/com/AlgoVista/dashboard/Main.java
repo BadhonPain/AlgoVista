@@ -4,14 +4,13 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import java.io.IOException;
 
 public class Main extends Application {
     @Override
-    public void start(Stage stage) throws IOException {
-        // Path is relative to the resources folder
+    public void start(Stage stage) throws Exception {
+        // This path must match your resources/fxml folder structure
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/dashboard.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+        Scene scene = new Scene(fxmlLoader.load(), 900, 700);
 
         stage.setTitle("AlgoVista - DSA Visualizer");
         stage.setScene(scene);
@@ -19,6 +18,6 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        launch();
+        launch(args);
     }
 }

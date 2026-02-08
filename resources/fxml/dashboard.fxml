@@ -3,19 +3,38 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox alignment="TOP_CENTER" spacing="20.0" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+
+<VBox alignment="TOP_CENTER" spacing="25.0" stylesheets="@dashboard.css"
+      style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #1e293b); -fx-padding: 30;"
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.AlgoVista.dashboard.DashboardController">
     <children>
-        <Label text="AlgoVista" textFill="CYAN">
+
+        <Label text="AlgoVista" textFill="#38bdf8">
             <font>
-                <Font name="System Bold" size="36.0" />
+                <Font name="System Bold" size="42.0" />
             </font>
         </Label>
-        <Label text="A visual approach to DSA" textFill="LIME" />
-        <TextField maxWidth="300.0" promptText="Search Algorithm..." style="-fx-background-radius: 20;" />
 
-        <TilePane fx:id="algoContainer" alignment="CENTER" hgap="20.0" vgap="20.0">
+        <Label text="A visual approach to Data Structures &amp; Algorithms" textFill="#94a3b8">
+            <font>
+                <Font size="16.0" />
+            </font>
+        </Label>
+
+        <TextField fx:id="searchField" maxWidth="350.0" promptText="Search Algorithm..."
+                   style="-fx-background-radius: 20;
+                          -fx-background-color: #334155;
+                          -fx-text-fill: white;
+                          -fx-prompt-text-fill: #94a3b8;
+                          -fx-padding: 10 15 10 15;" />
+
+        <Separator maxWidth="600.0" opacity="0.1" />
+
+        <TilePane fx:id="algoContainer" alignment="CENTER" hgap="25.0" vgap="25.0">
             <children>
             </children>
         </TilePane>
+
     </children>
 </VBox>

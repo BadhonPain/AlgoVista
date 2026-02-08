@@ -1,0 +1,89 @@
+/* Card Background Images */
+.array-card {
+    -fx-background-color: #1A1A1A;
+    -fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/array.png');
+    -fx-background-size: 70% auto;
+    -fx-background-position: center 25%;
+    -fx-background-repeat: no-repeat;
+}
+
+.linked-list-card {
+    -fx-background-color: #1A1A1A;
+    -fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/linkedList.png');
+    -fx-background-size: 70% auto;
+    -fx-background-position: center 25%;
+    -fx-background-repeat: no-repeat;
+}
+
+.stack-card {
+    -fx-background-color: #1A1A1A;
+    -fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/stack.png');
+    -fx-background-size: 70% auto;
+    -fx-background-position: center 25%;
+    -fx-background-repeat: no-repeat;
+}
+
+.queue-card {
+    -fx-background-color: #1A1A1A;
+    -fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/queue.png');
+    -fx-background-size: 70% auto;
+    -fx-background-position: center 25%;
+    -fx-background-repeat: no-repeat;
+}
+
+.graph-card {
+    -fx-background-color: #1A1A1A;
+    -fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/graph.png');
+    -fx-background-size: 70% auto;
+    -fx-background-position: center 25%;
+    -fx-background-repeat: no-repeat;
+}
+
+.bst-card {
+    -fx-background-color: #1A1A1A;
+    -fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/BST.png');
+    -fx-background-size: 70% auto;
+    -fx-background-position: center 25%;
+    -fx-background-repeat: no-repeat;
+}
+
+.heap-card {
+    -fx-background-color: #1A1A1A;
+    -fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/heap.png');
+    -fx-background-size: 70% auto;
+    -fx-background-position: center 25%;
+    -fx-background-repeat: no-repeat;
+}
+
+.sorting-card {
+    -fx-background-color: #1A1A1A;
+    -fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/sorting.png');
+    -fx-background-size: 70% auto;
+    -fx-background-position: center 25%;
+    -fx-background-repeat: no-repeat;
+}
+
+.dp-card {
+    -fx-background-color: #1A1A1A;
+    -fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/dp.png');
+    -fx-background-size: 70% auto;
+    -fx-background-position: center 25%;
+    -fx-background-repeat: no-repeat;
+}
+
+.advanced-card {
+    -fx-background-color: #1A1A1A;
+    -fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/greedy.png');
+    -fx-background-size: 70% auto;
+    -fx-background-position: center 25%;
+    -fx-background-repeat: no-repeat;
+}
+
+/* Hover effect */
+.array-card:hover, .linked-list-card:hover, .stack-card:hover, .queue-card:hover,
+.graph-card:hover, .bst-card:hover, .heap-card:hover, .sorting-card:hover,
+.dp-card:hover, .advanced-card:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(gaussian, rgba(56, 189, 248, 0.6), 15, 0, 0, 3);
+}

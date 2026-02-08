@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="BOTTOM_CENTER" spacing="5" prefHeight="180.0" prefWidth="160.0"
+      style="-fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);"
+      xmlns="http://javafx.com/javafx/25"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.AlgoVista.dashboard.CardController">
+    <children>
+        <Label fx:id="algoName" text="Algorithm" textAlignment="CENTER" textFill="WHITE"
+               maxWidth="Infinity"
+               style="-fx-background-color: rgba(0, 0, 0, 0.75);
+                      -fx-padding: 10;
+                      -fx-background-radius: 0 0 10 10;">
+            <font>
+                <Font name="System Bold" size="16.0" />
+            </font>
+        </Label>
+    </children>
+    <cursor>
+        <Cursor fx:constant="HAND" />
+    </cursor>
+</VBox>
