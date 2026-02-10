@@ -1,0 +1,24 @@
+/* Structure Card */
+.structure-card {
+    -fx-background-color: #1A1A1A;
+    -fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/structure.png');
+    -fx-background-size: 70% auto;
+    -fx-background-position: center 25%;
+    -fx-background-repeat: no-repeat;
+}
+
+/* Traversal Card */
+.traversal-card {
+    -fx-background-color: #1A1A1A;
+    -fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/traversal.png');
+    -fx-background-size: 70% auto;
+    -fx-background-position: center 25%;
+    -fx-background-repeat: no-repeat;
+}
+
+/* Hover effect */
+.structure-card:hover, .traversal-card:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(gaussian, rgba(56, 189, 248, 0.6), 15, 0, 0, 3);
+}
