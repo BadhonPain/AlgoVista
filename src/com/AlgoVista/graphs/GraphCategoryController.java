@@ -181,7 +181,26 @@ public class GraphCategoryController {
     }
 
     private void openTraversalView() {
-        System.out.println("Traversal card clicked - TODO: Open traversal view");
-        // TODO: Create GraphTraversal.fxml and load it here
+        System.out.println("Traversal card clicked - Opening traversal view");
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/fxml/GraphTraversal.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) cardContainer.getScene().getWindow();
+            double width = stage.getWidth();
+            double height = stage.getHeight();
+            double x = stage.getX();
+            double y = stage.getY();
+
+            Scene scene = new Scene(root, width, height);
+            stage.setScene(scene);
+            stage.setX(x);
+            stage.setY(y);
+
+        } catch (IOException e) {
+            System.out.println("Error loading GraphTraversal.fxml:");
+            e.printStackTrace();
+        }
     }
 }
