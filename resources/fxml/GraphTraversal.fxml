@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.AlgoVista.graphs.GraphTraversalController"
+            style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #1e293b);">
+
+    <!-- Top Bar -->
+    <top>
+        <VBox style="-fx-background-color: #1e293b;">
+            <!-- Header -->
+            <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-padding: 12;">
+                <Button text="← Back" onAction="#backToCategory"
+                        style="-fx-background-color: #334155; -fx-text-fill: white;
+                               -fx-background-radius: 5; -fx-padding: 6 12; -fx-cursor: hand;"/>
+
+                <Label text="Graph Traversal" textFill="#38bdf8">
+                    <font><Font name="System Bold" size="22"/></font>
+                </Label>
+            </HBox>
+
+            <!-- Controls Bar -->
+            <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-padding: 10 15; -fx-background-color: #0f172a;">
+
+<!-- select algo-->
+                <VBox spacing="3">
+                    <Label text="Algorithm" textFill="#94a3b8" style="-fx-font-size: 11;"/>
+                    <ComboBox fx:id="algorithmCombo" prefWidth="140"
+                              style="-fx-background-color: white; -fx-font-size: 12;"/>
+                </VBox>
+
+                <!-- Graph Type -->
+                <VBox spacing="3">
+                    <Label text="Graph Type" textFill="#94a3b8" style="-fx-font-size: 11;"/>
+                    <HBox spacing="8">
+                        <RadioButton fx:id="rbUU" text="U/U" textFill="white" style="-fx-font-size: 11;"/>
+                        <RadioButton fx:id="rbUW" text="U/W" textFill="white" style="-fx-font-size: 11;"/>
+                        <RadioButton fx:id="rbDU" text="D/U" textFill="white" style="-fx-font-size: 11;"/>
+                        <RadioButton fx:id="rbDW" text="D/W" textFill="white" style="-fx-font-size: 11;"/>
+                    </HBox>
+                </VBox>
+
+                <Separator orientation="VERTICAL" style="-fx-background-color: #475569;"/>
+
+                <!-- Start Node -->
+                <VBox spacing="3">
+                    <Label text="Start Node" textFill="#94a3b8" style="-fx-font-size: 11;"/>
+                    <Spinner fx:id="startNodeSpinner" prefWidth="70" editable="true"/>
+                </VBox>
+
+                <!-- Speed Control -->
+                <VBox spacing="3">
+                    <Label text="Speed" textFill="#94a3b8" style="-fx-font-size: 11;"/>
+                    <HBox spacing="5" alignment="CENTER">
+                        <Label text="Slow" textFill="#94a3b8" style="-fx-font-size: 10;"/>
+                        <Slider fx:id="speedSlider" min="0.5" max="5" value="2"
+                                prefWidth="100" showTickMarks="false"/>
+                        <Label text="Fast" textFill="#94a3b8" style="-fx-font-size: 10;"/>
+                    </HBox>
+                </VBox>
+
+                <Separator orientation="VERTICAL" style="-fx-background-color: #475569;"/>
+
+                <!-- Control Buttons -->
+                <HBox spacing="8">
+                    <Button fx:id="playButton" text="▶" onAction="#playTraversal"
+                            style="-fx-background-color: #22c55e; -fx-text-fill: white;
+                                   -fx-background-radius: 5; -fx-padding: 8 16; -fx-cursor: hand;
+                                   -fx-font-weight: bold; -fx-font-size: 14;"/>
+
+                    <Button fx:id="pauseButton" text="⏸" onAction="#pauseTraversal"
+                            style="-fx-background-color: #eab308; -fx-text-fill: white;
+                                   -fx-background-radius: 5; -fx-padding: 8 16; -fx-cursor: hand;
+                                   -fx-font-weight: bold; -fx-font-size: 14;"/>
+
+                    <Button fx:id="resetButton" text="⟲" onAction="#resetTraversal"
+                            style="-fx-background-color: #ef4444; -fx-text-fill: white;
+                                   -fx-background-radius: 5; -fx-padding: 8 16; -fx-cursor: hand;
+                                   -fx-font-weight: bold; -fx-font-size: 14;"/>
+                </HBox>
+
+                <Separator orientation="VERTICAL" style="-fx-background-color: #475569;"/>
+
+                <!-- Graph Generation -->
+                <VBox spacing="3">
+                    <Label text="Generate Graph" textFill="#94a3b8" style="-fx-font-size: 11;"/>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="N:" textFill="white" style="-fx-font-size: 11;"/>
+                        <Spinner fx:id="nodesSpinner" prefWidth="60" editable="true"/>
+                        <Label text="E:" textFill="white" style="-fx-font-size: 11;"/>
+                        <Spinner fx:id="edgesSpinner" prefWidth="60" editable="true"/>
+                        <Button text="Random" onAction="#generateRandomGraph"
+                                style="-fx-background-color: #3b82f6; -fx-text-fill: white;
+                       -fx-background-radius: 5; -fx-padding: 6 12; -fx-cursor: hand;
+                       -fx-font-size: 11;"/>
+                        <Button text="Custom" onAction="#startCustomMode"
+                                style="-fx-background-color: #8b5cf6; -fx-text-fill: white;
+                       -fx-background-radius: 5; -fx-padding: 6 12; -fx-cursor: hand;
+                       -fx-font-size: 11;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Custom Mode Finish Button (hidden initially) -->
+                <Button fx:id="finishCustomButton" text="✓ Finish" onAction="#finishCustomMode" visible="false"
+                        style="-fx-background-color: #10b981; -fx-text-fill: white;
+               -fx-background-radius: 5; -fx-padding: 6 12; -fx-cursor: hand;
+               -fx-font-size: 11; -fx-font-weight: bold;"/>
+
+                <!-- Spacer -->
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <!-- Complexity Display -->
+                <VBox spacing="2" alignment="CENTER_RIGHT">
+                    <Label fx:id="timeComplexityLabel" text="Time: O(V + E)"
+                           textFill="#22c55e" style="-fx-font-size: 11; -fx-font-weight: bold;"/>
+                    <Label fx:id="spaceComplexityLabel" text="Space: O(V)"
+                           textFill="#f59e0b" style="-fx-font-size: 11; -fx-font-weight: bold;"/>
+                </VBox>
+
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- Center - Canvas and Info Side by Side -->
+    <center>
+        <HBox spacing="15" style="-fx-padding: 15;">
+
+            <!-- Main Canvas Area -->
+            <VBox spacing="10" HBox.hgrow="ALWAYS">
+                <!-- Canvas -->
+                <StackPane VBox.vgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 8;
+                          -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);">
+                    <Canvas fx:id="graphCanvas" width="750" height="480"/>
+                </StackPane>
+
+                <!-- Color Legend -->
+                <HBox spacing="25" alignment="CENTER"
+                      style="-fx-background-color: #1e293b; -fx-padding: 8; -fx-background-radius: 6;">
+                    <HBox spacing="6" alignment="CENTER">
+                        <Region style="-fx-background-color: lightgray; -fx-pref-width: 18; -fx-pref-height: 18;
+                                       -fx-border-color: black; -fx-border-width: 1; -fx-background-radius: 3;"/>
+                        <Label text="Unvisited" textFill="white" style="-fx-font-size: 11;"/>
+                    </HBox>
+                    <HBox spacing="6" alignment="CENTER">
+                        <Region style="-fx-background-color: yellow; -fx-pref-width: 18; -fx-pref-height: 18;
+                                       -fx-border-color: black; -fx-border-width: 1; -fx-background-radius: 3;"/>
+                        <Label text="Visiting" textFill="white" style="-fx-font-size: 11;"/>
+                    </HBox>
+                    <HBox spacing="6" alignment="CENTER">
+                        <Region style="-fx-background-color: lightgreen; -fx-pref-width: 18; -fx-pref-height: 18;
+                                       -fx-border-color: black; -fx-border-width: 1; -fx-background-radius: 3;"/>
+                        <Label text="Visited" textFill="white" style="-fx-font-size: 11;"/>
+                    </HBox>
+                </HBox>
+            </VBox>
+
+            <!-- Right Panel - Info Display -->
+            <VBox spacing="12" prefWidth="320" style="-fx-background-color: #1e293b; -fx-padding: 15;
+                                                      -fx-background-radius: 8;">
+
+                <!-- Traversal Order -->
+                <VBox spacing="5">
+                    <Label text="Traversal Order" textFill="#38bdf8"
+                           style="-fx-font-weight: bold; -fx-font-size: 13;"/>
+                    <ScrollPane fitToWidth="true" prefHeight="120"
+                                style="-fx-background: #0f172a; -fx-background-color: #0f172a;">
+                        <Label fx:id="traversalOrderLabel" text="Not started"
+                               textFill="white" wrapText="true"
+                               style="-fx-font-size: 13; -fx-padding: 10;"/>
+                    </ScrollPane>
+                </VBox>
+
+                <Separator style="-fx-background-color: #475569;"/>
+
+                <!-- Distance Table -->
+                <VBox spacing="5" VBox.vgrow="ALWAYS">
+                    <Label text="Shortest Path Details" textFill="#38bdf8"
+                           style="-fx-font-weight: bold; -fx-font-size: 13;"/>
+                    <TextArea fx:id="distanceTableArea" editable="false" VBox.vgrow="ALWAYS"
+                              style="-fx-control-inner-background: #0f172a;
+                                    -fx-text-fill: white;
+                                    -fx-font-family: 'Courier New';
+                                    -fx-font-size: 11;
+                                    -fx-background-radius: 5;"/>
+                </VBox>
+
+                <Separator style="-fx-background-color: #475569;"/>
+
+                <!-- Algorithm Info -->
+                <VBox spacing="5">
+                    <Label text="Algorithm Info" textFill="#38bdf8"
+                           style="-fx-font-weight: bold; -fx-font-size: 13;"/>
+                    <Label fx:id="algorithmInfoLabel" text="Select and run an algorithm to see details"
+                           textFill="#94a3b8" wrapText="true" style="-fx-font-size: 11;"/>
+                </VBox>
+
+            </VBox>
+
+        </HBox>
+    </center>
+
+</BorderPane>

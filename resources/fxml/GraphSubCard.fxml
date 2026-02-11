@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="BOTTOM_CENTER" cacheShape="false" centerShape="false" prefHeight="388.0" prefWidth="400.0" spacing="5" style="-fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2); -fx-border-color: #FFFFFF;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.AlgoVista.graphs.GraphSubCardController">
+    <children>
+        <Label fx:id="cardTitle" maxWidth="Infinity" style="-fx-background-color: rgba(0, 0, 0, 0.75);                       -fx-padding: 10;                       -fx-background-radius: 0 0 10 10;" text="Title" textAlignment="CENTER" textFill="WHITE">
+            <font>
+                <Font name="System Bold" size="18.0" />
+            </font>
+         <effect>
+            <Blend />
+         </effect>
+        </Label>
+    </children>
+    <cursor>
+        <Cursor fx:constant="HAND" />
+    </cursor>
+</VBox>
