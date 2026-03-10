@@ -9,6 +9,8 @@ module com.AlgoVista {
     exports com.AlgoVista.graphs;
     opens com.AlgoVista.heap to javafx.fxml;
     exports com.AlgoVista.heap;
+    opens com.AlgoVista.bst to javafx.fxml;
+    exports com.AlgoVista.bst;
 
     opens com.AlgoVista.images to javafx.graphics, javafx.fxml;
 }
