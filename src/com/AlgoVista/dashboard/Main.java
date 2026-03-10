@@ -8,7 +8,6 @@ import javafx.stage.Stage;
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
-        // This path must match your resources/fxml folder structure
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/dashboard.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 900, 700);
 
