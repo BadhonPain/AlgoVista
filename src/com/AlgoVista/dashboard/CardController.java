@@ -28,7 +28,10 @@ public class CardController {
                 fxmlPath = "/fxml/GraphCategory.fxml";
             } else if (algo.equals("Heap")) {
                 fxmlPath = "/fxml/Heap.fxml";
+            } else if (algo.equals("Linked List")) {
+                fxmlPath = "/fxml/LinkedListMenu.fxml";
             }
+
 
             if (fxmlPath != null) {
                 FXMLLoader loader = new FXMLLoader();
