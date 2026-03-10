@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.AlgoVista.bst.BSTOperationsController"
+            style="-fx-background-color: #f5f5f5;"
+            prefHeight="800" prefWidth="1200">
+
+    <!-- Top Bar -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="15"
+              style="-fx-background-color: #2c3e50; -fx-padding: 12;">
+            <Button text="← Back to Category" onAction="#backToCategory"
+                    style="-fx-background-color: #34495e; -fx-text-fill: white;
+                           -fx-background-radius: 5; -fx-padding: 8 15; -fx-cursor: hand;
+                           -fx-font-weight: bold;"/>
+
+            <Label text="BST - BASIC OPERATIONS" textFill="white">
+                <font><Font name="Arial" size="24" /></font>
+            </Label>
+        </HBox>
+    </top>
+
+    <!-- Main Content -->
+    <center>
+        <HBox>
+            <!-- Left Operations Panel (Scrollable) -->
+            <ScrollPane fitToWidth="true" prefWidth="250"
+                        style="-fx-background: #81ecec; -fx-background-color: #81ecec;">
+                <VBox spacing="0" style="-fx-background-color: #81ecec;">
+
+                    <!-- Random Generation -->
+                    <VBox spacing="8" style="-fx-padding: 12; -fx-border-color: #00cec9;
+                                              -fx-border-width: 0 0 2 0;">
+                        <Label text="Generate Random BST"
+                               style="-fx-font-weight: bold; -fx-font-size: 13;"/>
+                        <HBox spacing="5" alignment="CENTER_LEFT">
+                            <Label text="Size:" style="-fx-font-size: 11;"/>
+                            <Spinner fx:id="sizeSpinner" prefWidth="60" editable="true"/>
+                        </HBox>
+                        <HBox spacing="5" alignment="CENTER_LEFT">
+                            <Label text="Min:" style="-fx-font-size: 11;"/>
+                            <Spinner fx:id="minSpinner" prefWidth="55" editable="true"/>
+                            <Label text="Max:" style="-fx-font-size: 11;"/>
+                            <Spinner fx:id="maxSpinner" prefWidth="55" editable="true"/>
+                        </HBox>
+                        <Button text="Generate Random" onAction="#generateRandomBST" maxWidth="Infinity"
+                                style="-fx-background-color: #f39c12; -fx-text-fill: white;
+                                       -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12;
+                                       -fx-padding: 8;"/>
+                    </VBox>
+
+                    <!-- Custom BST Generation -->
+                    <VBox spacing="8" style="-fx-padding: 12; -fx-border-color: #00cec9;
+                                              -fx-border-width: 0 0 2 0;">
+                        <Label text="Build Custom BST"
+                               style="-fx-font-weight: bold; -fx-font-size: 13;"/>
+                        <TextField fx:id="customBSTInput" promptText="e.g. 50,25,75,10"
+                                   style="-fx-font-size: 11;"/>
+                        <Button text="Build Custom Array" onAction="#buildCustomBST" maxWidth="Infinity"
+                                style="-fx-background-color: #8e44ad; -fx-text-fill: white;
+                                       -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12;
+                                       -fx-padding: 8;"/>
+                    </VBox>
+
+                    <!-- Insert -->
+                    <VBox spacing="8" style="-fx-padding: 12; -fx-border-color: #00cec9;
+                                              -fx-border-width: 0 0 2 0;">
+                        <Label text="Insert(v) - O(h)"
+                               style="-fx-font-weight: bold; -fx-font-size: 14;"/>
+                        <TextField fx:id="valueInput" promptText="Enter Value"
+                                   style="-fx-font-size: 12;"/>
+                        <Button text="Insert Node" onAction="#insertValue" maxWidth="Infinity"
+                                style="-fx-background-color: #0984e3; -fx-text-fill: white;
+                                       -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12;
+                                       -fx-padding: 8;"/>
+                    </VBox>
+
+                    <!-- Find -->
+                    <VBox spacing="8" style="-fx-padding: 12; -fx-border-color: #00cec9;
+                                              -fx-border-width: 0 0 2 0;">
+                        <Label text="Find(v) - O(h)"
+                               style="-fx-font-weight: bold; -fx-font-size: 14;"/>
+                        <Label text="(Uses value above)"
+                               style="-fx-font-size: 10; -fx-text-fill: #555;"/>
+                        <Button text="Find Node" onAction="#findValue" maxWidth="Infinity"
+                                style="-fx-background-color: #00b894; -fx-text-fill: white;
+                                       -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12;
+                                       -fx-padding: 8;"/>
+                    </VBox>
+
+                    <!-- Delete -->
+                    <VBox spacing="8" style="-fx-padding: 12; -fx-border-color: #00cec9;
+                                              -fx-border-width: 0 0 2 0;">
+                        <Label text="Delete(v) - O(h)"
+                               style="-fx-font-weight: bold; -fx-font-size: 14;"/>
+                        <Label text="(Uses value above)"
+                               style="-fx-font-size: 10; -fx-text-fill: #555;"/>
+                        <Button text="Delete Node" onAction="#deleteValue" maxWidth="Infinity"
+                                style="-fx-background-color: #d63031; -fx-text-fill: white;
+                                       -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12;
+                                       -fx-padding: 8;"/>
+                    </VBox>
+
+                    <!-- Update -->
+                    <VBox spacing="8" style="-fx-padding: 12; -fx-border-color: #00cec9;
+                                              -fx-border-width: 0 0 2 0;">
+                        <Label text="Update(old, new)"
+                               style="-fx-font-weight: bold; -fx-font-size: 14;"/>
+                        <HBox spacing="5" alignment="CENTER_LEFT">
+                            <TextField fx:id="oldValueInput" promptText="Old" prefWidth="90" style="-fx-font-size: 12;"/>
+                            <TextField fx:id="newValueInput" promptText="New" prefWidth="90" style="-fx-font-size: 12;"/>
+                        </HBox>
+                        <Button text="Update Node" onAction="#updateValue" maxWidth="Infinity"
+                                style="-fx-background-color: #e67e22; -fx-text-fill: white;
+                                       -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12;
+                                       -fx-padding: 8;"/>
+                    </VBox>
+
+                    <!-- Clear -->
+                    <VBox spacing="8" style="-fx-padding: 12;">
+                        <Button text="Clear Tree" onAction="#clearTree" maxWidth="Infinity"
+                                style="-fx-background-color: #2d3436; -fx-text-fill: white;
+                                       -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12;
+                                       -fx-padding: 8;"/>
+                    </VBox>
+
+                </VBox>
+            </ScrollPane>
+
+            <!-- Right Side - Visualization -->
+            <VBox spacing="0" HBox.hgrow="ALWAYS">
+                <!-- Canvas Area inside ScrollPane for panning/zooming -->
+                <ScrollPane fx:id="canvasScrollPane" pannable="true" fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS"
+                            style="-fx-background-color: #1E1E1E; -fx-background: #1E1E1E;">
+                    <StackPane style="-fx-background-color: #1E1E1E;">
+                        <Canvas fx:id="bstCanvas" width="930" height="720"/>
+                    </StackPane>
+                </ScrollPane>
+            </VBox>
+        </HBox>
+    </center>
+
+    <!-- Bottom Control Bar (Compact) -->
+    <bottom>
+        <VBox spacing="0" style="-fx-background-color: #2c3e50;" prefHeight="80">
+
+            <!-- Animation Controls -->
+            <HBox spacing="12" alignment="CENTER" style="-fx-padding: 8;">
+
+                <Label text="Speed:" textFill="white" style="-fx-font-weight: bold; -fx-font-size: 12;"/>
+
+                <Label text="0.5x" textFill="#bdc3c7" style="-fx-font-size: 11;"/>
+                <Slider fx:id="speedSlider" min="0.5" max="5" value="1.5"
+                        prefWidth="150" showTickMarks="false"/>
+                <Label text="5x" textFill="#bdc3c7" style="-fx-font-size: 11;"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button fx:id="playButton" text="▶ Play" onAction="#playAnimation"
+                        style="-fx-background-color: #27ae60; -fx-text-fill: white;
+                               -fx-font-weight: bold; -fx-padding: 6 15; -fx-cursor: hand;
+                               -fx-font-size: 12;"/>
+
+                <Button fx:id="pauseButton" text="⏸ Pause" onAction="#pauseAnimation"
+                        style="-fx-background-color: #f39c12; -fx-text-fill: white;
+                               -fx-font-weight: bold; -fx-padding: 6 15; -fx-cursor: hand;
+                               -fx-font-size: 12;"/>
+
+                <Button fx:id="stepButton" text="Step ▶" onAction="#nextStep"
+                        style="-fx-background-color: #3498db; -fx-text-fill: white;
+                               -fx-font-weight: bold; -fx-padding: 6 15; -fx-cursor: hand;
+                               -fx-font-size: 12;"/>
+            </HBox>
+
+            <!-- Status Bar -->
+            <HBox spacing="15" alignment="CENTER_LEFT"
+                  style="-fx-background-color: #34495e; -fx-padding: 6 12;">
+                <Label fx:id="statusLabel" text="Ready" textFill="white"
+                       style="-fx-font-size: 14;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="complexityLabel" text="" textFill="#00cec9"
+                       style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+            </HBox>
+
+        </VBox>
+    </bottom>
+
+</BorderPane>

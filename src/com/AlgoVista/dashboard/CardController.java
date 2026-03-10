@@ -28,6 +28,8 @@ public class CardController {
                 fxmlPath = "/fxml/GraphCategory.fxml";
             } else if (algo.equals("Heap")) {
                 fxmlPath = "/fxml/Heap.fxml";
+            } else if (algo.equals("BST")) {
+                fxmlPath = "/fxml/BSTCategory.fxml";
             }
 
             if (fxmlPath != null) {
