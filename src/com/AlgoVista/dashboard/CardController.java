@@ -19,18 +19,23 @@ public class CardController {
 
     @FXML
     private void handleCardClick() {
-        System.out.println("Card clicked!");
         String algo = algoName.getText();
 
-        if (algo.equals("Graph")) {
-            try {
+        try {
+            String fxmlPath = null;
 
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/GraphCategory.fxml"));
+            if (algo.equals("Graph")) {
+                fxmlPath = "/fxml/GraphCategory.fxml";
+            } else if (algo.equals("Heap")) {
+                fxmlPath = "/fxml/Heap.fxml";
+            }
 
+            if (fxmlPath != null) {
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(getClass().getResource(fxmlPath));
                 Parent root = loader.load();
 
                 Stage stage = (Stage) algoName.getScene().getWindow();
-
                 double width = stage.getWidth();
                 double height = stage.getHeight();
                 double x = stage.getX();
@@ -38,15 +43,13 @@ public class CardController {
 
                 Scene scene = new Scene(root, width, height);
                 stage.setScene(scene);
-
                 stage.setX(x);
                 stage.setY(y);
-
-                System.out.println("GraphCategory loaded successfully!");
-            } catch (IOException e) {
-                System.err.println("Error: Could not find GraphCategory.fxml. Check your resources folder.");
-                e.printStackTrace();
+            } else {
+                System.out.println(algo + " clicked - Not implemented yet");
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

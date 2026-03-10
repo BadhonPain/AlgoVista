@@ -7,6 +7,8 @@ module com.AlgoVista {
     exports com.AlgoVista.dashboard;
     opens com.AlgoVista.graphs to javafx.fxml;
     exports com.AlgoVista.graphs;
+    opens com.AlgoVista.heap to javafx.fxml;
+    exports com.AlgoVista.heap;
 
     opens com.AlgoVista.images to javafx.graphics, javafx.fxml;
 }
