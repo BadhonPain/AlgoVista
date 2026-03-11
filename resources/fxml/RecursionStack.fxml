@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" spacing="20.0"
+      style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #1e293b); -fx-padding: 30;"
+      xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.AlgoVista.recursion.RecursionStackController">
+    <children>
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT" spacing="20">
+            <Button text="← Back" onAction="#backToCategory"
+                    style="-fx-background-color: rgba(56, 189, 248, 0.1);
+                           -fx-text-fill: #38bdf8;
+                           -fx-font-size: 14;
+                           -fx-font-weight: bold;
+                           -fx-padding: 8 20 8 20;
+                           -fx-background-radius: 20;
+                           -fx-border-radius: 20;
+                           -fx-border-color: rgba(56, 189, 248, 0.5);
+                           -fx-border-width: 1.5;
+                           -fx-cursor: hand;
+                           -fx-effect: dropshadow(gaussian, rgba(56, 189, 248, 0.2), 10, 0, 0, 2);" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Label text="Call Stack with Recursion" textFill="#e2e8f0">
+                <font>
+                    <Font name="System Bold" size="28.0" />
+                </font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS" />
+        </HBox>
+
+        <HBox spacing="20" VBox.vgrow="ALWAYS">
+            <!-- Left Side: Source Code -->
+            <VBox spacing="10" HBox.hgrow="ALWAYS" style="-fx-background-color: #1e293b; -fx-padding: 20; -fx-background-radius: 10;">
+                <Label text="Source Code (Python)" textFill="#94a3b8">
+                    <font>
+                        <Font name="System Bold" size="16.0" />
+                    </font>
+                </Label>
+                <VBox fx:id="codeContainer" spacing="2" style="-fx-font-family: 'Consolas'; -fx-font-size: 14px;" VBox.vgrow="ALWAYS"/>
+            </VBox>
+
+            <!-- Right Side: Call Stack Visualization -->
+            <VBox spacing="10" prefWidth="350" style="-fx-background-color: #1e293b; -fx-padding: 20; -fx-background-radius: 10;">
+                <Label text="Call Stack" textFill="#94a3b8">
+                    <font>
+                        <Font name="System Bold" size="16.0" />
+                    </font>
+                </Label>
+                <!-- Stack container, items align at the bottom to grow upwards -->
+                <VBox fx:id="stackContainer" alignment="BOTTOM_CENTER" spacing="5" VBox.vgrow="ALWAYS" style="-fx-border-color: #334155; -fx-border-width: 0 2 2 2; -fx-padding: 10;"/>
+            </VBox>
+        </HBox>
+
+        <!-- Bottom: Controls and Console -->
+        <HBox spacing="20" prefHeight="150">
+            <!-- Controls -->
+            <VBox spacing="15" alignment="CENTER" style="-fx-background-color: #1e293b; -fx-padding: 20; -fx-background-radius: 10; -fx-pref-width: 300;">
+                <HBox spacing="10" alignment="CENTER">
+                    <Button fx:id="stepBtn" text="Step Forward" onAction="#stepForward"
+                            style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 10 15; -fx-cursor: hand; -fx-font-weight: bold;"/>
+                    <Button fx:id="autoPlayBtn" text="Auto Play" onAction="#toggleAutoPlay"
+                            style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 10 15; -fx-cursor: hand; -fx-font-weight: bold;"/>
+                    <Button fx:id="resetBtn" text="Reset" onAction="#resetSimulation"
+                            style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 10 15; -fx-cursor: hand; -fx-font-weight: bold;"/>
+                </HBox>
+                
+                <HBox spacing="10" alignment="CENTER">
+                    <Label text="Speed:" textFill="#94a3b8" />
+                    <Slider fx:id="speedSlider" min="100" max="2000" value="800" blockIncrement="100" style="-fx-cursor: hand;"
+                            majorTickUnit="500" showTickMarks="true" HBox.hgrow="ALWAYS" />
+                </HBox>
+            </VBox>
+
+            <!-- Console Output -->
+            <VBox spacing="10" HBox.hgrow="ALWAYS" style="-fx-background-color: #1e293b; -fx-padding: 20; -fx-background-radius: 10;">
+                <Label text="Console Output" textFill="#94a3b8">
+                    <font>
+                        <Font name="System Bold" size="14.0" />
+                    </font>
+                </Label>
+                <TextArea fx:id="consoleArea" editable="false" wrapText="true" VBox.vgrow="ALWAYS"
+                          style="-fx-control-inner-background: #0f172a; -fx-text-fill: #10b981; -fx-font-family: 'Consolas'; -fx-font-size: 14px; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;"/>
+            </VBox>
+        </HBox>
+    </children>
+</VBox>

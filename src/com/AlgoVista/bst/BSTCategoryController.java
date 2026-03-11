@@ -5,14 +5,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class BSTCategoryController {
-    @FXML private HBox cardContainer;
+    @FXML private FlowPane cardContainer;
 
     @FXML
     public void initialize() {
@@ -30,8 +30,8 @@ public class BSTCategoryController {
             String opsNormalStyle =
                     "-fx-background-color: #1A1A1A;" +
                             "-fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/bst_operations_bg.png');" +
-                            "-fx-background-size: cover;" +
-                            "-fx-background-position: center center;" +
+                            "-fx-background-size: 95%;" +
+                            "-fx-background-position: center 25%;" +
                             "-fx-background-repeat: no-repeat;" +
                             "-fx-background-radius: 10;" +
                             "-fx-border-color: #FFFFFF;" +
@@ -61,8 +61,8 @@ public class BSTCategoryController {
             String traversalNormalStyle =
                     "-fx-background-color: #1A1A1A;" +
                             "-fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/bst_traversals_bg.png');" +
-                            "-fx-background-size: cover;" +
-                            "-fx-background-position: center center;" +
+                            "-fx-background-size: 95%;" +
+                            "-fx-background-position: center 25%;" +
                             "-fx-background-repeat: no-repeat;" +
                             "-fx-background-radius: 10;" +
                             "-fx-border-color: #FFFFFF;" +

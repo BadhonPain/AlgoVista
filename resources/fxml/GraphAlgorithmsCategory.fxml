@@ -7,30 +7,30 @@
 <?import javafx.scene.text.Font?>
 
 <VBox alignment="TOP_CENTER" spacing="30.0"
-      style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #1e293b); -fx-padding: 30;"
+      style="-fx-background-color: linear-gradient(to bottom right, #0a0a0a, #1a1a1a); -fx-padding: 30;"
       xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.AlgoVista.bst.BSTCategoryController">
+      fx:controller="com.AlgoVista.graphs.GraphAlgorithmsCategoryController">
     <children>
         <!-- Top Bar with Back Button and Header -->
         <BorderPane>
             <left>
                 <Button text="← Back" onAction="#backToDashboard"
-                        style="-fx-background-color: rgba(46, 204, 113, 0.1);
-                               -fx-text-fill: #2ecc71;
+                        style="-fx-background-color: rgba(244, 63, 94, 0.1);
+                               -fx-text-fill: #f43f5e;
                                -fx-font-size: 14;
                                -fx-font-weight: bold;
                                -fx-padding: 8 20 8 20;
                                -fx-background-radius: 20;
                                -fx-border-radius: 20;
-                               -fx-border-color: rgba(46, 204, 113, 0.5);
+                               -fx-border-color: rgba(244, 63, 94, 0.5);
                                -fx-border-width: 1.5;
                                -fx-cursor: hand;
-                               -fx-effect: dropshadow(gaussian, rgba(46, 204, 113, 0.2), 10, 0, 0, 2);"
+                               -fx-effect: dropshadow(gaussian, rgba(244, 63, 94, 0.2), 10, 0, 0, 2);"
                         BorderPane.alignment="CENTER" />
             </left>
             <center>
-                <Label text="Binary Search Tree" textFill="#2ecc71" BorderPane.alignment="CENTER">
+                <Label text="Graph Algorithms" textFill="#f43f5e" BorderPane.alignment="CENTER">
                     <font>
                         <Font name="System Bold" size="36.0" />
                     </font>
