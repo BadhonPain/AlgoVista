@@ -30,6 +30,10 @@ public class CardController {
                 fxmlPath = "/fxml/Heap.fxml";
             } else if (algo.equals("Linked List")) {
                 fxmlPath = "/fxml/LinkedListMenu.fxml";
+            } else if (algo.equals("Array")) {
+                fxmlPath = "/fxml/ArrayVisualizer.fxml";
+            } else if (algo.equals("Stack")) {
+                fxmlPath = "/fxml/StackVisualizer.fxml";
             }
 
 
