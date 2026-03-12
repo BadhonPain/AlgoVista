@@ -10,13 +10,14 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DashboardController {
-    @FXML private TilePane algoContainer;
-    @FXML private TextField searchField;
+    @FXML
+    private TilePane algoContainer;
+    @FXML
+    private TextField searchField;
 
     private final List<String> algorithms = Arrays.asList(
-            "Array", "Linked List", "Stack", "Queue", "Graph",
-            "BST", "Heap", "Sorting", "DP", "Advanced"
-    );
+            "Recursion", "Array", "Linked List", "Stack", "Queue", "Graph",
+            "BST", "Heap", "Sorting", "DP", "Advanced");
 
     @FXML
     public void initialize() {
@@ -53,17 +54,30 @@ public class DashboardController {
     // Helper method to map algorithm names to CSS classes
     private String getStyleClass(String algoName) {
         switch (algoName.toLowerCase()) {
-            case "array": return "array-card";
-            case "linked list": return "linked-list-card";
-            case "stack": return "stack-card";
-            case "queue": return "queue-card";
-            case "graph": return "graph-card";
-            case "bst": return "bst-card";
-            case "heap": return "heap-card";
-            case "sorting": return "sorting-card";
-            case "dp": return "dp-card";
-            case "advanced": return "advanced-card";
-            default: return "";
+            case "recursion":
+                return "recursion-card";
+            case "array":
+                return "array-card";
+            case "linked list":
+                return "linked-list-card";
+            case "stack":
+                return "stack-card";
+            case "queue":
+                return "queue-card";
+            case "graph":
+                return "graph-card";
+            case "bst":
+                return "bst-card";
+            case "heap":
+                return "heap-card";
+            case "sorting":
+                return "sorting-card";
+            case "dp":
+                return "dp-card";
+            case "advanced":
+                return "advanced-card";
+            default:
+                return "";
         }
     }
 }
