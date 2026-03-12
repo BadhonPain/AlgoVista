@@ -342,7 +342,7 @@ public class RecursionCategoryController {
     private void openTreeTraversalsView() {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/fxml/TreeTraversalsCategory.fxml"));
+            loader.setLocation(getClass().getResource("/fxml/TreeTraversal.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) cardContainer.getScene().getWindow();
