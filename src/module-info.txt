@@ -1,6 +1,7 @@
 module com.AlgoVista {
     requires javafx.controls;
     requires javafx.fxml;
+    requires javafx.graphics;
 
     opens com.AlgoVista.dashboard to javafx.fxml;
 
