@@ -32,6 +32,8 @@ public class CardController {
                 fxmlPath = "/fxml/BSTCategory.fxml";
             } else if (algo.equals("Recursion")) {
                 fxmlPath = "/fxml/RecursionCategory.fxml";
+            } else if (algo.equals("D & C")) {
+                fxmlPath = "/fxml/DNC_Category.fxml";
             }
 
             if (fxmlPath != null) {

@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.AlgoVista.trees.TreeTraversalController"
+            style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #1e293b);">
+
+    <!-- ═══ TOP BAR ═══ -->
+    <top>
+        <VBox style="-fx-background-color: #1e293b;">
+
+            <!-- Header -->
+            <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-padding: 10 16;">
+                <Button text="&#8592; Back" onAction="#backToCategory"
+                        style="-fx-background-color: rgba(139, 92, 246, 0.12);
+                               -fx-text-fill: #a78bfa; -fx-font-size: 13; -fx-font-weight: bold;
+                               -fx-padding: 7 18; -fx-background-radius: 20; -fx-border-radius: 20;
+                               -fx-border-color: rgba(139, 92, 246, 0.45); -fx-border-width: 1.5;
+                               -fx-cursor: hand;"/>
+
+                <!-- Traversal Mode Tabs -->
+                <HBox spacing="0" style="-fx-background-color: #0f172a; -fx-background-radius: 10; -fx-padding: 4;">
+                    <Button fx:id="preOrderBtn" text="Pre-Order" onAction="#setPreOrder"
+                            style="-fx-background-color: #8b5cf6; -fx-text-fill: white; -fx-font-weight: bold;
+                                   -fx-font-size: 12; -fx-padding: 6 18; -fx-background-radius: 7; -fx-cursor: hand;"/>
+                    <Button fx:id="inOrderBtn" text="In-Order" onAction="#setInOrder"
+                            style="-fx-background-color: transparent; -fx-text-fill: #64748b; -fx-font-weight: bold;
+                                   -fx-font-size: 12; -fx-padding: 6 18; -fx-background-radius: 7; -fx-cursor: hand;"/>
+                    <Button fx:id="postOrderBtn" text="Post-Order" onAction="#setPostOrder"
+                            style="-fx-background-color: transparent; -fx-text-fill: #64748b; -fx-font-weight: bold;
+                                   -fx-font-size: 12; -fx-padding: 6 18; -fx-background-radius: 7; -fx-cursor: hand;"/>
+                </HBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <!-- Complexity pills -->
+                <HBox spacing="8" alignment="CENTER"
+                      style="-fx-background-color: #0f172a; -fx-padding: 6 14; -fx-background-radius: 8;">
+                    <Label text="Time: O(n)" textFill="#22c55e" style="-fx-font-size: 12; -fx-font-weight: bold;"/>
+                    <Separator orientation="VERTICAL" style="-fx-background-color: #334155;"/>
+                    <Label text="Space: O(h)" textFill="#f59e0b" style="-fx-font-size: 12; -fx-font-weight: bold;"/>
+                </HBox>
+            </HBox>
+
+            <!-- Controls Bar -->
+            <HBox spacing="14" alignment="CENTER_LEFT"
+                  style="-fx-padding: 8 16; -fx-background-color: #0f172a;">
+
+                <!-- Speed -->
+                <VBox spacing="3">
+                    <Label text="Animation Speed" textFill="#64748b" style="-fx-font-size: 10;"/>
+                    <HBox spacing="5" alignment="CENTER">
+                        <Label text="Slow" textFill="#475569" style="-fx-font-size: 10;"/>
+                        <Slider fx:id="speedSlider" min="200" max="2000" value="1400" prefWidth="100"/>
+                        <Label text="Fast" textFill="#475569" style="-fx-font-size: 10;"/>
+                    </HBox>
+                </VBox>
+
+                <Separator orientation="VERTICAL" style="-fx-background-color: #334155;"/>
+
+                <!-- Playback -->
+                <HBox spacing="6">
+                    <Button text="&#9654;  Run" onAction="#runTraversal"
+                            style="-fx-background-color: #22c55e; -fx-text-fill: white; -fx-background-radius: 8;
+                                   -fx-padding: 7 16; -fx-cursor: hand; -fx-font-weight: bold; -fx-font-size: 12;"/>
+                    <Button text="Step  &#10095;" onAction="#stepForward"
+                            style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-background-radius: 8;
+                                   -fx-padding: 7 16; -fx-cursor: hand; -fx-font-weight: bold; -fx-font-size: 12;"/>
+                    <Button text="&#8635;  Reset" onAction="#resetTraversal"
+                            style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-background-radius: 8;
+                                   -fx-padding: 7 16; -fx-cursor: hand; -fx-font-weight: bold; -fx-font-size: 12;"/>
+                </HBox>
+
+                <Separator orientation="VERTICAL" style="-fx-background-color: #334155;"/>
+
+                <!-- Tree builder -->
+                <VBox spacing="3">
+                    <Label text="Build Tree from values (comma-separated)" textFill="#64748b" style="-fx-font-size: 10;"/>
+                    <HBox spacing="6" alignment="CENTER_LEFT">
+                        <TextField fx:id="treeInputField" promptText="e.g.  1, 2, 3, 4, 5, 6, 7"
+                                   prefWidth="220"
+                                   style="-fx-background-color: #1e293b; -fx-text-fill: white;
+                                          -fx-prompt-text-fill: #475569; -fx-background-radius: 8;
+                                          -fx-border-color: #334155; -fx-border-radius: 8;
+                                          -fx-padding: 6 10; -fx-font-size: 12;"/>
+                        <Button text="Build" onAction="#buildCustomTree"
+                                style="-fx-background-color: #0ea5e9; -fx-text-fill: white; -fx-background-radius: 8;
+                                       -fx-padding: 6 14; -fx-cursor: hand; -fx-font-size: 11; -fx-font-weight: bold;"/>
+                        <Button text="Default" onAction="#buildDefaultTree"
+                                style="-fx-background-color: #334155; -fx-text-fill: #94a3b8; -fx-background-radius: 8;
+                                       -fx-padding: 6 14; -fx-cursor: hand; -fx-font-size: 11;"/>
+                    </HBox>
+                </VBox>
+
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- ═══ BOTTOM: Traversal Sequence visualizer ═══ -->
+    <bottom>
+        <VBox spacing="6" prefHeight="100"
+              style="-fx-background-color: #0f172a; -fx-padding: 10 20;
+                     -fx-border-color: #1e3a5f; -fx-border-width: 1 0 0 0;">
+            <HBox alignment="CENTER_LEFT" spacing="8">
+                <Label text="&#9654;" textFill="#a78bfa" style="-fx-font-size: 12;"/>
+                <Label fx:id="sequenceTitle" text="Pre-Order Sequence" textFill="#a78bfa"
+                       style="-fx-font-weight: bold; -fx-font-size: 13;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="stepCountLabel" text="Step 0 / 0" textFill="#475569"
+                       style="-fx-font-size: 10; -fx-background-color: #1e293b;
+                              -fx-padding: 2 8; -fx-background-radius: 10;"/>
+            </HBox>
+            <ScrollPane fitToHeight="true" VBox.vgrow="ALWAYS"
+                        style="-fx-background: transparent; -fx-background-color: transparent;
+                               -fx-border-color: transparent;" hbarPolicy="AS_NEEDED" vbarPolicy="NEVER">
+                <HBox fx:id="sequenceBox" spacing="10" alignment="CENTER_LEFT"
+                      style="-fx-padding: 5 4; -fx-min-height: 50;"/>
+            </ScrollPane>
+        </VBox>
+    </bottom>
+
+    <!-- ═══ CENTER ═══ -->
+    <center>
+        <HBox spacing="12" style="-fx-padding: 12 12 12 12;" VBox.vgrow="ALWAYS">
+
+            <!-- LEFT: Tree Canvas -->
+            <VBox spacing="8" HBox.hgrow="ALWAYS">
+                <Label fx:id="canvasTitle" text="&#127795;  Binary Tree Visualization" textFill="#94a3b8"
+                       style="-fx-font-size: 12; -fx-font-weight: bold;"/>
+                <StackPane VBox.vgrow="ALWAYS"
+                           style="-fx-background-color: #0a0f1e; -fx-background-radius: 12;
+                                  -fx-border-color: #1e3a5f; -fx-border-width: 1.5; -fx-border-radius: 12;
+                                  -fx-effect: dropshadow(gaussian, rgba(139,92,246,0.15), 16, 0, 0, 4);">
+                    <Canvas fx:id="treeCanvas" width="600" height="480"/>
+                </StackPane>
+
+                <!-- Node color legend -->
+                <HBox spacing="20" alignment="CENTER"
+                      style="-fx-background-color: #1e293b; -fx-padding: 8 20; -fx-background-radius: 8;">
+                    <HBox spacing="6" alignment="CENTER">
+                        <Region style="-fx-background-color: #334155; -fx-pref-width: 14; -fx-pref-height: 14; -fx-background-radius: 7;"/>
+                        <Label text="Unvisited" textFill="#94a3b8" style="-fx-font-size: 11;"/>
+                    </HBox>
+                    <HBox spacing="6" alignment="CENTER">
+                        <Region style="-fx-background-color: #a78bfa; -fx-pref-width: 14; -fx-pref-height: 14; -fx-background-radius: 7;"/>
+                        <Label text="Visiting" textFill="#94a3b8" style="-fx-font-size: 11;"/>
+                    </HBox>
+                    <HBox spacing="6" alignment="CENTER">
+                        <Region style="-fx-background-color: #22c55e; -fx-pref-width: 14; -fx-pref-height: 14; -fx-background-radius: 7;"/>
+                        <Label text="Visited" textFill="#94a3b8" style="-fx-font-size: 11;"/>
+                    </HBox>
+                    <HBox spacing="6" alignment="CENTER">
+                        <Region style="-fx-background-color: #f59e0b; -fx-pref-width: 14; -fx-pref-height: 14; -fx-background-radius: 7;"/>
+                        <Label text="Current" textFill="#94a3b8" style="-fx-font-size: 11;"/>
+                    </HBox>
+                </HBox>
+            </VBox>
+
+            <!-- RIGHT: Code + Call Stack + Output -->
+            <VBox spacing="10" prefWidth="380" VBox.vgrow="ALWAYS">
+
+                <!-- ① Python Code Panel -->
+                <VBox spacing="6" prefHeight="190"
+                      style="-fx-background-color: #1e293b; -fx-padding: 12; -fx-background-radius: 10;
+                             -fx-border-color: #1e3a5f; -fx-border-width: 1; -fx-border-radius: 10;">
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Label text="&#128196;" style="-fx-font-size: 13;"/>
+                        <Label text="Python Code" textFill="#38bdf8"
+                               style="-fx-font-weight: bold; -fx-font-size: 13;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="algoLabel" text="Pre-Order Traversal" textFill="#475569" style="-fx-font-size: 10;"/>
+                    </HBox>
+                    <Separator style="-fx-background-color: #334155;"/>
+                    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                                style="-fx-background: transparent; -fx-background-color: transparent;
+                                       -fx-border-color: transparent;">
+                        <VBox fx:id="codeContainer" spacing="0"
+                              style="-fx-background-color: #0a0f1e; -fx-padding: 10; -fx-background-radius: 8;"/>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- ② Call Stack -->
+                <VBox spacing="6" prefHeight="170"
+                      style="-fx-background-color: #1e293b; -fx-padding: 12; -fx-background-radius: 10;
+                             -fx-border-color: #1e3a5f; -fx-border-width: 1; -fx-border-radius: 10;">
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Label text="&#9650;" textFill="#f59e0b" style="-fx-font-size: 11;"/>
+                        <Label text="Call Stack" textFill="#f59e0b"
+                               style="-fx-font-weight: bold; -fx-font-size: 13;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="callStackSizeLabel" text="Depth: 0" textFill="#475569"
+                               style="-fx-font-size: 10; -fx-background-color: #0f172a;
+                                      -fx-padding: 2 8; -fx-background-radius: 10;"/>
+                    </HBox>
+                    <Separator style="-fx-background-color: #334155;"/>
+                    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                                style="-fx-background: transparent; -fx-background-color: transparent;
+                                       -fx-border-color: transparent;">
+                        <VBox fx:id="callStackContainer" spacing="4" alignment="TOP_CENTER"
+                              style="-fx-padding: 4;"/>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- ③ Output -->
+                <VBox spacing="6" VBox.vgrow="ALWAYS"
+                      style="-fx-background-color: #1e293b; -fx-padding: 12; -fx-background-radius: 10;
+                             -fx-border-color: #1e3a5f; -fx-border-width: 1; -fx-border-radius: 10;">
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Label text="&#9654;" textFill="#22c55e" style="-fx-font-size: 11;"/>
+                        <Label text="Output" textFill="#22c55e"
+                               style="-fx-font-weight: bold; -fx-font-size: 13;"/>
+                    </HBox>
+                    <Separator style="-fx-background-color: #334155;"/>
+                    <TextArea fx:id="outputArea" editable="false" wrapText="true" VBox.vgrow="ALWAYS"
+                              style="-fx-control-inner-background: #0a0f1e;
+                                     -fx-text-fill: #22c55e;
+                                     -fx-font-family: 'Consolas';
+                                     -fx-font-size: 11px;
+                                     -fx-background-radius: 8;
+                                     -fx-focus-color: transparent;
+                                     -fx-faint-focus-color: transparent;"/>
+                </VBox>
+
+            </VBox>
+        </HBox>
+    </center>
+
+</BorderPane>
