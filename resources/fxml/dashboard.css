@@ -1,4 +1,11 @@
-/* Card Background Images */
+.divide-conquer-card {
+    -fx-background-color: #1A1A1A;
+    -fx-background-image: url('../com/AlgoVista/images/dnc.png');
+    -fx-background-size: 70% auto;
+    -fx-background-position: center 25%;
+    -fx-background-repeat: no-repeat;
+}
+
 .recursion-card {
     -fx-background-color: #1A1A1A;
     -fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/recursion.png');
@@ -88,7 +95,7 @@
 }
 
 /* Hover effect */
-.recursion-card:hover, .array-card:hover, .linked-list-card:hover, .stack-card:hover, .queue-card:hover,
+.divide-conquer-card:hover, .recursion-card:hover, .array-card:hover, .linked-list-card:hover, .stack-card:hover, .queue-card:hover,
 .graph-card:hover, .bst-card:hover, .heap-card:hover, .sorting-card:hover,
 .dp-card:hover, .advanced-card:hover {
     -fx-scale-x: 1.05;

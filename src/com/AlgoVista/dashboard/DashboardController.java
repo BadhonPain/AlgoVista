@@ -16,8 +16,8 @@ public class DashboardController {
     private TextField searchField;
 
     private final List<String> algorithms = Arrays.asList(
-            "Recursion", "Array", "Linked List", "Stack", "Queue", "Graph",
-            "BST", "Heap", "Sorting", "DP", "Advanced");
+            "Array", "Linked List", "Stack", "Queue", "Sorting", "Graph",
+            "BST", "Recursion", "Heap", "D & C", "DP", "Advanced");
 
     @FXML
     public void initialize() {
@@ -32,7 +32,8 @@ public class DashboardController {
     private void loadCards(String filter) {
         algoContainer.getChildren().clear();
         for (String name : algorithms) {
-            if (name.toLowerCase().contains(filter)) {
+            String fullName = getFullName(name);
+            if (name.toLowerCase().contains(filter) || fullName.toLowerCase().contains(filter)) {
                 try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AlgoCard.fxml"));
                     VBox card = loader.load();
@@ -51,9 +52,25 @@ public class DashboardController {
         }
     }
 
+    // Helper method to get full names for search aliases
+    private String getFullName(String algoName) {
+        switch (algoName.toLowerCase()) {
+            case "bst":
+                return "Binary Search Tree";
+            case "d & c":
+                return "Divide and Conquer";
+            case "dp":
+                return "Dynamic Programming";
+            default:
+                return algoName;
+        }
+    }
+
     // Helper method to map algorithm names to CSS classes
     private String getStyleClass(String algoName) {
         switch (algoName.toLowerCase()) {
+            case "d & c":
+                return "divide-conquer-card";
             case "recursion":
                 return "recursion-card";
             case "array":
