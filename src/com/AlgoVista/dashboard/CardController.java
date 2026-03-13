@@ -35,6 +35,13 @@ public class CardController {
             } else if (algo.equals("D & C")) {
                 fxmlPath = "/fxml/DNC_Category.fxml";
             }
+            else if (algo.equals("Linked List")) {
+                fxmlPath = "/fxml/LinkedListMenu.fxml";
+            } else if (algo.equals("Array")) {
+                fxmlPath = "/fxml/ArrayVisualizer.fxml";
+            } else if (algo.equals("Stack")) {
+                fxmlPath = "/fxml/StackVisualizer.fxml";
+
 
             if (fxmlPath != null) {
                 FXMLLoader loader = new FXMLLoader();

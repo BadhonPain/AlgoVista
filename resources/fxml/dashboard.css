@@ -16,7 +16,7 @@
 
 .array-card {
     -fx-background-color: #1A1A1A;
-    -fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/array.png');
+    -fx-background-image: url('../com/AlgoVista/images/array.png');
     -fx-background-size: 70% auto;
     -fx-background-position: center 25%;
     -fx-background-repeat: no-repeat;
@@ -24,7 +24,7 @@
 
 .linked-list-card {
     -fx-background-color: #1A1A1A;
-    -fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/linkedList.png');
+    -fx-background-image: url('../com/AlgoVista/images/linkedList.png');
     -fx-background-size: 70% auto;
     -fx-background-position: center 25%;
     -fx-background-repeat: no-repeat;
@@ -32,7 +32,7 @@
 
 .stack-card {
     -fx-background-color: #1A1A1A;
-    -fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/stack.png');
+    -fx-background-image: url('../com/AlgoVista/images/stack.png');
     -fx-background-size: 70% auto;
     -fx-background-position: center 25%;
     -fx-background-repeat: no-repeat;
@@ -40,7 +40,7 @@
 
 .queue-card {
     -fx-background-color: #1A1A1A;
-    -fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/queue.png');
+    -fx-background-image: url('../com/AlgoVista/images/queue.png');
     -fx-background-size:70% auto;
     -fx-background-position: center 25%;
     -fx-background-repeat: no-repeat;
@@ -48,7 +48,7 @@
 
 .graph-card {
     -fx-background-color: #1A1A1A;
-    -fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/graph.png');
+    -fx-background-image: url('../com/AlgoVista/images/graph.png');
     -fx-background-size: 70% auto;
     -fx-background-position: center 25%;
     -fx-background-repeat: no-repeat;
@@ -56,7 +56,7 @@
 
 .bst-card {
     -fx-background-color: #1A1A1A;
-    -fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/BST.png');
+    -fx-background-image: url('../com/AlgoVista/images/BST.png');
     -fx-background-size: 70% auto;
     -fx-background-position: center 25%;
     -fx-background-repeat: no-repeat;
@@ -64,7 +64,7 @@
 
 .heap-card {
     -fx-background-color: #1A1A1A;
-    -fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/heap.png');
+    -fx-background-image: url('../com/AlgoVista/images/heap.png');
     -fx-background-size: 70% auto;
     -fx-background-position: center 25%;
     -fx-background-repeat: no-repeat;
@@ -72,7 +72,7 @@
 
 .sorting-card {
     -fx-background-color: #1A1A1A;
-    -fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/sorting.png');
+    -fx-background-image: url('../com/AlgoVista/images/sorting.png');
     -fx-background-size: 70% auto;
     -fx-background-position: center 25%;
     -fx-background-repeat: no-repeat;
@@ -80,7 +80,7 @@
 
 .dp-card {
     -fx-background-color: #1A1A1A;
-    -fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/dp.png');
+    -fx-background-image: url('../com/AlgoVista/images/dp.png');
     -fx-background-size: 70% auto;
     -fx-background-position: center 25%;
     -fx-background-repeat: no-repeat;
@@ -88,7 +88,7 @@
 
 .advanced-card {
     -fx-background-color: #1A1A1A;
-    -fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/greedy.png');
+    -fx-background-image: url('../com/AlgoVista/images/greedy.png');
     -fx-background-size: 70% auto;
     -fx-background-position: center 25%;
     -fx-background-repeat: no-repeat;
@@ -101,4 +101,68 @@
     -fx-scale-x: 1.05;
     -fx-scale-y: 1.05;
     -fx-effect: dropshadow(gaussian, rgba(56, 189, 248, 0.6), 15, 0, 0, 3);
+}
+
+/* Complexity Card Styles */
+.complexity-card {
+    -fx-background-color: #1a252f;
+    -fx-background-radius: 10;
+    -fx-padding: 15;
+    -fx-border-color: rgba(52, 152, 219, 0.3);
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+}
+
+.complexity-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-padding: 0 0 10 0;
+}
+
+.complexity-row {
+    -fx-padding: 8 5;
+    -fx-border-color: #2c3e50;
+    -fx-border-width: 0 0 1 0;
+}
+
+.complexity-row:hover {
+    -fx-background-color: rgba(52, 152, 219, 0.1);
+}
+
+.complexity-op-name {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ecf0f1;
+}
+
+.complexity-op-desc {
+    -fx-font-size: 11px;
+    -fx-text-fill: #bdc3c7;
+}
+
+.complexity-badge-o1 {
+    -fx-background-color: rgba(39, 174, 96, 0.2);
+    -fx-text-fill: #2ecc71;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 3 8;
+    -fx-background-radius: 12;
+    -fx-border-color: #27ae60;
+    -fx-border-radius: 12;
+    -fx-min-width: 45px;
+    -fx-alignment: center;
+}
+
+.complexity-badge-on {
+    -fx-background-color: rgba(230, 126, 34, 0.2);
+    -fx-text-fill: #e67e22;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 3 8;
+    -fx-background-radius: 12;
+    -fx-border-color: #d35400;
+    -fx-border-radius: 12;
+    -fx-min-width: 45px;
+    -fx-alignment: center;
 }
