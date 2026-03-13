@@ -7,37 +7,36 @@
 <?import javafx.scene.text.Font?>
 
 <VBox alignment="TOP_CENTER" spacing="30.0"
-      style="-fx-background-color: linear-gradient(to bottom right, #f8fafc, #e2e8f0); -fx-padding: 30;"
+      style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #1e293b); -fx-padding: 30;"
       xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.AlgoVista.trees.TreeTraversalsCategoryController">
+      fx:controller="com.AlgoVista.dnc.DNC_CategoryController">
     <children>
         <!-- Top Bar with Back Button and Header -->
         <BorderPane>
             <left>
                 <Button text="← Back" onAction="#backToDashboard"
-                        style="-fx-background-color: rgba(15, 23, 42, 0.05);
-                               -fx-text-fill: #0f172a;
+                        style="-fx-background-color: rgba(56, 189, 248, 0.1);
+                               -fx-text-fill: #38bdf8;
                                -fx-font-size: 14;
                                -fx-font-weight: bold;
                                -fx-padding: 8 20 8 20;
                                -fx-background-radius: 20;
                                -fx-border-radius: 20;
-                               -fx-border-color: rgba(15, 23, 42, 0.3);
+                               -fx-border-color: rgba(56, 189, 248, 0.5);
                                -fx-border-width: 1.5;
                                -fx-cursor: hand;
-                               -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.1), 5, 0, 0, 1);"
+                               -fx-effect: dropshadow(gaussian, rgba(56, 189, 248, 0.2), 10, 0, 0, 2);"
                         BorderPane.alignment="CENTER" />
             </left>
             <center>
-                <Label text="Tree Traversals" textFill="#0f172a" BorderPane.alignment="CENTER">
+                <Label text="Divide &amp; Conquer" textFill="#38bdf8" BorderPane.alignment="CENTER">
                     <font>
                         <Font name="System Bold" size="36.0" />
                     </font>
                 </Label>
             </center>
             <right>
-                <!-- Invisible dummy button to perfectly center the title -->
                 <Button text="← Back" style="-fx-opacity: 0; -fx-font-size: 14; -fx-padding: 8 20 8 20; -fx-border-width: 1.5;" BorderPane.alignment="CENTER" />
             </right>
         </BorderPane>

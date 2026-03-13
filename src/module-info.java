@@ -27,4 +27,7 @@ module com.AlgoVista {
 
     opens com.AlgoVista.trees to javafx.fxml;
     exports com.AlgoVista.trees;
+
+    opens com.AlgoVista.dnc to javafx.fxml;
+    exports com.AlgoVista.dnc;
 }
