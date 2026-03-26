@@ -26,44 +26,55 @@ public class BSTModel {
     }
 
     private BSTNode root;
-    
+    private BSTNode transientRoot; // Snapshot root used by canvas during animation
+
     public BSTNode getRoot() { return root; }
+    public BSTNode getEffectiveRoot() { return transientRoot != null ? transientRoot : root; }
     public boolean isEmpty() { return root == null; }
-    public void clear() { root = null; }
+    public void clear() { root = null; transientRoot = null; }
+
+    /** Returns a deep copy of the current tree for use as an animation snapshot. */
+    public BSTNode deepCopyRoot() {
+        return root != null ? root.deepCopy() : null;
+    }
+
+    public void setTransientRoot(BSTNode snapshot) { this.transientRoot = snapshot; }
+    public void clearTransientRoot() { this.transientRoot = null; }
 
     // --- INSERTION ---
     public List<BSTOperation> insert(int value) {
         List<BSTOperation> ops = new ArrayList<>();
         if (root == null) {
             root = new BSTNode(value);
-            ops.add(new BSTOperation("inserted", root, "Inserted root node " + value, "O(1)"));
+            ops.add(new BSTOperation("inserted", root, "Inserted root node " + value, "O(1) — empty tree"));
             return ops;
         }
+        ops.add(new BSTOperation("comparing", root, "Insert(" + value + "): Starting at root. Complexity: O(log n) avg, O(n) worst", "O(log n) avg"));
         insertRec(root, value, ops);
         return ops;
     }
 
     private BSTNode insertRec(BSTNode current, int value, List<BSTOperation> ops) {
-        ops.add(new BSTOperation("comparing", current, "Comparing " + value + " with " + current.value, "O(1)"));
-        
+        ops.add(new BSTOperation("comparing", current, "Compare " + value + " with " + current.value + " (current node)", "O(1) per step"));
+
         if (value < current.value) {
             if (current.left == null) {
                 current.left = new BSTNode(value);
-                ops.add(new BSTOperation("inserted", current.left, "Inserted " + value + " as left child of " + current.value, "O(1)"));
+                ops.add(new BSTOperation("inserted", current.left, "✓ Inserted " + value + " as left child of " + current.value, "O(log n) avg"));
             } else {
-                ops.add(new BSTOperation("moving_left", current, value + " < " + current.value + ", moving left.", "O(1)"));
+                ops.add(new BSTOperation("moving_left", current, value + " < " + current.value + " → Go left", "O(1) per step"));
                 current.left = insertRec(current.left, value, ops);
             }
         } else if (value > current.value) {
             if (current.right == null) {
                 current.right = new BSTNode(value);
-                ops.add(new BSTOperation("inserted", current.right, "Inserted " + value + " as right child of " + current.value, "O(1)"));
+                ops.add(new BSTOperation("inserted", current.right, "✓ Inserted " + value + " as right child of " + current.value, "O(log n) avg"));
             } else {
-                ops.add(new BSTOperation("moving_right", current, value + " > " + current.value + ", moving right.", "O(1)"));
+                ops.add(new BSTOperation("moving_right", current, value + " > " + current.value + " → Go right", "O(1) per step"));
                 current.right = insertRec(current.right, value, ops);
             }
         } else {
-             ops.add(new BSTOperation("duplicate", current, value + " already exists in BST.", "O(1)"));
+            ops.add(new BSTOperation("duplicate", current, value + " already exists in BST — skipped.", "O(log n) avg"));
         }
         return current;
     }
@@ -71,23 +82,24 @@ public class BSTModel {
     // --- FIND ---
     public List<BSTOperation> find(int value) {
         List<BSTOperation> ops = new ArrayList<>();
+        ops.add(new BSTOperation("comparing", root, "Find(" + value + "): Starting search. Complexity: O(log n) avg, O(n) worst", "O(log n) avg"));
         findRec(root, value, ops);
         return ops;
     }
 
     private void findRec(BSTNode current, int value, List<BSTOperation> ops) {
         if (current == null) {
-            ops.add(new BSTOperation("not_found", null, "Value " + value + " not found in BST.", "O(log N)"));
+            ops.add(new BSTOperation("not_found", null, "✗ Value " + value + " not found in BST.", "O(log n) avg"));
             return;
         }
-        ops.add(new BSTOperation("comparing", current, "Comparing " + value + " with " + current.value, "O(1)"));
+        ops.add(new BSTOperation("comparing", current, "Compare " + value + " with " + current.value, "O(1) per step"));
         if (value == current.value) {
-            ops.add(new BSTOperation("found", current, "Found value " + value + "!", "O(1)"));
+            ops.add(new BSTOperation("found", current, "✓ Found value " + value + "!", "O(log n) avg"));
         } else if (value < current.value) {
-            ops.add(new BSTOperation("moving_left", current, value + " < " + current.value + ", moving left.", "O(1)"));
+            ops.add(new BSTOperation("moving_left", current, value + " < " + current.value + " → Go left", "O(1) per step"));
             findRec(current.left, value, ops);
         } else {
-            ops.add(new BSTOperation("moving_right", current, value + " > " + current.value + ", moving right.", "O(1)"));
+            ops.add(new BSTOperation("moving_right", current, value + " > " + current.value + " → Go right", "O(1) per step"));
             findRec(current.right, value, ops);
         }
     }
@@ -95,51 +107,43 @@ public class BSTModel {
     // --- DELETION ---
     public List<BSTOperation> delete(int value) {
         List<BSTOperation> ops = new ArrayList<>();
+        ops.add(new BSTOperation("comparing", root, "Delete(" + value + "): Starting search. Complexity: O(log n) avg, O(n) worst", "O(log n) avg"));
         root = deleteRec(root, value, ops);
         return ops;
     }
 
     private BSTNode deleteRec(BSTNode current, int value, List<BSTOperation> ops) {
         if (current == null) {
-            ops.add(new BSTOperation("not_found", null, "Value " + value + " not found for deletion.", "O(log N)"));
+            ops.add(new BSTOperation("not_found", null, "✗ Value " + value + " not found for deletion.", "O(log n) avg"));
             return current;
         }
-        
-        ops.add(new BSTOperation("comparing", current, "Comparing " + value + " with " + current.value, "O(1)"));
+
+        ops.add(new BSTOperation("comparing", current, "Compare " + value + " with " + current.value, "O(1) per step"));
         if (value < current.value) {
-            ops.add(new BSTOperation("moving_left", current, value + " < " + current.value + ", moving left.", "O(1)"));
+            ops.add(new BSTOperation("moving_left", current, value + " < " + current.value + " → Go left", "O(1) per step"));
             current.left = deleteRec(current.left, value, ops);
         } else if (value > current.value) {
-            ops.add(new BSTOperation("moving_right", current, value + " > " + current.value + ", moving right.", "O(1)"));
+            ops.add(new BSTOperation("moving_right", current, value + " > " + current.value + " → Go right", "O(1) per step"));
             current.right = deleteRec(current.right, value, ops);
         } else {
-            // Node to be deleted found
-            ops.add(new BSTOperation("found_delete", current, "Found " + value + " to delete.", "O(1)"));
-            
-            // Case 1: Leaf node
+            ops.add(new BSTOperation("found_delete", current, "✓ Found " + value + " — preparing to delete.", "O(log n) avg"));
+
             if (current.left == null && current.right == null) {
-                ops.add(new BSTOperation("deleted", current, "Deleting leaf node.", "O(1)"));
+                ops.add(new BSTOperation("deleted", current, "Case 1: Leaf node — simply removed.", "O(log n) avg"));
                 return null;
             }
-            
-            // Case 2: Node with one child
             if (current.left == null) {
-                ops.add(new BSTOperation("deleted", current, "Deleting node. Replacing with right child.", "O(1)"));
+                ops.add(new BSTOperation("deleted", current, "Case 2: No left child — replace with right child.", "O(log n) avg"));
                 return current.right;
             } else if (current.right == null) {
-                ops.add(new BSTOperation("deleted", current, "Deleting node. Replacing with left child.", "O(1)"));
+                ops.add(new BSTOperation("deleted", current, "Case 2: No right child — replace with left child.", "O(log n) avg"));
                 return current.left;
             }
-            
-            // Case 3: Node with two children. Get inorder successor
-            ops.add(new BSTOperation("finding_successor", current, "Node has 2 children, finding inorder successor.", "O(1)"));
+
+            ops.add(new BSTOperation("finding_successor", current, "Case 3: Two children — finding in-order successor...", "O(log n) avg"));
             BSTNode successor = minValueNode(current.right, ops);
-            
-            // Since we animate, we simulate replacing the value
             current.value = successor.value;
-            ops.add(new BSTOperation("replace_value", current, "Replaced value with successor " + successor.value + ".", "O(1)"));
-            
-            // Delete the inorder successor
+            ops.add(new BSTOperation("replace_value", current, "✓ Replaced with successor value " + successor.value, "O(log n) avg"));
             current.right = deleteRec(current.right, successor.value, ops);
         }
         return current;
@@ -148,10 +152,10 @@ public class BSTModel {
     private BSTNode minValueNode(BSTNode node, List<BSTOperation> ops) {
         BSTNode current = node;
         while (current.left != null) {
-            ops.add(new BSTOperation("moving_left", current, "Finding min value node in right subtree...", "O(1)"));
+            ops.add(new BSTOperation("moving_left", current, "Searching left for minimum value...", "O(1) per step"));
             current = current.left;
         }
-        ops.add(new BSTOperation("found_successor", current, "Found successor " + current.value, "O(1)"));
+        ops.add(new BSTOperation("found_successor", current, "✓ In-order successor found: " + current.value, "O(log n) avg"));
         return current;
     }
 
@@ -269,12 +273,11 @@ public class BSTModel {
     
     // --- POSITIONING ---
     public void updatePositions(double canvasWidth, double canvasHeight) {
-        if (root != null) {
-            int maxDepth = getMaxDepth();
-            // dynamically calculate initial offset so leaves don't overlap
-            // if canvas is huge, we divide appropriately
-            double initialXOffset = canvasWidth / 4; 
-            positionRec(root, canvasWidth / 2, 60, initialXOffset, 70);
+        BSTNode effectiveRoot = getEffectiveRoot();
+        if (effectiveRoot != null) {
+            int maxDepth = getMaxDepthOf(effectiveRoot);
+            double initialXOffset = canvasWidth / 4;
+            positionRec(effectiveRoot, canvasWidth / 2, 60, initialXOffset, 70);
         }
     }
     
@@ -292,11 +295,15 @@ public class BSTModel {
     }
 
     public int getMaxDepth() {
-        return getMaxDepthRec(root);
+        return getMaxDepthOf(getEffectiveRoot());
+    }
+
+    private int getMaxDepthOf(BSTNode node) {
+        if (node == null) return 0;
+        return 1 + Math.max(getMaxDepthOf(node.left), getMaxDepthOf(node.right));
     }
 
     private int getMaxDepthRec(BSTNode node) {
-        if (node == null) return 0;
-        return 1 + Math.max(getMaxDepthRec(node.left), getMaxDepthRec(node.right));
+        return getMaxDepthOf(node);
     }
 }

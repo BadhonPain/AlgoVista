@@ -20,7 +20,7 @@ public class BSTTraversalController {
     @FXML private Canvas bstCanvas;
     @FXML private TextField valueInput, customBSTInput;
     @FXML private Slider speedSlider;
-    @FXML private Label statusLabel;
+    @FXML private Label statusLabel, traversalTypeLabel;
     @FXML private HBox traversalBox;
     @FXML private HBox queueBox;
     @FXML private Spinner<Integer> sizeSpinner;
@@ -46,6 +46,9 @@ public class BSTTraversalController {
 
         updateVisualization();
         statusLabel.setText("Ready. Build a tree then select a traversal.");
+        traversalTypeLabel.setText("All Traversals — O(n)");
+        traversalTypeLabel.setStyle("-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #94a3b8; " +
+                "-fx-background-color: rgba(148,163,184,0.12); -fx-padding: 6 14; -fx-background-radius: 20;");
     }
 
     @FXML
@@ -112,40 +115,40 @@ public class BSTTraversalController {
 
     @FXML
     private void inorderTraversal() {
-        if (model.isEmpty()) {
-            showAlert("Empty Tree", "The tree is empty.");
-            return;
-        }
+        if (model.isEmpty()) { showAlert("Empty Tree", "The tree is empty."); return; }
+        traversalTypeLabel.setText("In-order  |  O(n)");
+        traversalTypeLabel.setStyle("-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #93c5fd; " +
+                "-fx-background-color: rgba(29,78,216,0.2); -fx-padding: 6 14; -fx-background-radius: 20;");
         currentOperations = model.inorderTraversal();
         startAnimation();
     }
 
     @FXML
     private void preorderTraversal() {
-        if (model.isEmpty()) {
-            showAlert("Empty Tree", "The tree is empty.");
-            return;
-        }
+        if (model.isEmpty()) { showAlert("Empty Tree", "The tree is empty."); return; }
+        traversalTypeLabel.setText("Pre-order  |  O(n)");
+        traversalTypeLabel.setStyle("-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #d8b4fe; " +
+                "-fx-background-color: rgba(147,51,234,0.2); -fx-padding: 6 14; -fx-background-radius: 20;");
         currentOperations = model.preorderTraversal();
         startAnimation();
     }
 
     @FXML
     private void postorderTraversal() {
-        if (model.isEmpty()) {
-            showAlert("Empty Tree", "The tree is empty.");
-            return;
-        }
+        if (model.isEmpty()) { showAlert("Empty Tree", "The tree is empty."); return; }
+        traversalTypeLabel.setText("Post-order  |  O(n)");
+        traversalTypeLabel.setStyle("-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #fcd34d; " +
+                "-fx-background-color: rgba(180,83,9,0.2); -fx-padding: 6 14; -fx-background-radius: 20;");
         currentOperations = model.postorderTraversal();
         startAnimation();
     }
 
     @FXML
     private void levelOrderTraversal() {
-        if (model.isEmpty()) {
-            showAlert("Empty Tree", "The tree is empty.");
-            return;
-        }
+        if (model.isEmpty()) { showAlert("Empty Tree", "The tree is empty."); return; }
+        traversalTypeLabel.setText("Level-order (BFS)  |  O(n)");
+        traversalTypeLabel.setStyle("-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #5eead4; " +
+                "-fx-background-color: rgba(15,118,110,0.25); -fx-padding: 6 14; -fx-background-radius: 20;");
         currentOperations = model.levelOrderTraversal();
         startAnimation();
     }
@@ -218,41 +221,55 @@ public class BSTTraversalController {
     
     private void updateQueueUI(List<Integer> queueState) {
         queueBox.getChildren().clear();
-        for (int value : queueState) {
+        for (int i = 0; i < queueState.size(); i++) {
+            int value = queueState.get(i);
+            Label front = new Label(i == 0 ? "Front" : "");
             Label qLabel = new Label(String.valueOf(value));
             qLabel.setStyle(
-                    "-fx-background-color: #e67e22;" +
-                    "-fx-text-fill: white;" +
-                    "-fx-border-color: #d35400;" +
-                    "-fx-border-width: 2;" +
-                    "-fx-background-radius: 5;" +
-                    "-fx-border-radius: 5;" +
-                    "-fx-min-width: 40;" +
-                    "-fx-min-height: 40;" +
+                    "-fx-background-color: #134e4a;" +
+                    "-fx-text-fill: #5eead4;" +
+                    "-fx-border-color: #0f766e;" +
+                    "-fx-border-width: 1.5;" +
+                    "-fx-background-radius: 8;" +
+                    "-fx-border-radius: 8;" +
+                    "-fx-min-width: 42;" +
+                    "-fx-min-height: 42;" +
                     "-fx-alignment: center;" +
-                    "-fx-font-size: 16;" +
+                    "-fx-font-size: 15;" +
                     "-fx-font-weight: bold;"
             );
             queueBox.getChildren().add(qLabel);
+            if (i < queueState.size() - 1) {
+                Label arrow = new Label("›");
+                arrow.setStyle("-fx-text-fill: #334155; -fx-font-size: 18;");
+                queueBox.getChildren().add(arrow);
+            }
         }
     }
     
     private void addTraversalNode(int value) {
-        Label valueLabel = new Label(String.valueOf(value));
-        valueLabel.setStyle(
-                "-fx-background-color: #00cec9;" +
-                "-fx-text-fill: white;" +
-                "-fx-border-color: #00b894;" +
-                "-fx-border-width: 2;" +
-                "-fx-background-radius: 5;" +
-                "-fx-border-radius: 5;" +
+        int index = traversalBox.getChildren().size();
+        // Alternating position indicator
+        if (index > 0) {
+            Label arrow = new Label("→");
+            arrow.setStyle("-fx-text-fill: #475569; -fx-font-size: 14;");
+            traversalBox.getChildren().add(arrow);
+        }
+        Label chip = new Label(String.valueOf(value));
+        chip.setStyle(
+                "-fx-background-color: #0c4a6e;" +
+                "-fx-text-fill: #38bdf8;" +
+                "-fx-border-color: #0369a1;" +
+                "-fx-border-width: 1.5;" +
+                "-fx-background-radius: 8;" +
+                "-fx-border-radius: 8;" +
                 "-fx-min-width: 40;" +
                 "-fx-min-height: 40;" +
                 "-fx-alignment: center;" +
-                "-fx-font-size: 16;" +
+                "-fx-font-size: 15;" +
                 "-fx-font-weight: bold;"
         );
-        traversalBox.getChildren().add(valueLabel);
+        traversalBox.getChildren().add(chip);
     }
 
     @FXML
