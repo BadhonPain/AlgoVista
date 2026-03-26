@@ -11,7 +11,7 @@ public class Main extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/dashboard.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 900, 700);
 
-        stage.setTitle("AlgoVista - DSA Visualizer");
+        stage.setTitle("AlgoVista");
         stage.setScene(scene);
         stage.show();
     }
