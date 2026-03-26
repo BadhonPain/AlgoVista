@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.TextFlow?>
+
+<HBox fx:id="rootPane" prefHeight="700.0" prefWidth="1000.0" style="-fx-background-color: #0f172a;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.AlgoVista.dp.FibonacciController">
+    <children>
+        <!-- Main Visualization Area -->
+        <VBox HBox.hgrow="ALWAYS" spacing="20" style="-fx-padding: 20;">
+            <children>
+                <BorderPane>
+                    <left>
+                        <Button text="← Back" onAction="#backToCategory" 
+                                style="-fx-background-color: rgba(56, 189, 248, 0.1); -fx-text-fill: #38bdf8; -fx-cursor: hand; -fx-background-radius: 20; -fx-border-radius: 20; -fx-border-color: #38bdf8;"/>
+                    </left>
+                    <center>
+                        <Label text="Fibonacci: Memory Growth" textFill="#38bdf8">
+                            <font>
+                                <Font name="System Bold" size="28.0" />
+                            </font>
+                        </Label>
+                    </center>
+                    <right>
+                        <Region prefWidth="100.0"/>
+                    </right>
+                </BorderPane>
+
+                <StackPane VBox.vgrow="ALWAYS" style="-fx-background-color: rgba(30, 41, 59, 0.5); -fx-background-radius: 15;">
+                    <children>
+                        <!-- Layer for Arcs -->
+                        <Pane fx:id="animationPane" mouseTransparent="true" />
+                        
+                        <!-- Layer for Cells -->
+                        <ScrollPane fitToHeight="true" fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent;" vbarPolicy="NEVER">
+                            <content>
+                                <HBox fx:id="cellContainer" alignment="CENTER_LEFT" spacing="15" style="-fx-padding: 50;" />
+                            </content>
+                        </ScrollPane>
+                    </children>
+                </StackPane>
+            </children>
+        </VBox>
+
+        <!-- Sidebar for Controls & Pseudo-Code -->
+        <VBox prefWidth="380.0" spacing="20" style="-fx-background-color: #1e293b; -fx-padding: 20; -fx-border-color: #334155; -fx-border-width: 0 0 0 1;">
+            <children>
+                <Label text="CONTROLS" textFill="#94a3b8" style="-fx-font-weight: bold; -fx-font-size: 12;"/>
+                
+                <VBox spacing="10">
+                    <Label text="Enter N (Target Index):" textFill="#cbd5e1"/>
+                    <TextField fx:id="inputN" promptText="e.g. 10" style="-fx-background-color: #0f172a; -fx-text-fill: white; -fx-border-color: #334155; -fx-border-radius: 5; -fx-padding: 10;"/>
+                    <HBox spacing="10">
+                        <Button text="Start" onAction="#startVisualization" maxWidth="Infinity" HBox.hgrow="ALWAYS" style="-fx-background-color: #38bdf8; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 10;"/>
+                        <Button text="Step" onAction="#stepVisualization" maxWidth="Infinity" HBox.hgrow="ALWAYS" style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 10;"/>
+                        <Button text="Reset" onAction="#resetVisualization" maxWidth="Infinity" HBox.hgrow="ALWAYS" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 10;"/>
+                    </HBox>
+                </VBox>
+
+                <Separator style="-fx-opacity: 0.1;"/>
+
+                <VBox spacing="10">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                         <Label text="Animation Speed:" textFill="#cbd5e1" HBox.hgrow="ALWAYS"/>
+                         <Label fx:id="speedLabel" text="1.0x" textFill="#38bdf8"/>
+                    </HBox>
+                    <Slider fx:id="speedSlider" min="0.1" max="3.0" value="1.0" style="-fx-cursor: hand;"/>
+                </VBox>
+
+                <VBox spacing="10">
+                    <Label text="Space Optimization:" textFill="#cbd5e1"/>
+                    <ToggleButton fx:id="spaceToggle" text="Constant Space Mode: OFF" onAction="#toggleSpaceOptimization" maxWidth="Infinity" style="-fx-background-color: #334155; -fx-text-fill: white; -fx-cursor: hand; -fx-padding: 10;"/>
+                </VBox>
+
+                <Separator style="-fx-opacity: 0.1;"/>
+
+                <Label text="PSEUDO-CODE" textFill="#94a3b8" style="-fx-font-weight: bold; -fx-font-size: 12;"/>
+                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background: #0f172a; -fx-background-color: #0f172a; -fx-border-color: #334155;">
+                    <content>
+                        <TextFlow fx:id="pseudoCodeFlow" style="-fx-padding: 15; -fx-background-color: #0f172a;" />
+                    </content>
+                </ScrollPane>
+            </children>
+        </VBox>
+    </children>
+</HBox>

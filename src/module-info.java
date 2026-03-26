@@ -30,4 +30,7 @@ module com.AlgoVista {
 
     opens com.AlgoVista.dnc to javafx.fxml;
     exports com.AlgoVista.dnc;
+
+    opens com.AlgoVista.dp to javafx.fxml;
+    exports com.AlgoVista.dp;
 }
