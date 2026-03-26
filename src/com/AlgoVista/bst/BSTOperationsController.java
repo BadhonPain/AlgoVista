@@ -52,7 +52,10 @@ public class BSTOperationsController {
     private void insertValue() {
         try {
             int value = Integer.parseInt(valueInput.getText().trim());
+            // Capture tree state BEFORE insert so canvas shows it during animation
+            BSTNode snapshot = model.deepCopyRoot();
             currentOperations = model.insert(value);
+            model.setTransientRoot(snapshot); // animation draws from pre-insert tree
             startAnimation();
             valueInput.clear();
         } catch (NumberFormatException e) {
@@ -64,7 +67,10 @@ public class BSTOperationsController {
     private void findValue() {
         try {
             int value = Integer.parseInt(valueInput.getText().trim());
+            // Find doesn't modify tree; snapshot is same as real tree, but set for consistency
+            BSTNode snapshot = model.deepCopyRoot();
             currentOperations = model.find(value);
+            model.setTransientRoot(snapshot);
             startAnimation();
         } catch (NumberFormatException e) {
             showAlert("Invalid Input", "Please enter a valid integer.");
@@ -75,7 +81,10 @@ public class BSTOperationsController {
     private void deleteValue() {
         try {
             int value = Integer.parseInt(valueInput.getText().trim());
+            // Capture tree BEFORE delete — so we see the node being highlighted before disappearing
+            BSTNode snapshot = model.deepCopyRoot();
             currentOperations = model.delete(value);
+            model.setTransientRoot(snapshot);
             startAnimation();
             valueInput.clear();
         } catch (NumberFormatException e) {
@@ -142,10 +151,10 @@ public class BSTOperationsController {
         try {
             int oldVal = Integer.parseInt(oldValueInput.getText().trim());
             int newVal = Integer.parseInt(newValueInput.getText().trim());
-            
+            BSTNode snapshot = model.deepCopyRoot();
             currentOperations = model.update(oldVal, newVal);
+            model.setTransientRoot(snapshot);
             startAnimation();
-            
             oldValueInput.clear();
             newValueInput.clear();
         } catch (NumberFormatException e) {
@@ -164,6 +173,8 @@ public class BSTOperationsController {
 
     private void startAnimation() {
         if (currentOperations == null || currentOperations.isEmpty()) {
+            model.clearTransientRoot();
+            visualizer.clearColors();
             updateVisualization();
             return;
         }
@@ -183,6 +194,8 @@ public class BSTOperationsController {
                 currentStep++;
             } else {
                 animation.stop();
+                // Clear snapshot — final real tree is now shown
+                model.clearTransientRoot();
                 visualizer.clearColors();
                 updateVisualization();
                 statusLabel.setText("Animation complete.");
@@ -194,18 +207,27 @@ public class BSTOperationsController {
     }
 
     private void executeStep(BSTModel.BSTOperation op) {
-        visualizer.clearColors();
-
         if (op.targetNode != null) {
             visualizer.setNodeColor(op.targetNode, op.type);
         }
 
         statusLabel.setText(op.description);
-        complexityLabel.setText("Complexity: " + op.complexity);
+
+        // Only update complexity badge for operation-level steps, not per-step sub-steps
+        if (!op.complexity.contains("per step")) {
+            complexityLabel.setText("Complexity: " + op.complexity);
+            complexityLabel.setStyle("-fx-font-size: 13; -fx-font-weight: bold; " +
+                    "-fx-background-color: rgba(245,158,11,0.15); -fx-padding: 6 14; -fx-background-radius: 20;");
+        }
+
+        // On "inserted" step: switch canvas to real tree so new node appears
+        if ("inserted".equals(op.type)) {
+            model.clearTransientRoot();
+        }
 
         updateVisualization();
     }
-    
+
     @FXML
     private void playAnimation() {
         if (animation != null && animation.getStatus() == Timeline.Status.PAUSED) {

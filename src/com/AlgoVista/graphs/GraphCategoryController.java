@@ -4,14 +4,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class GraphCategoryController {
-    @FXML private HBox cardContainer;
+    @FXML private FlowPane cardContainer;
 
     @FXML
     public void initialize() {
@@ -30,33 +30,39 @@ public class GraphCategoryController {
             GraphSubCardController controller1 = loader1.getController();
             controller1.setData("Structure");
 
-            // Normal style
+            // Use standard dimensions (matching BST's "normal" size)
+            structureCard.setPrefWidth(388);
+            structureCard.setPrefHeight(400);
+            structureCard.setMaxWidth(388);
+            structureCard.setMaxHeight(400);
+
+            // Normal style - restored for standard fit
             String structureNormalStyle =
                     "-fx-background-color: #1A1A1A;" +
                             "-fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/structure.png');" +
-                            "-fx-background-size: 95%;" +
+                            "-fx-background-size: 85%;" + 
                             "-fx-background-position: center 25%;" +
                             "-fx-background-repeat: no-repeat;" +
-                            "-fx-background-radius: 10;" +
-                            "-fx-border-color: #FFFFFF;" +
+                            "-fx-background-radius: 20;" +
+                            "-fx-border-color: rgba(255, 255, 255, 0.4);" +
                             "-fx-border-width: 2;" +
-                            "-fx-border-radius: 10;" +
-                            "-fx-effect: drop shadow(Gaussian, RGBA(0,0,0,0.3), 10, 0, 0, 2);";
+                            "-fx-border-radius: 20;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 10, 0, 0, 2);";
 
-            // Hover style
+            // Hover style - "Best" premium effect
             String structureHoverStyle =
-                    "-fx-background-color: #1A1A1A;" +
+                    "-fx-background-color: #1E293B;" +
                             "-fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/structure.png');" +
-                            "-fx-background-size: 95%;" +
+                            "-fx-background-size: 88%;" +
                             "-fx-background-position: center 25%;" +
                             "-fx-background-repeat: no-repeat;" +
-                            "-fx-background-radius: 10;" +
-                            "-fx-border-color: #FFFFFF;" +
-                            "-fx-border-width: 2;" +
-                            "-fx-border-radius: 10;" +
-                            "-fx-scale-x: 1.05;" +
-                            "-fx-scale-y: 1.05;" +
-                            "-fx-effect: dropshadow(gaussian, rgba(56, 189, 248, 0.8), 15, 0, 0, 3);";
+                            "-fx-background-radius: 20;" +
+                            "-fx-border-color: #38bdf8;" +
+                            "-fx-border-width: 3;" +
+                            "-fx-border-radius: 20;" +
+                            "-fx-scale-x: 1.03;" +
+                            "-fx-scale-y: 1.03;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(56, 189, 248, 0.6), 20, 0.4, 0, 0);";
 
             structureCard.setStyle(structureNormalStyle);
 
@@ -68,47 +74,50 @@ public class GraphCategoryController {
             structureCard.setOnMouseClicked(e -> openStructureView());
 
             cardContainer.getChildren().add(structureCard);
-            System.out.println("Structure card loaded successfully!");
         } catch (IOException e) {
-            System.out.println("Error loading Structure card:");
             e.printStackTrace();
         }
 
         // Traversal card
         try {
-            System.out.println("Loading Traversal card...");
             FXMLLoader loader2 = new FXMLLoader(getClass().getResource("/fxml/GraphSubCard.fxml"));
             VBox traversalCard = loader2.load();
             GraphSubCardController controller2 = loader2.getController();
             controller2.setData("Traversal");
 
+            // Use standard dimensions
+            traversalCard.setPrefWidth(388);
+            traversalCard.setPrefHeight(400);
+            traversalCard.setMaxWidth(388);
+            traversalCard.setMaxHeight(400);
+
             // Normal style
             String traversalNormalStyle =
                     "-fx-background-color: #1A1A1A;" +
                             "-fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/traversal.png');" +
-                            "-fx-background-size: 95%;" +
+                            "-fx-background-size: 85%;" +
                             "-fx-background-position: center 25%;" +
                             "-fx-background-repeat: no-repeat;" +
-                            "-fx-background-radius: 10;" +
-                            "-fx-border-color: #FFFFFF;" +
+                            "-fx-background-radius: 20;" +
+                            "-fx-border-color: rgba(255, 255, 255, 0.4);" +
                             "-fx-border-width: 2;" +
-                            "-fx-border-radius: 10;" +
-                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);";
+                            "-fx-border-radius: 20;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 10, 0, 0, 2);";
 
             // Hover style
             String traversalHoverStyle =
-                    "-fx-background-color: #1A1A1A;" +
+                    "-fx-background-color: #1E293B;" +
                             "-fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/traversal.png');" +
-                            "-fx-background-size: 95%;" +
+                            "-fx-background-size: 88%;" +
                             "-fx-background-position: center 25%;" +
                             "-fx-background-repeat: no-repeat;" +
-                            "-fx-background-radius: 10;" +
-                            "-fx-border-color: #FFFFFF;" +
-                            "-fx-border-width: 2;" +
-                            "-fx-border-radius: 10;" +
-                            "-fx-scale-x: 1.05;" +
-                            "-fx-scale-y: 1.05;" +
-                            "-fx-effect: dropshadow(gaussian, rgba(56, 189, 248, 0.8), 15, 0, 0, 3);";
+                            "-fx-background-radius: 20;" +
+                            "-fx-border-color: #38bdf8;" +
+                            "-fx-border-width: 3;" +
+                            "-fx-border-radius: 20;" +
+                            "-fx-scale-x: 1.03;" +
+                            "-fx-scale-y: 1.03;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(56, 189, 248, 0.6), 20, 0.4, 0, 0);";
 
             traversalCard.setStyle(traversalNormalStyle);
 

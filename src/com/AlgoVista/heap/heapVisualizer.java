@@ -19,14 +19,41 @@ public class heapVisualizer {
     private static final double HORIZONTAL_SPACING = 75;
     private static final double VERTICAL_SPACING = 80;
 
-    // Professional colors
-    private Color normalColor = Color.rgb(135, 206, 250);
-    private Color comparingColor = Color.rgb(255, 255, 102);
-    private Color swappingColor = Color.rgb(255, 165, 0);
-    private Color insertedColor = Color.rgb(144, 238, 144);
-    private Color extractedColor = Color.rgb(255, 160, 160);
+    // Professional premium colors
+    private Color normalColor = Color.web("#e0f2fe"); // sky-100
+    private Color comparingColor = Color.web("#fef08a"); // yellow-200
+    private Color swappingColor = Color.web("#fed7aa"); // orange-200
+    private Color insertedColor = Color.web("#bbf7d0"); // green-200
+    private Color extractedColor = Color.web("#fecaca"); // red-200
 
     private Map<Integer, Color> nodeColors;
+
+    public String getNodeStateColorHex(int index) {
+        Color c = nodeColors.getOrDefault(index, normalColor);
+        if (c.equals(comparingColor)) return "#fef08a";
+        if (c.equals(swappingColor)) return "#fed7aa";
+        if (c.equals(insertedColor)) return "#bbf7d0";
+        if (c.equals(extractedColor)) return "#fecaca";
+        return "#e0f2fe";
+    }
+
+    public String getNodeStateStrokeHex(int index) {
+        Color c = nodeColors.getOrDefault(index, normalColor);
+        if (c.equals(comparingColor)) return "#eab308";
+        if (c.equals(swappingColor)) return "#f97316";
+        if (c.equals(insertedColor)) return "#22c55e";
+        if (c.equals(extractedColor)) return "#ef4444";
+        return "#bae6fd";
+    }
+
+    private Color getStrokeColor(Color fill) {
+        if (fill.equals(normalColor)) return Color.web("#38bdf8"); // sky-400
+        if (fill.equals(comparingColor)) return Color.web("#eab308"); // yellow-500
+        if (fill.equals(swappingColor)) return Color.web("#f97316"); // orange-500
+        if (fill.equals(insertedColor)) return Color.web("#22c55e"); // green-500
+        if (fill.equals(extractedColor)) return Color.web("#ef4444"); // red-500
+        return Color.BLACK;
+    }
 
     public static class NodePosition {
         double x, y;
@@ -45,8 +72,6 @@ public class heapVisualizer {
 
     public void drawHeap(heapModel model) {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        gc.setFill(Color.WHITE);
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         if (model.isEmpty()) {
             gc.setFill(Color.GRAY);
@@ -96,8 +121,8 @@ public class heapVisualizer {
     }
 
     private void drawEdges(heapModel model) {
-        gc.setStroke(Color.rgb(100, 100, 100));
-        gc.setLineWidth(2.5);
+        gc.setStroke(Color.web("#cbd5e1")); // slate-300
+        gc.setLineWidth(3.0);
 
         for (int i = 0; i < model.size(); i++) {
             NodePosition parentPos = nodePositions.get(i);
@@ -119,35 +144,46 @@ public class heapVisualizer {
     }
 
     private void drawNodes(heapModel model) {
+        // Dynamically scale node radius if heap is tall
+        double currentRadius = model.getHeight() > 4 ? 22 : 30;
+        double fontSize = currentRadius == 30 ? 20 : 15;
+
         for (int i = 0; i < model.size(); i++) {
             NodePosition pos = nodePositions.get(i);
             Color color = nodeColors.getOrDefault(i, normalColor);
 
             // Draw shadow
-            gc.setFill(Color.rgb(0, 0, 0, 0.2));
-            gc.fillOval(pos.x - NODE_RADIUS + 3, pos.y - NODE_RADIUS + 3,
-                    NODE_RADIUS * 2, NODE_RADIUS * 2);
+            gc.setFill(Color.rgb(0, 0, 0, 0.1));
+            gc.fillOval(pos.x - currentRadius + 2, pos.y - currentRadius + 2,
+                    currentRadius * 2, currentRadius * 2);
 
             // Draw circle
             gc.setFill(color);
-            gc.fillOval(pos.x - NODE_RADIUS, pos.y - NODE_RADIUS,
-                    NODE_RADIUS * 2, NODE_RADIUS * 2);
+            gc.fillOval(pos.x - currentRadius, pos.y - currentRadius,
+                    currentRadius * 2, currentRadius * 2);
 
-            gc.setStroke(Color.BLACK);
-            gc.setLineWidth(3);
-            gc.strokeOval(pos.x - NODE_RADIUS, pos.y - NODE_RADIUS,
-                    NODE_RADIUS * 2, NODE_RADIUS * 2);
+            gc.setStroke(getStrokeColor(color));
+            gc.setLineWidth(currentRadius == 30 ? 3 : 2);
+            gc.strokeOval(pos.x - currentRadius, pos.y - currentRadius,
+                    currentRadius * 2, currentRadius * 2);
 
-            // Draw value (black, bold)
-            gc.setFill(Color.BLACK);
-            gc.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+            // Draw value
+            gc.setFill(Color.web("#0f172a")); // slate-900
+            gc.setFont(Font.font("Segoe UI", FontWeight.BOLD, fontSize));
             gc.setTextAlign(TextAlignment.CENTER);
-            gc.fillText(String.valueOf(model.get(i)), pos.x, pos.y + 7);
+            gc.fillText(String.valueOf(model.get(i)), pos.x, pos.y + (currentRadius == 30 ? 7 : 5));
 
-            // Draw index BELOW node (RED, bold - with more spacing)
-            gc.setFill(Color.RED);
-            gc.setFont(Font.font("Arial", FontWeight.BOLD, 15));
-            gc.fillText(String.valueOf(i), pos.x, pos.y + NODE_RADIUS + 25);
+            // Draw index (Top-Right Badge)
+            double badgeX = pos.x + currentRadius;
+            double badgeY = pos.y - currentRadius - 5;
+            
+            gc.setFill(Color.web("#cbd5e1")); // slate-300 badge background
+            gc.fillRoundRect(badgeX - 8, badgeY - 14, 16, 16, 6, 6);
+
+            gc.setFill(Color.web("#1e293b")); // slate-800 text
+            gc.setFont(Font.font("Segoe UI", FontWeight.BOLD, 10));
+            gc.setTextAlign(TextAlignment.CENTER);
+            gc.fillText(String.valueOf(i), badgeX, badgeY - 2);
         }
     }
 

@@ -8,13 +8,15 @@ public class heapModel {
     private boolean isMaxHeap;
     private List<HeapOperation> operations;
 
-    public static class HeapOperation {
+    public class HeapOperation {
         public String type;
         public int index1;
         public int index2;
         public int value;
         public String description;
         public String complexity;
+        public List<Integer> heapSnapshot;
+        public List<Integer> sortedSnapshot;
 
         public HeapOperation(String type, int index1, int index2, int value, String description, String complexity) {
             this.type = type;
@@ -23,8 +25,20 @@ public class heapModel {
             this.value = value;
             this.description = description;
             this.complexity = complexity;
+            this.heapSnapshot = new ArrayList<>(heap);
+        }
+
+        public HeapOperation withSnapshot(List<Integer> customHeap, List<Integer> customSorted) {
+            this.heapSnapshot = new ArrayList<>(customHeap);
+            if (customSorted != null) {
+                this.sortedSnapshot = new ArrayList<>(customSorted);
+            }
+            return this;
         }
     }
+
+    private List<Integer> transientHeap;
+    private List<Integer> lastSortedArray;
 
     public heapModel(boolean isMaxHeap) {
         this.heap = new ArrayList<>();
@@ -32,16 +46,28 @@ public class heapModel {
         this.operations = new ArrayList<>();
     }
 
+    public List<Integer> getLastSortedArray() {
+        return lastSortedArray;
+    }
+
+    public void setTransientHeap(List<Integer> currentSnapshot) {
+        this.transientHeap = currentSnapshot;
+    }
+
+    public void clearTransientHeap() {
+        this.transientHeap = null;
+    }
+
     public List<Integer> getHeap() {
-        return new ArrayList<>(heap);
+        return transientHeap != null ? new ArrayList<>(transientHeap) : new ArrayList<>(heap);
     }
 
     public int size() {
-        return heap.size();
+        return transientHeap != null ? transientHeap.size() : heap.size();
     }
 
     public boolean isEmpty() {
-        return heap.isEmpty();
+        return transientHeap != null ? transientHeap.isEmpty() : heap.isEmpty();
     }
 
     public boolean isMaxHeap() {
@@ -77,16 +103,18 @@ public class heapModel {
     }
 
     public int get(int i) {
-        return heap.get(i);
+        return transientHeap != null ? transientHeap.get(i) : heap.get(i);
     }
 
     public Integer peek() {
-        return heap.isEmpty() ? null : heap.get(0);
+        if (isEmpty()) return null;
+        return transientHeap != null ? transientHeap.get(0) : heap.get(0);
     }
 
     // Insert operation
     public List<HeapOperation> insert(int value) {
         operations.clear();
+        lastSortedArray = null;
 
         heap.add(value);
         int currentIndex = heap.size() - 1;
@@ -131,6 +159,7 @@ public class heapModel {
     // Extract operation
     public List<HeapOperation> extract() {
         operations.clear();
+        lastSortedArray = null;
 
         if (heap.isEmpty()) {
             return operations;
@@ -207,6 +236,7 @@ public class heapModel {
     public List<HeapOperation> buildHeapOptimal(List<Integer> values) {
         operations.clear();
         heap.clear();
+        lastSortedArray = null;
         heap.addAll(values);
 
         operations.add(new HeapOperation("build", -1, -1, -1,
@@ -228,6 +258,7 @@ public class heapModel {
     public List<HeapOperation> buildHeapNaive(List<Integer> values) {
         operations.clear();
         heap.clear();
+        lastSortedArray = null;
 
         operations.add(new HeapOperation("build", -1, -1, -1,
                 "Building heap in O(n log n) using successive insertions", "O(n log n)"));
@@ -249,6 +280,7 @@ public class heapModel {
     // Update key
     public List<HeapOperation> updateKey(int index, int newValue) {
         operations.clear();
+        lastSortedArray = null;
 
         if (index < 0 || index >= heap.size()) {
             operations.add(new HeapOperation("error", -1, -1, -1,
@@ -287,6 +319,7 @@ public class heapModel {
     // Delete by index
     public List<HeapOperation> deleteByIndex(int index) {
         operations.clear();
+        lastSortedArray = null;
 
         if (index < 0 || index >= heap.size()) {
             operations.add(new HeapOperation("error", -1, -1, -1,
@@ -333,7 +366,6 @@ public class heapModel {
 
         return new ArrayList<>(operations);
     }
-
     // Heap Sort
     public List<HeapOperation> heapSort() {
         operations.clear();
@@ -342,30 +374,31 @@ public class heapModel {
             return operations;
         }
 
-        operations.add(new HeapOperation("sort", -1, -1, -1,
-                "Starting HeapSort: Sorting heap elements without destroying it", "O(n log n)"));
-
-        // Create a COPY of the heap to sort
-        List<Integer> tempHeap = new ArrayList<>(heap);
+        // Snapshot the original heap FIRST – used for all canvas snapshots
         List<Integer> originalHeap = new ArrayList<>(heap);
 
+        // Create a WORKING COPY to sort (does not affect canvas)
+        List<Integer> tempHeap = new ArrayList<>(heap);
         List<Integer> sorted = new ArrayList<>();
 
-        // Perform heap sort on the COPY
+        operations.add(new HeapOperation("sort", -1, -1, -1,
+                "Starting HeapSort: Sorting heap elements without destroying it", "O(n log n)")
+                .withSnapshot(originalHeap, sorted));
+
+        // Perform heap sort on the COPY; canvas always shows originalHeap
         while (!tempHeap.isEmpty()) {
             int root = tempHeap.get(0);
             sorted.add(root);
 
             operations.add(new HeapOperation("extract", 0, -1, root,
-                    "Extract " + root + " to sorted array (position " + sorted.size() + ")", ""));
+                    "Extract " + root + " to sorted array (position " + sorted.size() + ")", "")
+                    .withSnapshot(originalHeap, new ArrayList<>(sorted)));
 
             if (tempHeap.size() > 1) {
                 int lastValue = tempHeap.get(tempHeap.size() - 1);
                 tempHeap.set(0, lastValue);
                 tempHeap.remove(tempHeap.size() - 1);
-
-                // Heapify on temp heap
-                heapifyDownOnList(tempHeap, 0);
+                heapifyDownOnList(tempHeap, 0, originalHeap, new ArrayList<>(sorted));
             } else {
                 tempHeap.remove(0);
             }
@@ -382,16 +415,18 @@ public class heapModel {
         sortedStr.append("]");
 
         operations.add(new HeapOperation("complete", -1, -1, -1,
-                "HeapSort complete! " + sortedStr.toString(), ""));
+                "HeapSort complete! " + sortedStr.toString(), "")
+                .withSnapshot(originalHeap, sorted));
 
-        // IMPORTANT: Restore original heap
+        // Restore original heap so canvas remains unchanged
         heap = originalHeap;
+        this.lastSortedArray = new ArrayList<>(sorted);
 
         return new ArrayList<>(operations);
     }
 
     // Helper method to heapify on a list (used for HeapSort)
-    private void heapifyDownOnList(List<Integer> list, int index) {
+    private void heapifyDownOnList(List<Integer> list, int index, List<Integer> originalHeapSnapshot, List<Integer> sortedSnapshot) {
         while (true) {
             int leftChild = 2 * index + 1;
             int rightChild = 2 * index + 2;
@@ -402,7 +437,8 @@ public class heapModel {
 
             if (rightChild < list.size()) {
                 operations.add(new HeapOperation("compare", leftChild, rightChild, -1,
-                        "Compare children: " + list.get(leftChild) + " vs " + list.get(rightChild), ""));
+                        "Compare children: " + list.get(leftChild) + " vs " + list.get(rightChild), "")
+                        .withSnapshot(originalHeapSnapshot, sortedSnapshot));
 
                 boolean rightIsPreferred = isMaxHeap ?
                         list.get(rightChild) > list.get(targetChildIndex) :
@@ -414,7 +450,8 @@ public class heapModel {
             }
 
             operations.add(new HeapOperation("compare", index, targetChildIndex, -1,
-                    "Compare " + list.get(index) + " with child " + list.get(targetChildIndex), ""));
+                    "Compare " + list.get(index) + " with child " + list.get(targetChildIndex), "")
+                    .withSnapshot(originalHeapSnapshot, sortedSnapshot));
 
             boolean shouldSwap = isMaxHeap ?
                     list.get(index) < list.get(targetChildIndex) :
@@ -422,7 +459,8 @@ public class heapModel {
 
             if (shouldSwap) {
                 operations.add(new HeapOperation("swap", index, targetChildIndex, -1,
-                        "Swap " + list.get(index) + " ↔ " + list.get(targetChildIndex), ""));
+                        "Swap " + list.get(index) + " \u2194 " + list.get(targetChildIndex), "")
+                        .withSnapshot(originalHeapSnapshot, sortedSnapshot));
 
                 // Swap in list
                 int temp = list.get(index);
@@ -432,7 +470,8 @@ public class heapModel {
                 index = targetChildIndex;
             } else {
                 operations.add(new HeapOperation("done", index, -1, -1,
-                        "Heap property satisfied", ""));
+                        "Heap property satisfied", "")
+                        .withSnapshot(originalHeapSnapshot, sortedSnapshot));
                 break;
             }
         }
@@ -446,10 +485,12 @@ public class heapModel {
     public void clear() {
         heap.clear();
         operations.clear();
+        lastSortedArray = null;
     }
 
     public int getHeight() {
-        if (heap.isEmpty()) return 0;
-        return (int) Math.ceil(Math.log(heap.size() + 1) / Math.log(2));
+        int s = size();
+        if (s == 0) return 0;
+        return (int) Math.ceil(Math.log(s + 1) / Math.log(2));
     }
 }

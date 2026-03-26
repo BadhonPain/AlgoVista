@@ -1,179 +1,156 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.AlgoVista.bst.BSTTraversalController"
-            style="-fx-background-color: #f5f5f5;"
-            prefHeight="800" prefWidth="1200">
+<BorderPane prefHeight="800" prefWidth="1200" style="-fx-background-color: #0f172a;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.AlgoVista.bst.BSTTraversalController">
 
     <!-- Top Bar -->
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="15"
-              style="-fx-background-color: #2c3e50; -fx-padding: 12;">
-            <Button text="← Back to Category" onAction="#backToCategory"
-                    style="-fx-background-color: #34495e; -fx-text-fill: white;
-                           -fx-background-radius: 5; -fx-padding: 8 15; -fx-cursor: hand;
-                           -fx-font-weight: bold;"/>
-
-            <Label text="BST - TRAVERSALS" textFill="white">
-                <font><Font name="Arial" size="24" /></font>
-            </Label>
+        <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-padding: 18 24;">
+            <Button onAction="#backToCategory" style="-fx-background-color: rgba(255,255,255,0.1); -fx-text-fill: white;                            -fx-background-radius: 8; -fx-padding: 8 18; -fx-cursor: hand;                            -fx-font-weight: bold; -fx-font-size: 13;" text="← Back" />
+            <VBox spacing="2">
+                <Label style="-fx-font-size: 22; -fx-font-weight: bold; -fx-font-family: 'Segoe UI', sans-serif;" text="BST Traversals" textFill="white" />
+                <Label style="-fx-font-size: 12; -fx-font-family: 'Segoe UI', sans-serif;" text="In-order · Pre-order · Post-order · Level-order" textFill="#64748b" />
+            </VBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <Label fx:id="traversalTypeLabel" style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #94a3b8;                           -fx-background-color: rgba(148,163,184,0.12); -fx-padding: 6 14; -fx-background-radius: 20;" text="All Traversals — O(n)" />
         </HBox>
     </top>
 
     <!-- Main Content -->
     <center>
-        <HBox>
-            <!-- Left Operations Panel (Scrollable) -->
-            <ScrollPane fitToWidth="true" prefWidth="250"
-                        style="-fx-background: #81ecec; -fx-background-color: #81ecec;">
-                <VBox spacing="0" style="-fx-background-color: #81ecec;">
+        <HBox spacing="0">
 
-                    <!-- Random Generation for Traversals (simplified) -->
-                    <VBox spacing="8" style="-fx-padding: 12; -fx-border-color: #00cec9;
-                                              -fx-border-width: 0 0 2 0;">
-                        <Label text="Setup Tree for Traversal"
-                               style="-fx-font-weight: bold; -fx-font-size: 13;"/>
-                        <HBox spacing="5" alignment="CENTER_LEFT">
-                            <Label text="Nodes:" style="-fx-font-size: 11;"/>
-                            <Spinner fx:id="sizeSpinner" prefWidth="60" editable="true"/>
-                        </HBox>
-                        <Button text="Generate Random Tree" onAction="#generateRandomBST" maxWidth="Infinity"
-                                style="-fx-background-color: #f39c12; -fx-text-fill: white;
-                                       -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12;
-                                       -fx-padding: 8;"/>
-                        <Label text="or" style="-fx-font-size: 10; -fx-text-fill: #555; -fx-alignment: center;" maxWidth="Infinity"/>
-                        <HBox spacing="5" alignment="CENTER_LEFT">
-                            <TextField fx:id="valueInput" promptText="Enter Value" style="-fx-font-size: 11;"/>
-                            <Button text="Add" onAction="#insertValue"
-                                    style="-fx-background-color: #0984e3; -fx-text-fill: white;
-                                           -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 11;"/>
-                        </HBox>
-                        <Label text="or" style="-fx-font-size: 10; -fx-text-fill: #555; -fx-alignment: center;" maxWidth="Infinity"/>
-                        <TextField fx:id="customBSTInput" promptText="e.g. 50,25,75" style="-fx-font-size: 11;"/>
-                        <Button text="Build Array" onAction="#buildCustomBST" maxWidth="Infinity"
-                                style="-fx-background-color: #8e44ad; -fx-text-fill: white;
-                                       -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12;
-                                       -fx-padding: 8;"/>
-                        <Label text="or" style="-fx-font-size: 10; -fx-text-fill: #555; -fx-alignment: center;" maxWidth="Infinity"/>
-                        <Button text="Clear Tree" onAction="#clearTree" maxWidth="Infinity"
-                                style="-fx-background-color: #2d3436; -fx-text-fill: white;
-                                       -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12;
-                                       -fx-padding: 8;"/>
+            <!-- Left Sidebar -->
+            <VBox style="-fx-padding: 0 0 16 20; -fx-pref-width: 295; -fx-min-width: 295;">
+                <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent;                                    -fx-border-color: transparent; -fx-padding: 4;" VBox.vgrow="ALWAYS">
+                    <VBox spacing="12" style="-fx-background-color: transparent;">
+
+                        <!-- Build Tree Panel -->
+                        <VBox spacing="10" style="-fx-padding: 16; -fx-background-color: #1e293b;                                                    -fx-background-radius: 12;                                                    -fx-border-color: #334155; -fx-border-radius: 12; -fx-border-width: 1;">
+                            <HBox alignment="CENTER_LEFT" spacing="8">
+                                <Label style="-fx-font-size: 16;" text="🌲" />
+                                <Label style="-fx-font-weight: bold; -fx-font-size: 13; -fx-text-fill: #f1f5f9;" text="Build Tree" />
+                            </HBox>
+
+                            <!-- Random -->
+                            <Label style="-fx-font-size: 11; -fx-text-fill: #64748b;" text="Random generation" />
+                            <HBox alignment="CENTER_LEFT" spacing="8">
+                                <Label style="-fx-font-size: 12; -fx-text-fill: #94a3b8; -fx-min-width: 50;" text="Nodes:" />
+                                <Spinner fx:id="sizeSpinner" editable="true" prefWidth="75" style="-fx-background-color: #0f172a; -fx-border-color: #334155; -fx-border-radius: 6;" />
+                            </HBox>
+                            <Button maxWidth="Infinity" onAction="#generateRandomBST" style="-fx-background-color: #f59e0b; -fx-text-fill: #0f172a;                                            -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 9;                                            -fx-background-radius: 8; -fx-font-size: 12;" text="🎲  Generate Random Tree" />
+
+                            <Separator style="-fx-background-color: #334155;" />
+
+                            <!-- Single insert -->
+                            <Label style="-fx-font-size: 11; -fx-text-fill: #64748b;" text="Add single node" />
+                            <HBox spacing="8">
+                                <TextField fx:id="valueInput" promptText="Value" style="-fx-background-color: #0f172a; -fx-text-fill: white;                                                   -fx-border-color: #334155; -fx-border-radius: 6; -fx-padding: 8;                                                   -fx-prompt-text-fill: #475569; -fx-font-size: 12;" HBox.hgrow="ALWAYS" />
+                                <Button onAction="#insertValue" style="-fx-background-color: #0ea5e9; -fx-text-fill: white;                                                -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 9 16;                                                -fx-background-radius: 8; -fx-font-size: 12;" text="Add" />
+                            </HBox>
+
+                            <Separator style="-fx-background-color: #334155;" />
+
+                            <!-- Custom array -->
+                            <Label style="-fx-font-size: 11; -fx-text-fill: #64748b;" text="Build from array" />
+                            <TextField fx:id="customBSTInput" promptText="e.g. 50, 25, 75, 10" style="-fx-background-color: #0f172a; -fx-text-fill: white;                                               -fx-border-color: #334155; -fx-border-radius: 6; -fx-padding: 8;                                               -fx-prompt-text-fill: #475569; -fx-font-size: 12;" />
+                            <Button maxWidth="Infinity" onAction="#buildCustomBST" style="-fx-background-color: #8b5cf6; -fx-text-fill: white;                                            -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 9;                                            -fx-background-radius: 8; -fx-font-size: 12;" text="Build Array" />
+
+                            <Button maxWidth="Infinity" onAction="#clearTree" style="-fx-background-color: transparent; -fx-text-fill: #64748b;                                            -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 8;                                            -fx-background-radius: 8; -fx-font-size: 12;                                            -fx-border-color: #334155; -fx-border-radius: 8; -fx-border-width: 1;" text="🗑  Clear Tree" />
+                        </VBox>
+
+                        <!-- Traversal Algorithms Panel -->
+                        <VBox spacing="10" style="-fx-padding: 16; -fx-background-color: #1e293b;                                                    -fx-background-radius: 12;                                                    -fx-border-color: #334155; -fx-border-radius: 12; -fx-border-width: 1;">
+                            <HBox alignment="CENTER_LEFT" spacing="8">
+                                <Label style="-fx-font-size: 16;" text="🔄" />
+                                <VBox spacing="1">
+                                    <Label style="-fx-font-weight: bold; -fx-font-size: 13; -fx-text-fill: #f1f5f9;" text="Run Traversal" />
+                                </VBox>
+                            </HBox>
+
+                            <VBox spacing="8">
+                                <Button maxWidth="Infinity" onAction="#inorderTraversal" style="-fx-background-color: #1d4ed8; -fx-text-fill: white;                                                -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 11;                                                -fx-background-radius: 9; -fx-font-size: 13;" text="In-order" />
+
+                                <Button maxWidth="Infinity" onAction="#preorderTraversal" style="-fx-background-color: #9333ea; -fx-text-fill: white;                                                -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 11;                                                -fx-background-radius: 9; -fx-font-size: 13;" text="Pre-order" />
+
+                                <Button maxWidth="Infinity" onAction="#postorderTraversal" style="-fx-background-color: #b45309; -fx-text-fill: white;                                                -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 11;                                                -fx-background-radius: 9; -fx-font-size: 13;" text="Post-order" />
+
+                                <Button maxWidth="Infinity" onAction="#levelOrderTraversal" style="-fx-background-color: #0f766e; -fx-text-fill: white;                                                -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 11;                                                -fx-background-radius: 9; -fx-font-size: 13;" text="Level-order" />
+                            </VBox>
+                        </VBox>
+
                     </VBox>
-
-                    <!-- Traversals -->
-                    <VBox spacing="8" style="-fx-padding: 12; -fx-border-color: #00cec9;
-                                              -fx-border-width: 0 0 2 0;">
-                        <Label text="Traversals - O(n)"
-                               style="-fx-font-weight: bold; -fx-font-size: 14;"/>
-                        <Button text="In-order Traversal" onAction="#inorderTraversal" maxWidth="Infinity"
-                                style="-fx-background-color: #6c5ce7; -fx-text-fill: white;
-                                       -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12;
-                                       -fx-padding: 8;"/>
-                        <Button text="Pre-order Traversal" onAction="#preorderTraversal" maxWidth="Infinity"
-                                style="-fx-background-color: #e84393; -fx-text-fill: white;
-                                       -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12;
-                                       -fx-padding: 8;"/>
-                        <Button text="Post-order Traversal" onAction="#postorderTraversal" maxWidth="Infinity"
-                                style="-fx-background-color: #fdcb6e; -fx-text-fill: black;
-                                       -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12;
-                                       -fx-padding: 8;"/>
-                        <Button text="Level-order Traversal" onAction="#levelOrderTraversal" maxWidth="Infinity"
-                                style="-fx-background-color: #00b894; -fx-text-fill: white;
-                                       -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12;
-                                       -fx-padding: 8;"/>
-                    </VBox>
-
-                </VBox>
-            </ScrollPane>
-
-            <!-- Right Side - Visualization -->
-            <VBox spacing="0" HBox.hgrow="ALWAYS">
-
-                <!-- Canvas Area inside ScrollPane for panning/zooming -->
-                <ScrollPane fx:id="canvasScrollPane" pannable="true" fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS"
-                            style="-fx-background-color: #1E1E1E; -fx-background: #1E1E1E;">
-                    <StackPane style="-fx-background-color: #1E1E1E;">
-                        <Canvas fx:id="bstCanvas" width="930" height="500"/>
-                    </StackPane>
                 </ScrollPane>
+            </VBox>
 
-                <!-- Traversal Output Area -->
-                <VBox spacing="6" style="-fx-background-color: #ecf0f1; -fx-padding: 12;"
-                      prefHeight="230">
-                    
-                    <HBox spacing="10" alignment="CENTER_LEFT">
-                        <Label text="Traversal Route / History"
-                               style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: #2c3e50;"/>
-                    </HBox>
-                    <ScrollPane fitToHeight="true" prefHeight="85"
-                                style="-fx-background: white; -fx-background-color: white;
-                      -fx-border-color: #2c3e50; -fx-border-width: 2;">
-                        <HBox fx:id="traversalBox" spacing="8" style="-fx-padding: 8; -fx-alignment: CENTER_LEFT;"/>
+            <!-- Right: Canvas + Output panels -->
+            <VBox spacing="10" style="-fx-padding: 0 20 16 8;" HBox.hgrow="ALWAYS">
+
+                <!-- Canvas card -->
+                <StackPane style="-fx-background-color: #1e293b; -fx-background-radius: 14;                                   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 20, 0, 0, 6); -fx-padding: 2;" VBox.vgrow="ALWAYS">
+                    <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" style="-fx-background-color: transparent; -fx-background: transparent;                                        -fx-border-color: transparent;">
+                        <StackPane style="-fx-background-color: #1e293b;">
+                            <Canvas fx:id="bstCanvas" height="400" width="800" />
+                        </StackPane>
                     </ScrollPane>
+                </StackPane>
 
-                    <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 5 0 0 0;">
-                        <Label text="Queue Simulation (Level-Order)"
-                               style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: #2c3e50;"/>
-                    </HBox>
-                    <ScrollPane fitToHeight="true" prefHeight="85"
-                                style="-fx-background: white; -fx-background-color: white;
-                      -fx-border-color: #e67e22; -fx-border-width: 2;">
-                        <HBox fx:id="queueBox" spacing="8" style="-fx-padding: 8; -fx-alignment: CENTER_LEFT;"/>
-                    </ScrollPane>
+                <!-- Traversal Route + Queue -->
+                <HBox prefHeight="135" spacing="10">
 
-                </VBox>
+                    <!-- Traversal Route -->
+                    <VBox spacing="6" style="-fx-background-color: #1e293b; -fx-padding: 14;                                  -fx-background-radius: 12; -fx-border-color: #334155;                                  -fx-border-radius: 12; -fx-border-width: 1;" HBox.hgrow="ALWAYS">
+                        <HBox alignment="CENTER_LEFT" spacing="8">
+                            <Label style="-fx-font-weight: bold; -fx-font-size: 13; -fx-text-fill: #f1f5f9;" text="Visited Order" />
+                            <Label style="-fx-text-fill: #64748b; -fx-font-size: 13;" text="→" />
+                            <Label fx:id="statusLabel" style="-fx-font-size: 11; -fx-text-fill: #64748b; -fx-font-style: italic;" text="Start a traversal to see the path" />
+                        </HBox>
+                        <ScrollPane fitToHeight="true" style="-fx-background: transparent; -fx-background-color: transparent;                                            -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
+                            <HBox fx:id="traversalBox" spacing="6" style="-fx-padding: 4 4 4 4; -fx-alignment: CENTER_LEFT;" />
+                        </ScrollPane>
+                    </VBox>
+
+                    <!-- Queue Simulation -->
+                    <VBox minWidth="260" prefWidth="280" spacing="6" style="-fx-background-color: #1e293b; -fx-padding: 14;                                  -fx-background-radius: 12;                                  -fx-border-color: #0f766e; -fx-border-radius: 12; -fx-border-width: 1;">
+                        <HBox alignment="CENTER_LEFT" spacing="8">
+                            <Label style="-fx-font-weight: bold; -fx-font-size: 13; -fx-text-fill: #5eead4;" text="Queue" />
+                            <Label style="-fx-font-size: 10; -fx-text-fill: #64748b;" text="(Level-order only)" />
+                        </HBox>
+                        <ScrollPane fitToHeight="true" style="-fx-background: transparent; -fx-background-color: transparent;                                            -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
+                            <HBox fx:id="queueBox" spacing="6" style="-fx-padding: 4; -fx-alignment: CENTER_LEFT;" />
+                        </ScrollPane>
+                    </VBox>
+
+                </HBox>
+
+                <!-- Animation Controls strip -->
+                <HBox alignment="CENTER" spacing="16" style="-fx-background-color: #1e293b; -fx-padding: 12 20;                              -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 4);">
+
+                    <Label style="-fx-font-weight: bold; -fx-font-size: 13;" text="Speed:" textFill="#94a3b8" />
+                    <Slider fx:id="speedSlider" max="5" min="0.5" prefWidth="130" showTickMarks="false" style="-fx-cursor: hand;" value="1.5" />
+
+                    <Region HBox.hgrow="ALWAYS" />
+
+                    <Button fx:id="playButton" onAction="#playAnimation" style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: bold;                                    -fx-padding: 8 22; -fx-cursor: hand; -fx-background-radius: 8; -fx-font-size: 13;" text="▶ Play" />
+                    <Button fx:id="pauseButton" onAction="#pauseAnimation" style="-fx-background-color: #f59e0b; -fx-text-fill: white; -fx-font-weight: bold;                                    -fx-padding: 8 22; -fx-cursor: hand; -fx-background-radius: 8; -fx-font-size: 13;" text="⏸ Pause" />
+                    <Button fx:id="stepButton" onAction="#nextStep" style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold;                                    -fx-padding: 8 22; -fx-cursor: hand; -fx-background-radius: 8; -fx-font-size: 13;" text="Step ▶" />
+                </HBox>
 
             </VBox>
         </HBox>
     </center>
-
-    <!-- Bottom Control Bar (Compact) -->
-    <bottom>
-        <VBox spacing="0" style="-fx-background-color: #2c3e50;" prefHeight="80">
-
-            <!-- Animation Controls -->
-            <HBox spacing="12" alignment="CENTER" style="-fx-padding: 8;">
-
-                <Label text="Speed:" textFill="white" style="-fx-font-weight: bold; -fx-font-size: 12;"/>
-
-                <Label text="0.5x" textFill="#bdc3c7" style="-fx-font-size: 11;"/>
-                <Slider fx:id="speedSlider" min="0.5" max="5" value="1.5"
-                        prefWidth="150" showTickMarks="false"/>
-                <Label text="5x" textFill="#bdc3c7" style="-fx-font-size: 11;"/>
-
-                <Region HBox.hgrow="ALWAYS"/>
-
-                <Button fx:id="playButton" text="▶ Play" onAction="#playAnimation"
-                        style="-fx-background-color: #27ae60; -fx-text-fill: white;
-                               -fx-font-weight: bold; -fx-padding: 6 15; -fx-cursor: hand;
-                               -fx-font-size: 12;"/>
-
-                <Button fx:id="pauseButton" text="⏸ Pause" onAction="#pauseAnimation"
-                        style="-fx-background-color: #f39c12; -fx-text-fill: white;
-                               -fx-font-weight: bold; -fx-padding: 6 15; -fx-cursor: hand;
-                               -fx-font-size: 12;"/>
-
-                <Button fx:id="stepButton" text="Step ▶" onAction="#nextStep"
-                        style="-fx-background-color: #3498db; -fx-text-fill: white;
-                               -fx-font-weight: bold; -fx-padding: 6 15; -fx-cursor: hand;
-                               -fx-font-size: 12;"/>
-            </HBox>
-
-            <!-- Status Bar -->
-            <HBox spacing="15" alignment="CENTER_LEFT"
-                  style="-fx-background-color: #34495e; -fx-padding: 6 12;">
-                <Label fx:id="statusLabel" text="Ready" textFill="white"
-                       style="-fx-font-size: 14;"/>
-            </HBox>
-
-        </VBox>
-    </bottom>
 
 </BorderPane>

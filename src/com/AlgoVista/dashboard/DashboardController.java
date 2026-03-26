@@ -17,7 +17,7 @@ public class DashboardController {
 
     private final List<String> algorithms = Arrays.asList(
             "Array", "Linked List", "Stack", "Queue", "Sorting", "Graph",
-            "BST", "Recursion", "Heap", "D & C", "DP", "Advanced");
+            "BST", "Recursion", "Heap", "D & C", "DP");
 
     @FXML
     public void initialize() {
@@ -91,8 +91,6 @@ public class DashboardController {
                 return "sorting-card";
             case "dp":
                 return "dp-card";
-            case "advanced":
-                return "advanced-card";
             default:
                 return "";
         }

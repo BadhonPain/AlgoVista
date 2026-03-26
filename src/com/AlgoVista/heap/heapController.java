@@ -112,6 +112,11 @@ public class heapController {
                 return;
             }
 
+            // Stop any running animation first
+            if (animation != null) animation.stop();
+            heapModel.clearTransientHeap();
+            visualizer.clearColors();
+
             Random rand = new Random();
             List<Integer> values = new ArrayList<>();
             for (int i = 0; i < size; i++) {
@@ -138,6 +143,11 @@ public class heapController {
                 showAlert("Invalid Range", "Min must be ≤ Max");
                 return;
             }
+
+            // Stop any running animation first
+            if (animation != null) animation.stop();
+            heapModel.clearTransientHeap();
+            visualizer.clearColors();
 
             Random rand = new Random();
             List<Integer> values = new ArrayList<>();
@@ -203,7 +213,12 @@ public class heapController {
 
     @FXML
     private void clearHeap() {
+        if (animation != null) {
+            animation.stop();
+        }
+        currentOperations = null;
         heapModel.clear();
+        heapModel.clearTransientHeap();
         visualizer.clearColors();
         updateVisualization();
         statusLabel.setText("Heap cleared.");
@@ -230,6 +245,7 @@ public class heapController {
                 currentStep++;
             } else {
                 animation.stop();
+                heapModel.clearTransientHeap();
                 visualizer.resetColors(heapModel);
                 updateVisualization();
                 statusLabel.setText("Animation complete.");
@@ -242,6 +258,15 @@ public class heapController {
 
     private void executeStep(heapModel.HeapOperation op) {
         visualizer.clearColors();
+
+        // Only use snapshot for HeapSort operations to lock canvas on original tree.
+        // For build/insert/extract etc., let the REAL heap drive the canvas display.
+        boolean isHeapSortOp = op.sortedSnapshot != null;
+        if (isHeapSortOp && op.heapSnapshot != null) {
+            heapModel.setTransientHeap(op.heapSnapshot);
+        } else {
+            heapModel.clearTransientHeap();
+        }
 
         switch (op.type) {
             case "insert":
@@ -287,7 +312,7 @@ public class heapController {
             complexityLabel.setText("Complexity: " + op.complexity);
         }
 
-        updateVisualization();
+        updateVisualization(op);
     }
 
     @FXML
@@ -312,6 +337,7 @@ public class heapController {
             currentStep++;
 
             if (currentStep >= currentOperations.size()) {
+                heapModel.clearTransientHeap();
                 visualizer.resetColors(heapModel);
                 updateVisualization();
                 statusLabel.setText("Animation complete.");
@@ -320,55 +346,86 @@ public class heapController {
     }
 
     private void updateVisualization() {
+        heapModel.clearTransientHeap();
         visualizer.drawHeap(heapModel);
-        updateArrayView();
+        updateArrayView(null);
     }
 
-    private void updateArrayView() {
+    private void updateVisualization(heapModel.HeapOperation op) {
+        visualizer.drawHeap(heapModel);
+        updateArrayView(op);
+    }
+
+    private void updateArrayView(heapModel.HeapOperation op) {
         arrayBox.getChildren().clear();
 
         List<Integer> heap = heapModel.getHeap();
 
-        if (heap.isEmpty()) {
+        List<Integer> sortedToDraw = (op != null && op.sortedSnapshot != null)
+                ? op.sortedSnapshot
+                : heapModel.getLastSortedArray();
+
+        if (heap.isEmpty() && (sortedToDraw == null || sortedToDraw.isEmpty())) {
             Label emptyLabel = new Label("No elements in heap");
-            emptyLabel.setStyle("-fx-text-fill: gray; -fx-font-size: 12; -fx-padding: 10;");
+            emptyLabel.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 13; -fx-font-style: italic; -fx-padding: 10;");
             arrayBox.getChildren().add(emptyLabel);
             return;
         }
 
         for (int i = 0; i < heap.size(); i++) {
-            VBox cellBox = new VBox(0);
+            VBox cellBox = new VBox(6);
             cellBox.setStyle("-fx-alignment: center;");
 
             // Value box
-            Label valueLabel = getLabel(heap, i);
+            String bgHex = visualizer.getNodeStateColorHex(i);
+            String borderHex = visualizer.getNodeStateStrokeHex(i);
+            Label valueLabel = getLabel(heap, i, bgHex, borderHex);
 
             // Index box (below value)
             Label indexLabel = new Label(String.valueOf(i));
             indexLabel.setStyle(
-                    "-fx-background-color: white;" +
-                            "-fx-border-color: #2c3e50;" +
-                            "-fx-border-width: 0 2 2 2;" +
-                            "-fx-min-width: 45;" +
-                            "-fx-max-width: 45;" +
-                            "-fx-min-height: 20;" +
-                            "-fx-alignment: center;" +
-                            "-fx-text-fill: red;" +
+                    "-fx-text-fill: #94a3b8;" +
                             "-fx-font-size: 11;" +
-                            "-fx-font-weight: bold;"
+                            "-fx-font-weight: bold;" +
+                            "-fx-alignment: center;"
             );
 
             cellBox.getChildren().addAll(valueLabel, indexLabel);
             arrayBox.getChildren().add(cellBox);
         }
+
+        // Draw sorted elements if present
+        if (sortedToDraw != null && !sortedToDraw.isEmpty()) {
+            Label sortedDivider = new Label("| Sorted:");
+            sortedDivider.setStyle("-fx-text-fill: #f59e0b; -fx-font-weight: bold; -fx-font-size: 16; -fx-padding: 0 10 0 10; -fx-alignment: center;");
+            arrayBox.getChildren().add(sortedDivider);
+
+            for (int i = 0; i < sortedToDraw.size(); i++) {
+                VBox cellBox = new VBox(6);
+                cellBox.setStyle("-fx-alignment: center;");
+
+                String bgHex = "#fef3c7"; // amber-100
+                String borderHex = "#f59e0b"; // amber-500
+                Label valueLabel = getLabel(sortedToDraw, i, bgHex, borderHex);
+
+                Label indexLabel = new Label("s" + i);
+                indexLabel.setStyle("-fx-text-fill: #f59e0b; -fx-font-size: 11; -fx-font-weight: bold; -fx-alignment: center;");
+
+                cellBox.getChildren().addAll(valueLabel, indexLabel);
+                arrayBox.getChildren().add(cellBox);
+            }
+        }
     }
 
-    private static Label getLabel(List<Integer> heap, int i) {
+    private static Label getLabel(List<Integer> heap, int i, String bgHex, String borderHex) {
         Label valueLabel = new Label(String.valueOf(heap.get(i)));
+        String textFill = bgHex.equals("#e0f2fe") ? "#0369a1" : "#0f172a";
         valueLabel.setStyle(
-                "-fx-background-color: #87CEEB;" +
-                        "-fx-border-color: #2c3e50;" +
+                "-fx-background-color: " + bgHex + ";" +
+                        "-fx-border-color: " + borderHex + ";" +
                         "-fx-border-width: 2;" +
+                        "-fx-background-radius: 8;" +
+                        "-fx-border-radius: 8;" +
                         "-fx-min-width: 45;" +
                         "-fx-max-width: 45;" +
                         "-fx-min-height: 45;" +
@@ -376,7 +433,7 @@ public class heapController {
                         "-fx-alignment: center;" +
                         "-fx-font-size: 16;" +
                         "-fx-font-weight: bold;" +
-                        "-fx-text-fill: black;"
+                        "-fx-text-fill: " + textFill + ";"
         );
         return valueLabel;
     }
