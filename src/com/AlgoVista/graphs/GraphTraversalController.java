@@ -25,6 +25,7 @@ public class GraphTraversalController {
     @FXML private ComboBox<String> algorithmCombo;
     @FXML private Spinner<Integer> startNodeSpinner, nodesSpinner, edgesSpinner;
     @FXML private Slider speedSlider;
+    @FXML private Label speedLabel;
     @FXML private Button playButton, pauseButton, resetButton;
     @FXML private Label traversalOrderLabel, timeComplexityLabel, spaceComplexityLabel;
     @FXML private TextArea distanceTableArea;
@@ -53,6 +54,11 @@ public class GraphTraversalController {
 
     @FXML
     public void initialize() {
+        speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (speedLabel != null) {
+                speedLabel.setText(String.format("%.1fx", newVal.doubleValue()));
+            }
+        });
         gc = graphCanvas.getGraphicsContext2D();
 
         // Initialize graph type toggle group

@@ -23,6 +23,7 @@ public class heapController {
     @FXML private TextField valueInput, indexInput, newValueInput;
     @FXML private Spinner<Integer> sizeSpinner, minSpinner, maxSpinner;
     @FXML private Slider speedSlider;
+    @FXML private Label speedLabel;
     @FXML private Button playButton, pauseButton, stepButton;
     @FXML private Label statusLabel, complexityLabel;
     @FXML private HBox arrayBox;
@@ -38,6 +39,11 @@ public class heapController {
 
     @FXML
     public void initialize() {
+        speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (speedLabel != null) {
+                speedLabel.setText(String.format("%.1fx", newVal.doubleValue()));
+            }
+        });
         // Initialize heap type
         heapTypeGroup = new ToggleGroup();
         rbMaxHeap.setToggleGroup(heapTypeGroup);

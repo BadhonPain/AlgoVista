@@ -31,6 +31,8 @@ public class TailRecursionController {
     private Button autoPlayBtn;
     @FXML
     private Slider speedSlider;
+    @FXML
+    private Label speedLabel;
 
     private boolean isPlaying = false;
     private int currentStepIndex = 0;
@@ -74,6 +76,11 @@ public class TailRecursionController {
 
     @FXML
     public void initialize() {
+        speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (speedLabel != null) {
+                speedLabel.setText(String.format("%.1fx", newVal.doubleValue()));
+            }
+        });
         for (int i = 0; i < sourceCode.length; i++) {
             Label lineLabel = new Label(sourceCode[i]);
             lineLabel.setStyle("-fx-text-fill: #cbd5e1; -fx-padding: 2 10; -fx-background-radius: 4;");
@@ -216,7 +223,10 @@ public class TailRecursionController {
             new Thread(() -> {
                 while (isPlaying && currentStepIndex < steps.size() - 1) {
                     try {
-                        long delay = (long) speedSlider.getValue();
+                        long delay = 800;
+                        if (speedSlider != null) {
+                            delay = (long) (800 / speedSlider.getValue());
+                        }
                         Thread.sleep(delay);
                     } catch (InterruptedException e) {
                         e.printStackTrace();

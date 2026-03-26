@@ -36,6 +36,7 @@ public class TreeTraversalController {
     @FXML private Label       stepCountLabel;
     @FXML private Label       callStackSizeLabel;
     @FXML private Slider      speedSlider;
+    @FXML private Label       speedLabel;
     @FXML private TextField   treeInputField;
     @FXML private Button      preOrderBtn, inOrderBtn, postOrderBtn;
 
@@ -109,6 +110,11 @@ public class TreeTraversalController {
     @FXML
     public void initialize() {
         buildDefaultTree();
+        speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (speedLabel != null) {
+                speedLabel.setText(String.format("%.1fx", newVal.doubleValue() / 1000.0));
+            }
+        });
     }
 
     // ━━━━━━━━━━ MODE SWITCHING ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

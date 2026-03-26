@@ -125,6 +125,7 @@
             <HBox spacing="15" alignment="CENTER" style="-fx-background-color: white; -fx-padding: 15 20; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 4);">
                 
                 <Label text="Speed:" textFill="#475569" style="-fx-font-weight: bold; -fx-font-size: 14;"/>
+                <Label fx:id="speedLabel" text="1.5x" textFill="#0ea5e9" style="-fx-font-weight: bold; -fx-font-size: 14;"/>
                 <Slider fx:id="speedSlider" min="0.5" max="5" value="1.5" prefWidth="150" showTickMarks="false" style="-fx-cursor: hand;"/>
                 
                 <Region HBox.hgrow="ALWAYS"/>

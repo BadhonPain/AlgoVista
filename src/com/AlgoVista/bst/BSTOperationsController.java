@@ -20,7 +20,7 @@ public class BSTOperationsController {
     @FXML private Canvas bstCanvas;
     @FXML private TextField valueInput, customBSTInput, oldValueInput, newValueInput;
     @FXML private Slider speedSlider;
-    @FXML private Label statusLabel, complexityLabel;
+    @FXML private Label statusLabel, complexityLabel, speedLabel;
     @FXML private Spinner<Integer> sizeSpinner, minSpinner, maxSpinner;
 
     private BSTModel model;
@@ -43,6 +43,12 @@ public class BSTOperationsController {
         // Ensure canvas redraws correctly
         bstCanvas.widthProperty().addListener(evt -> updateVisualization());
         bstCanvas.heightProperty().addListener(evt -> updateVisualization());
+
+        speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (speedLabel != null) {
+                speedLabel.setText(String.format("%.1fx", newVal.doubleValue()));
+            }
+        });
 
         updateVisualization();
         statusLabel.setText("Ready. Enter a value to insert.");

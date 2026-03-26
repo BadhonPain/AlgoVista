@@ -32,6 +32,7 @@ public class DFSController {
     @FXML private Spinner<Integer> nodesSpinner;
     @FXML private Spinner<Integer> edgesSpinner;
     @FXML private Slider speedSlider;
+    @FXML private Label speedLabel;
 
     // Graph data
     private int numNodes = 7;
@@ -80,6 +81,15 @@ public class DFSController {
         startNodeSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 99, 0));
         nodesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(3, 12, 7));
         edgesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(3, 30, 9));
+
+        speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (speedLabel != null) {
+                speedLabel.setText(String.format("%.1fx", newVal.doubleValue()));
+            }
+            if (autoTimeline != null) {
+                autoTimeline.setRate(newVal.doubleValue());
+            }
+        });
 
         buildCodePanel();
         generateDefaultGraph();
@@ -304,7 +314,7 @@ public class DFSController {
     private void startAutoPlay() {
         autoTimeline = new Timeline();
         autoTimeline.setCycleCount(Timeline.INDEFINITE);
-        autoTimeline.getKeyFrames().add(new KeyFrame(Duration.millis(speedSlider.getValue()), e -> {
+        autoTimeline.getKeyFrames().add(new KeyFrame(Duration.millis(800), e -> {
             if (currentStep < steps.size()) {
                 applyStep(currentStep);
                 currentStep++;
@@ -313,6 +323,7 @@ public class DFSController {
                 isRunning = false;
             }
         }));
+        autoTimeline.setRate(speedSlider.getValue());
         autoTimeline.play();
     }
 

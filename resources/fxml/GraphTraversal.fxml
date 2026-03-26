@@ -56,7 +56,10 @@
 
                 <!-- Speed Control -->
                 <VBox spacing="3">
-                    <Label text="Speed" textFill="#94a3b8" style="-fx-font-size: 11;"/>
+                    <HBox alignment="CENTER_LEFT" spacing="5">
+                        <Label text="Speed" textFill="#94a3b8" style="-fx-font-size: 11;"/>
+                        <Label fx:id="speedLabel" text="2.0x" textFill="#0ea5e9" style="-fx-font-weight: bold; -fx-font-size: 11;"/>
+                    </HBox>
                     <HBox spacing="5" alignment="CENTER">
                         <Label text="Slow" textFill="#94a3b8" style="-fx-font-size: 10;"/>
                         <Slider fx:id="speedSlider" min="0.5" max="5" value="2"

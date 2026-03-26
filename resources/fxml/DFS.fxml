@@ -46,10 +46,13 @@
 
                 <!-- Speed -->
                 <VBox spacing="3">
-                    <Label text="Animation Speed" textFill="#64748b" style="-fx-font-size: 10;"/>
+                    <HBox alignment="CENTER_LEFT" spacing="5">
+                        <Label text="Animation Speed" textFill="#64748b" style="-fx-font-size: 10;"/>
+                        <Label fx:id="speedLabel" text="1.0x" textFill="#0ea5e9" style="-fx-font-weight: bold; -fx-font-size: 10;"/>
+                    </HBox>
                     <HBox spacing="5" alignment="CENTER">
                         <Label text="Slow" textFill="#475569" style="-fx-font-size: 10;"/>
-                        <Slider fx:id="speedSlider" min="200" max="2000" value="800" prefWidth="100"/>
+                        <Slider fx:id="speedSlider" min="0.1" max="3.0" value="1.0" prefWidth="100"/>
                         <Label text="Fast" textFill="#475569" style="-fx-font-size: 10;"/>
                     </HBox>
                 </VBox>

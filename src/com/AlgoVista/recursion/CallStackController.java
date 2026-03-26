@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -27,8 +28,9 @@ public class CallStackController {
     private TextArea consoleArea;
     @FXML
     private Button stepBtn;
-    @FXML
-    private Button autoPlayBtn;
+    @FXML private Button autoPlayBtn;
+    @FXML private Slider speedSlider;
+    @FXML private Label speedLabel;
 
     private boolean isPlaying = false;
     private int currentStepIndex = 0;
@@ -68,6 +70,13 @@ public class CallStackController {
 
     @FXML
     public void initialize() {
+        if (speedSlider != null) {
+            speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+                if (speedLabel != null) {
+                    speedLabel.setText(String.format("%.1fx", newVal.doubleValue()));
+                }
+            });
+        }
         // Render source code
         for (int i = 0; i < sourceCode.length; i++) {
             Label lineLabel = new Label(sourceCode[i]);
@@ -203,7 +212,11 @@ public class CallStackController {
             new Thread(() -> {
                 while (isPlaying && currentStepIndex < steps.size() - 1) {
                     try {
-                        Thread.sleep(800);
+                        long delay = 800;
+                        if (speedSlider != null) {
+                            delay = (long) (800 / speedSlider.getValue());
+                        }
+                        Thread.sleep(delay);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

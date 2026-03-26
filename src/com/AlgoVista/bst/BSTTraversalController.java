@@ -20,7 +20,7 @@ public class BSTTraversalController {
     @FXML private Canvas bstCanvas;
     @FXML private TextField valueInput, customBSTInput;
     @FXML private Slider speedSlider;
-    @FXML private Label statusLabel, traversalTypeLabel;
+    @FXML private Label statusLabel, traversalTypeLabel, speedLabel;
     @FXML private HBox traversalBox;
     @FXML private HBox queueBox;
     @FXML private Spinner<Integer> sizeSpinner;
@@ -43,6 +43,12 @@ public class BSTTraversalController {
         // Ensure canvas redraws correctly
         bstCanvas.widthProperty().addListener(evt -> updateVisualization());
         bstCanvas.heightProperty().addListener(evt -> updateVisualization());
+
+        speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (speedLabel != null) {
+                speedLabel.setText(String.format("%.1fx", newVal.doubleValue()));
+            }
+        });
 
         updateVisualization();
         statusLabel.setText("Ready. Build a tree then select a traversal.");

@@ -320,6 +320,7 @@ public class RecursionCategoryController {
 
     private void openGraphAlgorithmsView() {
         try {
+            com.AlgoVista.graphs.GraphAlgorithmsCategoryController.previousCategoryPath = "/fxml/RecursionCategory.fxml";
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/fxml/GraphAlgorithmsCategory.fxml"));
             Parent root = loader.load();

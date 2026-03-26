@@ -36,6 +36,10 @@ public class QuickSortController {
     @FXML private Label complexityLabel;
     @FXML private TextField customArrayInput;
     @FXML private ComboBox<String> pivotSelector;
+    @FXML private javafx.scene.control.Slider speedSlider;
+    @FXML private Label speedLabel;
+
+    private double animationSpeed = 1.0;
 
     private List<Integer> data;
     private boolean sorting = false;
@@ -50,6 +54,15 @@ public class QuickSortController {
         treeContainer.heightProperty().addListener((obs, oldVal, newVal) -> {
             scrollPane.setVvalue(1.0);
         });
+
+        if (speedSlider != null) {
+            speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+                animationSpeed = newVal.doubleValue();
+                if (speedLabel != null) {
+                    speedLabel.setText(String.format("%.1fx", animationSpeed));
+                }
+            });
+        }
         
         generateNewArray();
     }
@@ -245,7 +258,7 @@ public class QuickSortController {
     }
 
     private Transition createRowUpdateTask(List<Integer> currentData, int low, int high, int pivotIndex, String msg) {
-        PauseTransition pt = new PauseTransition(Duration.seconds(1.2));
+        PauseTransition pt = new PauseTransition(Duration.seconds(1.2 / animationSpeed));
         List<Integer> snapData = new ArrayList<>(currentData);
         pt.setOnFinished(e -> {
             HBox row = createHBoxRow(snapData, low, high, pivotIndex);
@@ -256,7 +269,7 @@ public class QuickSortController {
     }
 
     private Transition createFinalizeTask(int index, List<Integer> currentData) {
-        PauseTransition pt = new PauseTransition(Duration.seconds(0.5));
+        PauseTransition pt = new PauseTransition(Duration.seconds(0.5 / animationSpeed));
         List<Integer> snapData = new ArrayList<>(currentData);
         pt.setOnFinished(e -> {
             HBox row = createHBoxRow(snapData, index, index, -1);
@@ -270,7 +283,7 @@ public class QuickSortController {
     }
 
     private Transition createFinalSortedTask(List<Integer> finalData) {
-        PauseTransition pt = new PauseTransition(Duration.seconds(1.0));
+        PauseTransition pt = new PauseTransition(Duration.seconds(1.0 / animationSpeed));
         List<Integer> snapData = new ArrayList<>(finalData);
         pt.setOnFinished(e -> {
             HBox row = new HBox(10);

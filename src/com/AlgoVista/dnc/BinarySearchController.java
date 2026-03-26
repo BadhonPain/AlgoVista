@@ -31,6 +31,10 @@ public class BinarySearchController {
     @FXML private Label statusLabel;
     @FXML private Label stepLabel;
     @FXML private Label complexityLabel;
+    @FXML private javafx.scene.control.Slider speedSlider;
+    @FXML private Label speedLabel;
+
+    private double animationSpeed = 1.0;
 
     private List<Integer> data;
     private List<StackPane> nodes;
@@ -40,6 +44,14 @@ public class BinarySearchController {
 
     @FXML
     public void initialize() {
+        if (speedSlider != null) {
+            speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+                animationSpeed = newVal.doubleValue();
+                if (speedLabel != null) {
+                    speedLabel.setText(String.format("%.1fx", animationSpeed));
+                }
+            });
+        }
         generateNewArray();
     }
 
@@ -183,7 +195,7 @@ public class BinarySearchController {
         
         stepLabel.setText("Checking index " + mid + " (value: " + data.get(mid) + ")");
 
-        PauseTransition pause = new PauseTransition(Duration.seconds(1.2));
+        PauseTransition pause = new PauseTransition(Duration.seconds(1.2 / animationSpeed));
         pause.setOnFinished(e -> {
             int midVal = data.get(mid);
             if (midVal == target) {
@@ -193,7 +205,7 @@ public class BinarySearchController {
                 stepLabel.setText("Found " + target + " at index " + mid);
                 searching = false;
                 
-                ScaleTransition st = new ScaleTransition(Duration.millis(300), nodes.get(mid));
+                ScaleTransition st = new ScaleTransition(Duration.millis(300 / animationSpeed), nodes.get(mid));
                 st.setByX(0.3);
                 st.setByY(0.3);
                 st.setAutoReverse(true);
@@ -218,7 +230,7 @@ public class BinarySearchController {
                     statusLabel.setText(target + " > " + midVal + " | Searching RIGHT");
                     low = mid + 1;
                 }
-                PauseTransition nextPause = new PauseTransition(Duration.seconds(0.8));
+                PauseTransition nextPause = new PauseTransition(Duration.seconds(0.8 / animationSpeed));
                 nextPause.setOnFinished(ev -> performStep(target));
                 nextPause.play();
             }
