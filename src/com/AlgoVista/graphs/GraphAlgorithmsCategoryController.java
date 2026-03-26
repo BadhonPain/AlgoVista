@@ -20,39 +20,60 @@ public class GraphAlgorithmsCategoryController {
     }
 
     private void loadCards() {
-        // DFS Card
+        // DFS card
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/GraphSubCard.fxml"));
-            VBox dfsCard = loader.load();
-            GraphSubCardController controller = loader.getController();
-            controller.setData("DFS");
+            FXMLLoader loader1 = new FXMLLoader(getClass().getResource("/fxml/GraphSubCard.fxml"));
+            VBox dfsCard = loader1.load();
+            GraphSubCardController controller1 = loader1.getController();
+            controller1.setData("DFS");
 
-            String cardNormalStyle = "-fx-background-color: #0f172a;" +
-                    "-fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/dfs_card.png');" +
-                    "-fx-background-size: 95%;" +
-                    "-fx-background-position: center 25%;" +
-                    "-fx-background-repeat: no-repeat;" +
-                    "-fx-background-radius: 25;" +
-                    "-fx-border-color: #fce7f3;" +
-                    "-fx-border-width: 3;" +
-                    "-fx-border-radius: 25;" +
-                    "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 15, 0, 0, 5);";
+            // Use standard dimensions (matching BST's "normal" size)
+            dfsCard.setPrefWidth(388);
+            dfsCard.setPrefHeight(400);
+            dfsCard.setMaxWidth(388);
+            dfsCard.setMaxHeight(400);
 
-            String cardHoverStyle = cardNormalStyle
-                    + "-fx-scale-x: 1.08; -fx-scale-y: 1.08; -fx-effect: dropshadow(gaussian, rgba(236, 72, 153, 0.9), 25, 0, 0, 5);";
+            // Normal style - restored for standard fit
+            String dfsNormalStyle =
+                    "-fx-background-color: #1A1A1A;" +
+                            "-fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/dfs_card.png');" +
+                            "-fx-background-size: 85%;" +
+                            "-fx-background-position: center 25%;" +
+                            "-fx-background-repeat: no-repeat;" +
+                            "-fx-background-radius: 20;" +
+                            "-fx-border-color: rgba(255, 255, 255, 0.4);" +
+                            "-fx-border-width: 2;" +
+                            "-fx-border-radius: 20;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 10, 0, 0, 2);";
 
-            dfsCard.setStyle(cardNormalStyle);
-            dfsCard.setOnMouseEntered(e -> dfsCard.setStyle(cardHoverStyle));
-            dfsCard.setOnMouseExited(e -> dfsCard.setStyle(cardNormalStyle));
+            // Hover style - Rose glow for DFS
+            String dfsHoverStyle =
+                    "-fx-background-color: #1E293B;" +
+                            "-fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/dfs_card.png');" +
+                            "-fx-background-size: 88%;" +
+                            "-fx-background-position: center 25%;" +
+                            "-fx-background-repeat: no-repeat;" +
+                            "-fx-background-radius: 20;" +
+                            "-fx-border-color: #f43f5e;" +
+                            "-fx-border-width: 3;" +
+                            "-fx-border-radius: 20;" +
+                            "-fx-scale-x: 1.03;" +
+                            "-fx-scale-y: 1.03;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(244, 63, 94, 0.6), 20, 0.4, 0, 0);";
+
+            dfsCard.setStyle(dfsNormalStyle);
+
+            // Hover effects
+            dfsCard.setOnMouseEntered(e -> dfsCard.setStyle(dfsHoverStyle));
+            dfsCard.setOnMouseExited(e -> dfsCard.setStyle(dfsNormalStyle));
+
+            // Click handler
             dfsCard.setOnMouseClicked(e -> {
                 try {
-                    FXMLLoader dfsLoader = new FXMLLoader(getClass().getResource("/fxml/DFS.fxml"));
-                    Parent dfsRoot = dfsLoader.load();
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DFS.fxml"));
+                    Parent root = loader.load();
                     Stage stage = (Stage) cardContainer.getScene().getWindow();
-                    double w = stage.getWidth(), h = stage.getHeight();
-                    double x = stage.getX(), y = stage.getY();
-                    stage.setScene(new Scene(dfsRoot, w, h));
-                    stage.setX(x); stage.setY(y);
+                    stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -63,39 +84,60 @@ public class GraphAlgorithmsCategoryController {
             e.printStackTrace();
         }
 
-        // Topological Sort Card
+        // Topological Sort card
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/GraphSubCard.fxml"));
-            VBox topoCard = loader.load();
-            GraphSubCardController controller = loader.getController();
-            controller.setData("Topological Sort");
+            FXMLLoader loader2 = new FXMLLoader(getClass().getResource("/fxml/GraphSubCard.fxml"));
+            VBox topoCard = loader2.load();
+            GraphSubCardController controller2 = loader2.getController();
+            controller2.setData("Topological Sort");
 
-            String cardNormalStyle = "-fx-background-color: #0f172a;" +
-                    "-fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/topo_sort_card.png');" +
-                    "-fx-background-size: 95%;" +
-                    "-fx-background-position: center 25%;" +
-                    "-fx-background-repeat: no-repeat;" +
-                    "-fx-background-radius: 25;" +
-                    "-fx-border-color: #e0f2fe;" +
-                    "-fx-border-width: 3;" +
-                    "-fx-border-radius: 25;" +
-                    "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 15, 0, 0, 5);";
+            // Use standard dimensions
+            topoCard.setPrefWidth(388);
+            topoCard.setPrefHeight(400);
+            topoCard.setMaxWidth(388);
+            topoCard.setMaxHeight(400);
 
-            String cardHoverStyle = cardNormalStyle
-                    + "-fx-scale-x: 1.08; -fx-scale-y: 1.08; -fx-effect: dropshadow(gaussian, rgba(14, 165, 233, 0.9), 25, 0, 0, 5);";
+            // Normal style
+            String topoNormalStyle =
+                    "-fx-background-color: #1A1A1A;" +
+                            "-fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/topo_sort_card.png');" +
+                            "-fx-background-size: 85%;" +
+                            "-fx-background-position: center 25%;" +
+                            "-fx-background-repeat: no-repeat;" +
+                            "-fx-background-radius: 20;" +
+                            "-fx-border-color: rgba(255, 255, 255, 0.4);" +
+                            "-fx-border-width: 2;" +
+                            "-fx-border-radius: 20;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 10, 0, 0, 2);";
 
-            topoCard.setStyle(cardNormalStyle);
-            topoCard.setOnMouseEntered(e -> topoCard.setStyle(cardHoverStyle));
-            topoCard.setOnMouseExited(e -> topoCard.setStyle(cardNormalStyle));
+            // Hover style
+            String topoHoverStyle =
+                    "-fx-background-color: #1E293B;" +
+                            "-fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/topo_sort_card.png');" +
+                            "-fx-background-size: 88%;" +
+                            "-fx-background-position: center 25%;" +
+                            "-fx-background-repeat: no-repeat;" +
+                            "-fx-background-radius: 20;" +
+                            "-fx-border-color: #38bdf8;" +
+                            "-fx-border-width: 3;" +
+                            "-fx-border-radius: 20;" +
+                            "-fx-scale-x: 1.03;" +
+                            "-fx-scale-y: 1.03;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(56, 189, 248, 0.6), 20, 0.4, 0, 0);";
+
+            topoCard.setStyle(topoNormalStyle);
+
+            // Hover effects
+            topoCard.setOnMouseEntered(e -> topoCard.setStyle(topoHoverStyle));
+            topoCard.setOnMouseExited(e -> topoCard.setStyle(topoNormalStyle));
+
+            // Click handler
             topoCard.setOnMouseClicked(e -> {
                 try {
-                    FXMLLoader topoLoader = new FXMLLoader(getClass().getResource("/fxml/TopologicalSort.fxml"));
-                    Parent topoRoot = topoLoader.load();
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/TopologicalSort.fxml"));
+                    Parent root = loader.load();
                     Stage stage = (Stage) cardContainer.getScene().getWindow();
-                    double w = stage.getWidth(), h = stage.getHeight();
-                    double x = stage.getX(), y = stage.getY();
-                    stage.setScene(new Scene(topoRoot, w, h));
-                    stage.setX(x); stage.setY(y);
+                    stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -111,7 +153,7 @@ public class GraphAlgorithmsCategoryController {
     private void backToDashboard() {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/fxml/RecursionCategory.fxml"));
+            loader.setLocation(getClass().getResource("/fxml/GraphCategory.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) cardContainer.getScene().getWindow();

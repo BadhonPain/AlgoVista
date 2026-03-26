@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.beans.property.SimpleStringProperty;
 
 import java.io.IOException;
 import java.util.List;
@@ -73,15 +74,36 @@ public class GraphStructureController {
         rbDW.setToggleGroup(graphTypeGroup);
         rbUU.setSelected(true);
 
-        // Initialize spinners
-        spinnerNodes.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(3, 15, 7));
-        spinnerEdges.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 8));
-
         // Initialize visualizer
         visualizer = new GraphVisualizer(graphCanvas);
+        graphModel = new GraphModel(0, false, false); // Initialize with an empty graph model
+
+        // Set initial graph generation settings
+        spinnerNodes.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(2, 20, 7));
+        spinnerEdges.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 40, 8));
+
+        // Setup initial radio buttons
+        rbUU.setSelected(true);
+
+        // Table initializations
+        setupMatrixTable();
+        setupAdjListTable();
+        setupEdgeListTable();
 
         // Generate initial random graph
         generateRandomGraph();
+    }
+
+    private void setupMatrixTable() {
+        matrixTable.setPlaceholder(new Label("No data to display"));
+    }
+
+    private void setupAdjListTable() {
+        adjListTable.setPlaceholder(new Label("No data to display"));
+    }
+
+    private void setupEdgeListTable() {
+        edgeListTable.setPlaceholder(new Label("No data to display"));
     }
 
     @FXML
@@ -131,7 +153,7 @@ public class GraphStructureController {
 
     private void updateVisualization() {
         // Draw graph on canvas
-        visualizer.drawGraph(graphModel);
+        visualizer.drawGraph(graphModel, selectedNode);
 
         // Update tables
         updateMatrixTable();
@@ -320,7 +342,7 @@ public class GraphStructureController {
                 setupCanvasClickHandler();
 
                 // Draw empty graph
-                visualizer.drawGraph(graphModel);
+                visualizer.drawGraph(graphModel, selectedNode);
 
                 showAlert("Custom Mode", "Click on a node, then click on another node to create an edge.\nClick 'Finish Custom Graph' when done.");
 
@@ -344,16 +366,16 @@ public class GraphStructureController {
                 if (selectedNode == null) {
                     // First node selected
                     selectedNode = clickedNode;
-                    System.out.println("Selected node: " + selectedNode);
+                    visualizer.drawGraph(graphModel, selectedNode);
                 } else {
                     // Second node selected - create edge
                     if (clickedNode.equals(selectedNode)) {
                         // Same node clicked - deselect
                         selectedNode = null;
+                        visualizer.drawGraph(graphModel, null);
                         return;
                     }
 
-                    int weight = 1;
                     if (graphModel.isWeighted()) {
                         // Ask for weight
                         TextInputDialog weightDialog = new TextInputDialog("1");
@@ -365,18 +387,18 @@ public class GraphStructureController {
                             try {
                                 int w = Integer.parseInt(result);
                                 graphModel.addEdge(selectedNode, clickedNode, w);
-                                visualizer.drawGraph(graphModel);
+                                selectedNode = null;
+                                visualizer.drawGraph(graphModel, null);
                             } catch (NumberFormatException e) {
                                 showAlert("Invalid Input", "Please enter a valid number.");
                             }
                         });
                     } else {
                         // Unweighted - just add edge
-                        graphModel.addEdge(selectedNode, clickedNode, weight);
-                        visualizer.drawGraph(graphModel);
+                        graphModel.addEdge(selectedNode, clickedNode, 1);
+                        selectedNode = null;
+                        visualizer.drawGraph(graphModel, null);
                     }
-
-                    selectedNode = null;
                 }
             }
         });

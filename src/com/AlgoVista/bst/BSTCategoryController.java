@@ -37,7 +37,7 @@ public class BSTCategoryController {
                             "-fx-border-color: #FFFFFF;" +
                             "-fx-border-width: 2;" +
                             "-fx-border-radius: 10;" +
-                            "-fx-effect: drop shadow(Gaussian, RGBA(0,0,0,0.3), 10, 0, 0, 2);";
+                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);";
 
             String opsHoverStyle = opsNormalStyle + "-fx-scale-x: 1.05; -fx-scale-y: 1.05; -fx-effect: dropshadow(gaussian, rgba(243, 156, 18, 0.8), 15, 0, 0, 3);";
 

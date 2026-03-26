@@ -62,9 +62,11 @@
 
     <!-- Center Canvas -->
     <center>
-        <StackPane style="-fx-padding: 20;">
-            <Canvas fx:id="graphCanvas" height="495.0" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);" width="700" />
-        </StackPane>
+        <VBox alignment="CENTER" spacing="10" style="-fx-padding: 20;">
+            <StackPane fx:id="canvasContainer" style="-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);">
+                <Canvas fx:id="graphCanvas" height="480" width="750" />
+            </StackPane>
+        </VBox>
     </center>
 
     <!-- Bottom Tables -->
@@ -73,7 +75,7 @@
 
             <VBox spacing="5" HBox.hgrow="ALWAYS">
                 <Label style="-fx-font-weight: bold; -fx-font-size: 14;" text="Adjacency Matrix" textFill="#38bdf8" />
-                <TableView fx:id="matrixTable" style="-fx-background-color: white;" VBox.vgrow="ALWAYS">
+                <TableView fx:id="matrixTable" style="-fx-background-color: #1e293b; -fx-control-inner-background: #1e293b; -fx-text-fill: white;" VBox.vgrow="ALWAYS">
                     <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                     </columnResizePolicy>
@@ -82,7 +84,7 @@
 
             <VBox spacing="5" HBox.hgrow="ALWAYS">
                 <Label style="-fx-font-weight: bold; -fx-font-size: 14;" text="Adjacency List" textFill="#38bdf8" />
-                <TableView fx:id="adjListTable" style="-fx-background-color: white;" VBox.vgrow="ALWAYS">
+                <TableView fx:id="adjListTable" style="-fx-background-color: #1e293b; -fx-control-inner-background: #1e293b; -fx-text-fill: white;" VBox.vgrow="ALWAYS">
                     <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                     </columnResizePolicy>
@@ -91,7 +93,7 @@
 
             <VBox spacing="5" HBox.hgrow="ALWAYS">
                 <Label style="-fx-font-weight: bold; -fx-font-size: 14;" text="Edge List" textFill="#38bdf8" />
-                <TableView fx:id="edgeListTable" style="-fx-background-color: white;" VBox.vgrow="ALWAYS">
+                <TableView fx:id="edgeListTable" style="-fx-background-color: #1e293b; -fx-control-inner-background: #1e293b; -fx-text-fill: white;" VBox.vgrow="ALWAYS">
                     <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                     </columnResizePolicy>
