@@ -17,6 +17,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import com.AlgoVista.utils.ShortcutManager;
 
 import java.io.IOException;
 import java.util.*;
@@ -94,6 +95,28 @@ public class DFSController {
         buildCodePanel();
         generateDefaultGraph();
         drawGraph();
+
+        // Register Keyboard Shortcuts
+        graphCanvas.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                ShortcutManager.register(newScene, 
+                    this::playPauseToggle, 
+                    this::stepForward, 
+                    this::resetDFS, 
+                    this::backToCategory
+                );
+            }
+        });
+    }
+
+    private void playPauseToggle() {
+        if (autoTimeline != null && autoTimeline.getStatus() == Timeline.Status.RUNNING) {
+            stopAuto();
+        } else {
+            // If DFS hasn't been built yet, build it
+            if (steps == null || steps.isEmpty()) buildDFSSteps();
+            startAutoPlay();
+        }
     }
 
     private void buildCodePanel() {

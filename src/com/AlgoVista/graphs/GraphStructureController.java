@@ -13,6 +13,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.beans.property.SimpleStringProperty;
+import com.AlgoVista.utils.ShortcutManager;
 
 import java.io.IOException;
 import java.util.List;
@@ -92,6 +93,17 @@ public class GraphStructureController {
 
         // Generate initial random graph
         generateRandomGraph();
+
+        graphCanvas.sceneProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                ShortcutManager.register(newVal,
+                    null, // No play/pause
+                    null, // No step
+                    this::generateRandomGraph,
+                    this::backToCategory
+                );
+            }
+        });
     }
 
     private void setupMatrixTable() {

@@ -1,5 +1,6 @@
 package com.AlgoVista.dnc;
 
+import javafx.animation.Animation;
 import javafx.animation.PauseTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.Transition;
@@ -20,6 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import com.AlgoVista.utils.ShortcutManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -64,6 +66,29 @@ public class QuickSortController {
         }
         
         generateNewArray();
+
+        treeContainer.sceneProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                ShortcutManager.register(newVal,
+                    this::playPauseToggle,
+                    null, // QuickSort tree generation is handled by sequential transition
+                    this::generateNewArray,
+                    this::backToCategory
+                );
+            }
+        });
+    }
+
+    private void playPauseToggle() {
+        if (masterAnimation != null) {
+            if (masterAnimation.getStatus() == Animation.Status.RUNNING) {
+                masterAnimation.pause();
+            } else {
+                masterAnimation.play();
+            }
+        } else if (!sorting) {
+            startSort();
+        }
     }
 
     @FXML

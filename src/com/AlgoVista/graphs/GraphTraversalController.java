@@ -15,6 +15,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import com.AlgoVista.utils.ShortcutManager;
 
 import java.io.IOException;
 import java.util.*;
@@ -93,6 +94,17 @@ public class GraphTraversalController {
 
         // At the end of initialize() method
         updateAlgorithmInfo();
+
+        graphCanvas.sceneProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                ShortcutManager.register(newVal,
+                    this::playTraversal,
+                    null, // Step not implemented explicitly as a method yet?
+                    this::resetTraversal,
+                    this::backToCategory
+                );
+            }
+        });
     }
 
     @FXML

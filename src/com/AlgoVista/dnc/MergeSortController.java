@@ -20,6 +20,7 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import com.AlgoVista.utils.ShortcutManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class MergeSortController {
 
     private List<Integer> initialData;
     private boolean sorting = false;
+    private SequentialTransition currentAnimation;
 
     @FXML
     public void initialize() {
@@ -63,6 +65,29 @@ public class MergeSortController {
         }
         
         generateNewArray();
+
+        treeContainer.sceneProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                ShortcutManager.register(newVal,
+                    this::playPauseToggle,
+                    null, // Step forward not fully implemented for this complex tree recursive split
+                    this::generateNewArray,
+                    this::backToCategory
+                );
+            }
+        });
+    }
+
+    private void playPauseToggle() {
+        if (currentAnimation != null) {
+            if (currentAnimation.getStatus() == Animation.Status.RUNNING) {
+                currentAnimation.pause();
+            } else {
+                currentAnimation.play();
+            }
+        } else if (!sorting) {
+            startSort();
+        }
     }
 
     @FXML
@@ -235,11 +260,13 @@ public class MergeSortController {
             return List.of(finalLayer);
         }, 1.5));
 
-        masterSeq.setOnFinished(e -> {
+        currentAnimation = masterSeq;
+        currentAnimation.setOnFinished(e -> {
             statusLabel.setText("Array is Sorted !");
             sorting = false;
+            currentAnimation = null;
         });
-        masterSeq.play();
+        currentAnimation.play();
     }
 
     private PauseTransition createStepTask(java.util.function.Supplier<List<Node>> action, double pauseSeconds) {

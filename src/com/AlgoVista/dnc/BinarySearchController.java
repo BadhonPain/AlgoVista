@@ -16,6 +16,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import com.AlgoVista.utils.ShortcutManager;
+import javafx.animation.Animation;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ public class BinarySearchController {
     private int low, high, mid;
     private int searchSteps = 0;
     private boolean searching = false;
+    private PauseTransition currentStepAnimation;
 
     @FXML
     public void initialize() {
@@ -52,6 +55,29 @@ public class BinarySearchController {
             });
         }
         generateNewArray();
+
+        arrayContainer.sceneProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                ShortcutManager.register(newVal,
+                    this::playPauseToggle,
+                    null, // Step forward isn't granular here
+                    this::generateNewArray,
+                    this::backToCategory
+                );
+            }
+        });
+    }
+
+    private void playPauseToggle() {
+        if (currentStepAnimation != null) {
+            if (currentStepAnimation.getStatus() == Animation.Status.RUNNING) {
+                currentStepAnimation.pause();
+            } else {
+                currentStepAnimation.play();
+            }
+        } else if (!searching) {
+            startSearch();
+        }
     }
 
     @FXML
@@ -192,8 +218,8 @@ public class BinarySearchController {
         
         stepLabel.setText("Checking index " + mid + " (value: " + data.get(mid) + ")");
 
-        PauseTransition pause = new PauseTransition(Duration.seconds(1.2 / animationSpeed));
-        pause.setOnFinished(e -> {
+        currentStepAnimation = new PauseTransition(Duration.seconds(1.2 / animationSpeed));
+        currentStepAnimation.setOnFinished(e -> {
             int midVal = data.get(mid);
             if (midVal == target) {
                 midRect.setFill(Color.web("#10b981")); // Emerald green
@@ -224,7 +250,7 @@ public class BinarySearchController {
                 nextPause.play();
             }
         });
-        pause.play();
+        currentStepAnimation.play();
     }
 
     @FXML

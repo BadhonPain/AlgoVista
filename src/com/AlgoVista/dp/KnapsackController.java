@@ -14,6 +14,7 @@ import javafx.scene.shape.*;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import com.AlgoVista.utils.ShortcutManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -74,6 +75,30 @@ public class KnapsackController {
         setupItems();
         setupPseudoCode();
         resetVisualization();
+
+        rootPane.sceneProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                ShortcutManager.register(newVal,
+                    this::playPauseToggle,
+                    this::stepVisualization,
+                    this::resetVisualization,
+                    this::backToCategory
+                );
+            }
+        });
+    }
+
+    private void playPauseToggle() {
+        if (isAnimating) {
+            isAnimating = false;
+        } else {
+            if (currItemIdx > items.size()) {
+                startVisualization();
+            } else {
+                isAnimating = true;
+                autoStep();
+            }
+        }
     }
 
     private void setupItems() {

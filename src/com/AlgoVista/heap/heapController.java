@@ -13,6 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.layout.VBox;
+import com.AlgoVista.utils.ShortcutManager;
 
 import java.io.IOException;
 import java.util.*;
@@ -70,6 +71,27 @@ public class heapController {
 
         updateVisualization();
         statusLabel.setText("Ready. Select an operation.");
+
+        heapCanvas.sceneProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                ShortcutManager.register(newVal,
+                    this::playPauseToggle,
+                    this::nextStep,
+                    this::clearHeap,
+                    this::backToDashboard
+                );
+            }
+        });
+    }
+
+    private void playPauseToggle() {
+        if (animation != null) {
+            if (animation.getStatus() == Timeline.Status.RUNNING) {
+                animation.pause();
+            } else {
+                animation.play();
+            }
+        }
     }
 
     private void rebuildCurrentHeap() {

@@ -7,6 +7,7 @@
 "E:/JavaFx Project/Java_Fx/src/com/AlgoVista/dashboard/CardController.java"
 "E:/JavaFx Project/Java_Fx/src/com/AlgoVista/dashboard/DashboardController.java"
 "E:/JavaFx Project/Java_Fx/src/com/AlgoVista/dashboard/Main.java"
+"E:/JavaFx Project/Java_Fx/src/com/AlgoVista/dashboard/ShortcutManager.java"
 "E:/JavaFx Project/Java_Fx/src/com/AlgoVista/dnc/BinarySearchController.java"
 "E:/JavaFx Project/Java_Fx/src/com/AlgoVista/dnc/DNC_CategoryController.java"
 "E:/JavaFx Project/Java_Fx/src/com/AlgoVista/dnc/MergeSortController.java"
@@ -33,3 +34,4 @@
 "E:/JavaFx Project/Java_Fx/src/com/AlgoVista/recursion/RecursionStackController.java"
 "E:/JavaFx Project/Java_Fx/src/com/AlgoVista/recursion/TailRecursionController.java"
 "E:/JavaFx Project/Java_Fx/src/com/AlgoVista/trees/TreeTraversalController.java"
+"E:/JavaFx Project/Java_Fx/src/com/AlgoVista/utils/ShortcutManager.java"

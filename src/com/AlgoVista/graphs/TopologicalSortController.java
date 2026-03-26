@@ -16,6 +16,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import com.AlgoVista.utils.ShortcutManager;
 
 import java.io.IOException;
 import java.util.*;
@@ -98,6 +99,25 @@ public class TopologicalSortController {
         });
         buildCodePanel();
         loadDefaultGraph();
+
+        graphCanvas.sceneProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                ShortcutManager.register(newVal,
+                    this::playPauseToggle,
+                    this::stepForward,
+                    this::resetSort,
+                    this::backToCategory
+                );
+            }
+        });
+    }
+
+    private void playPauseToggle() {
+        if (isRunning) {
+            stopAuto();
+        } else {
+            runSort();
+        }
     }
 
     // ─────────── DEFAULT / RANDOM GRAPHS ───────────

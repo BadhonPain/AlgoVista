@@ -13,6 +13,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import com.AlgoVista.utils.ShortcutManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -92,6 +93,17 @@ public class RecursionStackController {
 
         buildSimulationSteps();
         renderStep(0);
+
+        stackContainer.sceneProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                ShortcutManager.register(newVal,
+                    this::toggleAutoPlay,
+                    this::stepForward,
+                    this::resetSimulation,
+                    this::backToCategory
+                );
+            }
+        });
     }
 
     private void buildSimulationSteps() {

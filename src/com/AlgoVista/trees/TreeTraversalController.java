@@ -19,6 +19,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import com.AlgoVista.utils.ShortcutManager;
 
 import java.io.IOException;
 import java.util.*;
@@ -113,6 +114,17 @@ public class TreeTraversalController {
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (speedLabel != null) {
                 speedLabel.setText(String.format("%.1fx", newVal.doubleValue() / 1000.0));
+            }
+        });
+
+        treeCanvas.sceneProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                ShortcutManager.register(newVal,
+                    this::runTraversal,
+                    this::stepForward,
+                    this::resetTraversal,
+                    this::backToCategory
+                );
             }
         });
     }
