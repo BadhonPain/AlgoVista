@@ -37,7 +37,6 @@ public class MergeSortController {
     @FXML private VBox treeContainer;
     @FXML private ScrollPane scrollPane;
     @FXML private Label statusLabel;
-    @FXML private Label complexityLabel;
     @FXML private TextField customArrayInput;
     @FXML private javafx.scene.control.Slider speedSlider;
     @FXML private Label speedLabel;
@@ -142,7 +141,6 @@ public class MergeSortController {
         if (sorting) return;
         sorting = true;
         treeContainer.getChildren().clear();
-        complexityLabel.setVisible(true);
         animateMergeSort(new ArrayList<>(initialData));
     }
 

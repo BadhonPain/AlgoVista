@@ -175,6 +175,7 @@ public class BSTOperationsController {
         updateVisualization();
         statusLabel.setText("Tree cleared.");
         complexityLabel.setText("");
+        statusLabel.setText("Steps reset.");
     }
 
     private void startAnimation() {

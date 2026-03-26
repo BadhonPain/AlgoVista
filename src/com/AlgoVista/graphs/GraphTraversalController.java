@@ -27,7 +27,7 @@ public class GraphTraversalController {
     @FXML private Slider speedSlider;
     @FXML private Label speedLabel;
     @FXML private Button playButton, pauseButton, resetButton;
-    @FXML private Label traversalOrderLabel, timeComplexityLabel, spaceComplexityLabel;
+    @FXML private Label traversalOrderLabel;
     @FXML private TextArea distanceTableArea;
     @FXML private Label algorithmInfoLabel;
     @FXML private Button finishCustomButton;
@@ -420,11 +420,8 @@ public class GraphTraversalController {
             case "Bellman-Ford":
                 timeComplexity = "Time: O(V × E) = O(" + V + " × " + E + ")";
                 spaceComplexity = "Space: O(V) = O(" + V + ")";
-                break;
+                // Complexity is now static in FXML
         }
-
-        timeComplexityLabel.setText(timeComplexity);
-        spaceComplexityLabel.setText(spaceComplexity);
     }
 
     private void drawGraph() {

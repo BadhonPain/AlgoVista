@@ -25,7 +25,7 @@ public class heapController {
     @FXML private Slider speedSlider;
     @FXML private Label speedLabel;
     @FXML private Button playButton, pauseButton, stepButton;
-    @FXML private Label statusLabel, complexityLabel;
+    @FXML private Label statusLabel;
     @FXML private HBox arrayBox;
     @FXML private Label sortedResultLabel;
 
@@ -228,7 +228,7 @@ public class heapController {
         visualizer.clearColors();
         updateVisualization();
         statusLabel.setText("Heap cleared.");
-        complexityLabel.setText("");
+        statusLabel.setText("Reset steps.");
     }
 
     private void animateOperations() {
@@ -314,9 +314,7 @@ public class heapController {
         }
 
         statusLabel.setText(op.description);
-        if (!op.complexity.isEmpty()) {
-            complexityLabel.setText("Complexity: " + op.complexity);
-        }
+        // Complexity is now static in FXML
 
         updateVisualization(op);
     }

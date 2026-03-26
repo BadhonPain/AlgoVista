@@ -23,7 +23,23 @@
                         </Label>
                     </center>
                     <right>
-                        <Region prefWidth="100.0"/>
+                        <HBox spacing="20" alignment="CENTER"
+                              style="-fx-background-color: rgba(15, 23, 42, 0.8); -fx-padding: 6 18; -fx-background-radius: 12; -fx-border-color: #334155; -fx-border-radius: 12; -fx-border-width: 1;">
+                            <VBox alignment="CENTER" spacing="2">
+                                <Label text="Time Complexity" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
+                                <Label text="O(M × N)" textFill="#22c55e" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                            </VBox>
+                            <Separator orientation="VERTICAL" style="-fx-opacity: 0.2;"/>
+                            <VBox alignment="CENTER" spacing="2">
+                                <Label text="Space Complexity" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
+                                <Label text="O(M × N)" textFill="#ef4444" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                            </VBox>
+                            <Separator orientation="VERTICAL" style="-fx-opacity: 0.2;"/>
+                            <VBox alignment="CENTER" spacing="2">
+                                <Label text="Optimized Space" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
+                                <Label text="O(min(M, N))" textFill="#f59e0b" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                            </VBox>
+                        </HBox>
                     </right>
                 </BorderPane>
 
