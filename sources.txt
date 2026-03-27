@@ -9,6 +9,7 @@
 "E:/JavaFx Project/Java_Fx/src/com/AlgoVista/dashboard/DashboardController.java"
 "E:/JavaFx Project/Java_Fx/src/com/AlgoVista/dashboard/DPCategoryController.java"
 "E:/JavaFx Project/Java_Fx/src/com/AlgoVista/dashboard/Main.java"
+"E:/JavaFx Project/Java_Fx/src/com/AlgoVista/dashboard/SplashController.java"
 "E:/JavaFx Project/Java_Fx/src/com/AlgoVista/dnc/BinarySearchController.java"
 "E:/JavaFx Project/Java_Fx/src/com/AlgoVista/dnc/DNC_CategoryController.java"
 "E:/JavaFx Project/Java_Fx/src/com/AlgoVista/dnc/MergeSortController.java"

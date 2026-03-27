@@ -102,3 +102,13 @@
     -fx-scale-y: 1.05;
     -fx-effect: dropshadow(gaussian, rgba(56, 189, 248, 0.6), 15, 0, 0, 3);
 }
+
+.window-btn {
+    -fx-cursor: hand;
+    -fx-opacity: 0.8;
+}
+
+.window-btn:hover {
+    -fx-opacity: 1.0;
+    -fx-effect: dropshadow(three-pass-box, rgba(56, 189, 248, 0.4), 8, 0, 0, 0);
+}
