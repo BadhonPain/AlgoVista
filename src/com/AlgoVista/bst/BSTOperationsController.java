@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import com.AlgoVista.utils.ShortcutManager;
 
 import java.io.IOException;
 import java.util.List;
@@ -20,7 +21,7 @@ public class BSTOperationsController {
     @FXML private Canvas bstCanvas;
     @FXML private TextField valueInput, customBSTInput, oldValueInput, newValueInput;
     @FXML private Slider speedSlider;
-    @FXML private Label statusLabel, complexityLabel;
+    @FXML private Label statusLabel, complexityLabel, speedLabel;
     @FXML private Spinner<Integer> sizeSpinner, minSpinner, maxSpinner;
 
     private BSTModel model;
@@ -44,8 +45,53 @@ public class BSTOperationsController {
         bstCanvas.widthProperty().addListener(evt -> updateVisualization());
         bstCanvas.heightProperty().addListener(evt -> updateVisualization());
 
+        speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (speedLabel != null) {
+                speedLabel.setText(String.format("%.1fx", newVal.doubleValue()));
+            }
+        });
+
         updateVisualization();
         statusLabel.setText("Ready. Enter a value to insert.");
+
+        // Register Keyboard Shortcuts
+        bstCanvas.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                ShortcutManager.register(newScene, 
+                    this::playPauseToggle, 
+                    this::stepForward, 
+                    this::clearTree, 
+                    this::backToCategory
+                );
+            }
+        });
+    }
+
+    private void playPauseToggle() {
+        if (animation == null) return;
+        if (animation.getStatus() == Timeline.Status.RUNNING) {
+            pauseAnimation();
+        } else {
+            playAnimation();
+        }
+    }
+
+    private void stepForward() {
+        if (currentOperations != null && currentStep < currentOperations.size()) {
+            if (animation != null && animation.getStatus() == Timeline.Status.RUNNING) {
+                animation.pause();
+            }
+            BSTModel.BSTOperation op = currentOperations.get(currentStep);
+            executeStep(op);
+            currentStep++;
+
+            if (currentStep >= currentOperations.size()) {
+                model.clearTransientRoot();
+                visualizer.clearColors();
+                updateVisualization();
+                statusLabel.setText("Animation complete.");
+            }
+        }
     }
 
     @FXML
@@ -169,6 +215,7 @@ public class BSTOperationsController {
         updateVisualization();
         statusLabel.setText("Tree cleared.");
         complexityLabel.setText("");
+        statusLabel.setText("Steps reset.");
     }
 
     private void startAnimation() {

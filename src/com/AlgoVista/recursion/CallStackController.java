@@ -8,10 +8,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import com.AlgoVista.utils.ShortcutManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,8 +29,9 @@ public class CallStackController {
     private TextArea consoleArea;
     @FXML
     private Button stepBtn;
-    @FXML
-    private Button autoPlayBtn;
+    @FXML private Button autoPlayBtn;
+    @FXML private Slider speedSlider;
+    @FXML private Label speedLabel;
 
     private boolean isPlaying = false;
     private int currentStepIndex = 0;
@@ -68,6 +71,13 @@ public class CallStackController {
 
     @FXML
     public void initialize() {
+        if (speedSlider != null) {
+            speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+                if (speedLabel != null) {
+                    speedLabel.setText(String.format("%.1fx", newVal.doubleValue()));
+                }
+            });
+        }
         // Render source code
         for (int i = 0; i < sourceCode.length; i++) {
             Label lineLabel = new Label(sourceCode[i]);
@@ -79,6 +89,17 @@ public class CallStackController {
 
         buildSimulationSteps();
         renderStep(0);
+
+        stackContainer.sceneProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                ShortcutManager.register(newVal,
+                    this::toggleAutoPlay,
+                    this::stepForward,
+                    this::resetSimulation,
+                    this::backToCategory
+                );
+            }
+        });
     }
 
     private void buildSimulationSteps() {
@@ -203,7 +224,11 @@ public class CallStackController {
             new Thread(() -> {
                 while (isPlaying && currentStepIndex < steps.size() - 1) {
                     try {
-                        Thread.sleep(800);
+                        long delay = 800;
+                        if (speedSlider != null) {
+                            delay = (long) (800 / speedSlider.getValue());
+                        }
+                        Thread.sleep(delay);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

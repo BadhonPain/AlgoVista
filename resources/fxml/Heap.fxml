@@ -125,13 +125,30 @@
             <HBox spacing="15" alignment="CENTER" style="-fx-background-color: white; -fx-padding: 15 20; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 4);">
                 
                 <Label text="Speed:" textFill="#475569" style="-fx-font-weight: bold; -fx-font-size: 14;"/>
+                <Label fx:id="speedLabel" text="1.5x" textFill="#0ea5e9" style="-fx-font-weight: bold; -fx-font-size: 14;"/>
                 <Slider fx:id="speedSlider" min="0.5" max="5" value="1.5" prefWidth="150" showTickMarks="false" style="-fx-cursor: hand;"/>
-                
                 <Region HBox.hgrow="ALWAYS"/>
                 <Label fx:id="statusLabel" text="Ready. Select an operation." textFill="#64748b" style="-fx-font-size: 14; -fx-font-style: italic; -fx-font-weight: bold;"/>
                 <Region HBox.hgrow="ALWAYS"/>
 
                 <Label fx:id="complexityLabel" text="" textFill="#eab308" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 0 15 0 0;"/>
+                <HBox spacing="20" alignment="CENTER"
+                      style="-fx-background-color: rgba(15, 23, 42, 0.8); -fx-padding: 6 18; -fx-background-radius: 12; -fx-border-color: #334155; -fx-border-radius: 12; -fx-border-width: 1;">
+                    <VBox alignment="CENTER" spacing="2">
+                        <Label text="Insert/Extract" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
+                        <Label text="O(log N)" textFill="#22c55e" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                    </VBox>
+                    <Separator orientation="VERTICAL" style="-fx-opacity: 0.2;"/>
+                    <VBox alignment="CENTER" spacing="2">
+                        <Label text="Heapify" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
+                        <Label text="O(N)" textFill="#ef4444" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                    </VBox>
+                    <Separator orientation="VERTICAL" style="-fx-opacity: 0.2;"/>
+                    <VBox alignment="CENTER" spacing="2">
+                        <Label text="Space" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
+                        <Label text="O(N)" textFill="#f59e0b" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                    </VBox>
+                </HBox>
 
                 <Button fx:id="playButton" text="▶ Play" onAction="#playAnimation" style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 20; -fx-cursor: hand; -fx-background-radius: 8;"/>
                 <Button fx:id="pauseButton" text="⏸ Pause" onAction="#pauseAnimation" style="-fx-background-color: #f59e0b; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 20; -fx-cursor: hand; -fx-background-radius: 8;"/>

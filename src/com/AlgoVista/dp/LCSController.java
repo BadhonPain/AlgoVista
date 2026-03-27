@@ -13,6 +13,7 @@ import javafx.scene.shape.*;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import com.AlgoVista.utils.ShortcutManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,6 +58,30 @@ public class LCSController {
             speedLabel.setText(String.format("%.1fx", animationSpeed));
         });
         setupPseudoCode();
+
+        rootPane.sceneProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                ShortcutManager.register(newVal,
+                    this::playPauseToggle,
+                    this::stepVisualization,
+                    this::resetVisualization,
+                    this::backToCategory
+                );
+            }
+        });
+    }
+
+    private void playPauseToggle() {
+        if (isAnimating) {
+            isAnimating = false;
+        } else {
+            if (currI > strA.length()) {
+                startVisualization();
+            } else {
+                isAnimating = true;
+                autoStep();
+            }
+        }
     }
 
     private void setupPseudoCode() {

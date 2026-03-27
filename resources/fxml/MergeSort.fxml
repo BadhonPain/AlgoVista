@@ -31,7 +31,23 @@
                 </Label>
             </center>
             <right>
-                <Region prefWidth="100.0" />
+                <HBox spacing="20" alignment="CENTER"
+                      style="-fx-background-color: rgba(15, 23, 42, 0.8); -fx-padding: 6 18; -fx-background-radius: 12; -fx-border-color: #334155; -fx-border-radius: 12; -fx-border-width: 1;">
+                    <VBox alignment="CENTER" spacing="2">
+                        <Label text="Best Time" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
+                        <Label text="O(n log n)" textFill="#22c55e" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                    </VBox>
+                    <Separator orientation="VERTICAL" style="-fx-opacity: 0.2;"/>
+                    <VBox alignment="CENTER" spacing="2">
+                        <Label text="Worst Time" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
+                        <Label text="O(n log n)" textFill="#ef4444" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                    </VBox>
+                    <Separator orientation="VERTICAL" style="-fx-opacity: 0.2;"/>
+                    <VBox alignment="CENTER" spacing="2">
+                        <Label text="Space" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
+                        <Label text="O(n)" textFill="#f59e0b" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                    </VBox>
+                </HBox>
             </right>
         </BorderPane>
 
@@ -48,8 +64,6 @@
                     <Font size="18.0" />
                 </font>
             </Label>
-            <Label fx:id="complexityLabel" text="Time Complexity : O(n log n)" visible="false"
-                   style="-fx-background-color: rgba(52, 152, 219, 0.2); -fx-text-fill: #3498db; -fx-padding: 3 15 3 15; -fx-background-radius: 12; -fx-font-weight: bold; -fx-font-size: 13;" />
         </VBox>
 
         <!-- View Controls -->
@@ -62,6 +76,14 @@
                     <Button text="Create" onAction="#handleCustomArray"
                             style="-fx-background-color: linear-gradient(to bottom, #9b59b2, #8e44ad); -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 8;" />
                 </HBox>
+            </VBox>
+
+            <VBox spacing="8.0" alignment="CENTER_LEFT">
+                <HBox spacing="5" alignment="CENTER_LEFT">
+                    <Label text="SPEED:" textFill="#94a3b8" style="-fx-font-weight: bold; -fx-font-size: 10;" />
+                    <Label fx:id="speedLabel" text="1.0x" textFill="#9b59b2" style="-fx-font-weight: bold; -fx-font-size: 10;" />
+                </HBox>
+                <Slider fx:id="speedSlider" min="0.1" max="3.0" value="1.0" prefWidth="120" style="-fx-cursor: hand;" />
             </VBox>
             
             <HBox alignment="BOTTOM_CENTER" spacing="15.0">

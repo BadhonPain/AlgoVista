@@ -11,6 +11,9 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class GraphAlgorithmsCategoryController {
+    
+    public static String previousCategoryPath = "/fxml/GraphCategory.fxml";
+
     @FXML
     private FlowPane cardContainer;
 
@@ -153,7 +156,7 @@ public class GraphAlgorithmsCategoryController {
     private void backToDashboard() {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/fxml/GraphCategory.fxml"));
+            loader.setLocation(getClass().getResource(previousCategoryPath));
             Parent root = loader.load();
 
             Stage stage = (Stage) cardContainer.getScene().getWindow();

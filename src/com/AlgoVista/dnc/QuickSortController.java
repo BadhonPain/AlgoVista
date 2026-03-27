@@ -1,5 +1,6 @@
 package com.AlgoVista.dnc;
 
+import javafx.animation.Animation;
 import javafx.animation.PauseTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.Transition;
@@ -20,6 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import com.AlgoVista.utils.ShortcutManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,9 +35,12 @@ public class QuickSortController {
     @FXML private ScrollPane scrollPane;
     @FXML private Label statusLabel;
     @FXML private Label stepLabel;
-    @FXML private Label complexityLabel;
     @FXML private TextField customArrayInput;
     @FXML private ComboBox<String> pivotSelector;
+    @FXML private javafx.scene.control.Slider speedSlider;
+    @FXML private Label speedLabel;
+
+    private double animationSpeed = 1.0;
 
     private List<Integer> data;
     private boolean sorting = false;
@@ -50,8 +55,40 @@ public class QuickSortController {
         treeContainer.heightProperty().addListener((obs, oldVal, newVal) -> {
             scrollPane.setVvalue(1.0);
         });
+
+        if (speedSlider != null) {
+            speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+                animationSpeed = newVal.doubleValue();
+                if (speedLabel != null) {
+                    speedLabel.setText(String.format("%.1fx", animationSpeed));
+                }
+            });
+        }
         
         generateNewArray();
+
+        treeContainer.sceneProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                ShortcutManager.register(newVal,
+                    this::playPauseToggle,
+                    null, // QuickSort tree generation is handled by sequential transition
+                    this::generateNewArray,
+                    this::backToCategory
+                );
+            }
+        });
+    }
+
+    private void playPauseToggle() {
+        if (masterAnimation != null) {
+            if (masterAnimation.getStatus() == Animation.Status.RUNNING) {
+                masterAnimation.pause();
+            } else {
+                masterAnimation.play();
+            }
+        } else if (!sorting) {
+            startSort();
+        }
     }
 
     @FXML
@@ -141,8 +178,6 @@ public class QuickSortController {
         treeContainer.getChildren().clear();
         renderInitialArray();
         
-        detectAndShowComplexity();
-        
         masterAnimation = new SequentialTransition();
         List<Integer> workingData = new ArrayList<>(data);
         
@@ -157,29 +192,6 @@ public class QuickSortController {
             statusLabel.setText("Array is Sorted !");
         });
         masterAnimation.play();
-    }
-
-    private void detectAndShowComplexity() {
-        String strategy = pivotSelector.getValue();
-        boolean sorted = true;
-        for (int i = 0; i < data.size() - 1; i++) {
-            if (data.get(i) > data.get(i + 1)) {
-                sorted = false;
-                break;
-            }
-        }
-
-        complexityLabel.setVisible(true);
-        if (sorted && "FIRST".equals(strategy)) {
-            complexityLabel.setText("Worst Case : Time complexity O(n²)");
-            complexityLabel.setStyle("-fx-background-color: rgba(231, 76, 60, 0.2); -fx-text-fill: #e74c3c; -fx-padding: 3 15 3 15; -fx-background-radius: 12; -fx-font-weight: bold;");
-        } else if (isPerfectlyBalanced(data) && "MIDDLE".equals(strategy)) {
-            complexityLabel.setText("Best Case : Time complexity O(n log n)");
-            complexityLabel.setStyle("-fx-background-color: rgba(46, 204, 113, 0.2); -fx-text-fill: #2ecc71; -fx-padding: 3 15 3 15; -fx-background-radius: 12; -fx-font-weight: bold;");
-        } else {
-            complexityLabel.setText("Average Case : Time complexity O(n log n)");
-            complexityLabel.setStyle("-fx-background-color: rgba(52, 152, 219, 0.2); -fx-text-fill: #3498db; -fx-padding: 3 15 3 15; -fx-background-radius: 12; -fx-font-weight: bold;");
-        }
     }
 
     private boolean isPerfectlyBalanced(List<Integer> list) {
@@ -245,7 +257,7 @@ public class QuickSortController {
     }
 
     private Transition createRowUpdateTask(List<Integer> currentData, int low, int high, int pivotIndex, String msg) {
-        PauseTransition pt = new PauseTransition(Duration.seconds(1.2));
+        PauseTransition pt = new PauseTransition(Duration.seconds(1.2 / animationSpeed));
         List<Integer> snapData = new ArrayList<>(currentData);
         pt.setOnFinished(e -> {
             HBox row = createHBoxRow(snapData, low, high, pivotIndex);
@@ -256,7 +268,7 @@ public class QuickSortController {
     }
 
     private Transition createFinalizeTask(int index, List<Integer> currentData) {
-        PauseTransition pt = new PauseTransition(Duration.seconds(0.5));
+        PauseTransition pt = new PauseTransition(Duration.seconds(0.5 / animationSpeed));
         List<Integer> snapData = new ArrayList<>(currentData);
         pt.setOnFinished(e -> {
             HBox row = createHBoxRow(snapData, index, index, -1);
@@ -270,7 +282,7 @@ public class QuickSortController {
     }
 
     private Transition createFinalSortedTask(List<Integer> finalData) {
-        PauseTransition pt = new PauseTransition(Duration.seconds(1.0));
+        PauseTransition pt = new PauseTransition(Duration.seconds(1.0 / animationSpeed));
         List<Integer> snapData = new ArrayList<>(finalData);
         pt.setOnFinished(e -> {
             HBox row = new HBox(10);

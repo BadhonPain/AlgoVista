@@ -13,6 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.layout.VBox;
+import com.AlgoVista.utils.ShortcutManager;
 
 import java.io.IOException;
 import java.util.*;
@@ -23,8 +24,9 @@ public class heapController {
     @FXML private TextField valueInput, indexInput, newValueInput;
     @FXML private Spinner<Integer> sizeSpinner, minSpinner, maxSpinner;
     @FXML private Slider speedSlider;
+    @FXML private Label speedLabel;
     @FXML private Button playButton, pauseButton, stepButton;
-    @FXML private Label statusLabel, complexityLabel;
+    @FXML private Label statusLabel;
     @FXML private HBox arrayBox;
     @FXML private Label sortedResultLabel;
 
@@ -38,6 +40,11 @@ public class heapController {
 
     @FXML
     public void initialize() {
+        speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (speedLabel != null) {
+                speedLabel.setText(String.format("%.1fx", newVal.doubleValue()));
+            }
+        });
         // Initialize heap type
         heapTypeGroup = new ToggleGroup();
         rbMaxHeap.setToggleGroup(heapTypeGroup);
@@ -64,6 +71,27 @@ public class heapController {
 
         updateVisualization();
         statusLabel.setText("Ready. Select an operation.");
+
+        heapCanvas.sceneProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                ShortcutManager.register(newVal,
+                    this::playPauseToggle,
+                    this::nextStep,
+                    this::clearHeap,
+                    this::backToDashboard
+                );
+            }
+        });
+    }
+
+    private void playPauseToggle() {
+        if (animation != null) {
+            if (animation.getStatus() == Timeline.Status.RUNNING) {
+                animation.pause();
+            } else {
+                animation.play();
+            }
+        }
     }
 
     private void rebuildCurrentHeap() {
@@ -222,7 +250,7 @@ public class heapController {
         visualizer.clearColors();
         updateVisualization();
         statusLabel.setText("Heap cleared.");
-        complexityLabel.setText("");
+        statusLabel.setText("Reset steps.");
     }
 
     private void animateOperations() {
@@ -308,9 +336,7 @@ public class heapController {
         }
 
         statusLabel.setText(op.description);
-        if (!op.complexity.isEmpty()) {
-            complexityLabel.setText("Complexity: " + op.complexity);
-        }
+        // Complexity is now static in FXML
 
         updateVisualization(op);
     }

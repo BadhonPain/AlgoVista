@@ -20,6 +20,7 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import com.AlgoVista.utils.ShortcutManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,11 +38,15 @@ public class MergeSortController {
     @FXML private VBox treeContainer;
     @FXML private ScrollPane scrollPane;
     @FXML private Label statusLabel;
-    @FXML private Label complexityLabel;
     @FXML private TextField customArrayInput;
+    @FXML private javafx.scene.control.Slider speedSlider;
+    @FXML private Label speedLabel;
+
+    private double animationSpeed = 1.0;
 
     private List<Integer> initialData;
     private boolean sorting = false;
+    private SequentialTransition currentAnimation;
 
     @FXML
     public void initialize() {
@@ -49,7 +54,40 @@ public class MergeSortController {
         treeContainer.heightProperty().addListener((obs, oldVal, newVal) -> {
             scrollPane.setVvalue(1.0);
         });
+
+        if (speedSlider != null) {
+            speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+                animationSpeed = newVal.doubleValue();
+                if (speedLabel != null) {
+                    speedLabel.setText(String.format("%.1fx", animationSpeed));
+                }
+            });
+        }
+        
         generateNewArray();
+
+        treeContainer.sceneProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                ShortcutManager.register(newVal,
+                    this::playPauseToggle,
+                    null, // Step forward not fully implemented for this complex tree recursive split
+                    this::generateNewArray,
+                    this::backToCategory
+                );
+            }
+        });
+    }
+
+    private void playPauseToggle() {
+        if (currentAnimation != null) {
+            if (currentAnimation.getStatus() == Animation.Status.RUNNING) {
+                currentAnimation.pause();
+            } else {
+                currentAnimation.play();
+            }
+        } else if (!sorting) {
+            startSort();
+        }
     }
 
     @FXML
@@ -128,7 +166,6 @@ public class MergeSortController {
         if (sorting) return;
         sorting = true;
         treeContainer.getChildren().clear();
-        complexityLabel.setVisible(true);
         animateMergeSort(new ArrayList<>(initialData));
     }
 
@@ -223,22 +260,24 @@ public class MergeSortController {
             return List.of(finalLayer);
         }, 1.5));
 
-        masterSeq.setOnFinished(e -> {
+        currentAnimation = masterSeq;
+        currentAnimation.setOnFinished(e -> {
             statusLabel.setText("Array is Sorted !");
             sorting = false;
+            currentAnimation = null;
         });
-        masterSeq.play();
+        currentAnimation.play();
     }
 
     private PauseTransition createStepTask(java.util.function.Supplier<List<Node>> action, double pauseSeconds) {
-        PauseTransition pt = new PauseTransition(Duration.seconds(pauseSeconds));
+        PauseTransition pt = new PauseTransition(Duration.seconds(pauseSeconds / animationSpeed));
         pt.setOnFinished(e -> {
             List<Node> nodes = action.get();
             for (Node n : nodes) {
                 n.setOpacity(0);
-                FadeTransition ft = new FadeTransition(Duration.seconds(0.8), n);
+                FadeTransition ft = new FadeTransition(Duration.seconds(0.8 / animationSpeed), n);
                 ft.setToValue(1.0);
-                TranslateTransition tt = new TranslateTransition(Duration.seconds(0.8), n);
+                TranslateTransition tt = new TranslateTransition(Duration.seconds(0.8 / animationSpeed), n);
                 tt.setFromY(-20); tt.setToY(0);
                 ft.play(); tt.play();
             }

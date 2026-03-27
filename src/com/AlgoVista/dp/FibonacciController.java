@@ -34,6 +34,7 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
 import javafx.util.Duration;
+import com.AlgoVista.utils.ShortcutManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,6 +56,7 @@ public class FibonacciController {
     private List<StackPane> cellNodes = new ArrayList<>();
     private boolean isConstantSpace = false;
     private double animationSpeed = 1.0;
+    private boolean isAutoPlaying = false;
 
     private final String[] pseudoCodeNormal = {
         "long fib(int n) {",
@@ -90,6 +92,30 @@ public class FibonacciController {
         });
         setupPseudoCode();
         resetVisualization();
+
+        rootPane.sceneProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                ShortcutManager.register(newVal,
+                    this::playPauseToggle,
+                    this::stepVisualization,
+                    this::resetVisualization,
+                    this::backToCategory
+                );
+            }
+        });
+    }
+
+    private void playPauseToggle() {
+        if (isAutoPlaying) {
+            isAutoPlaying = false;
+        } else {
+            if (currentIndex > targetN) {
+                startVisualization();
+            } else {
+                isAutoPlaying = true;
+                autoStep();
+            }
+        }
     }
 
     private void setupPseudoCode() {
@@ -122,6 +148,7 @@ public class FibonacciController {
             targetN = Integer.parseInt(inputN.getText());
             if (targetN < 0) return;
             resetVisualization();
+            isAutoPlaying = true;
             runFullAnimation();
         } catch (NumberFormatException e) {
             // Show alert or ignore
@@ -360,10 +387,13 @@ public class FibonacciController {
     }
     
     private void autoStep() {
+        if (!isAutoPlaying) return;
         if (currentIndex <= targetN) {
             stepVisualization();
             Timeline nextCall = new Timeline(new KeyFrame(Duration.millis(1500 / animationSpeed), e -> autoStep()));
             nextCall.play();
+        } else {
+            isAutoPlaying = false;
         }
     }
 

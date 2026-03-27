@@ -56,7 +56,10 @@
 
                 <!-- Speed Control -->
                 <VBox spacing="3">
-                    <Label text="Speed" textFill="#94a3b8" style="-fx-font-size: 11;"/>
+                    <HBox alignment="CENTER_LEFT" spacing="5">
+                        <Label text="Speed" textFill="#94a3b8" style="-fx-font-size: 11;"/>
+                        <Label fx:id="speedLabel" text="2.0x" textFill="#0ea5e9" style="-fx-font-weight: bold; -fx-font-size: 11;"/>
+                    </HBox>
                     <HBox spacing="5" alignment="CENTER">
                         <Label text="Slow" textFill="#94a3b8" style="-fx-font-size: 10;"/>
                         <Slider fx:id="speedSlider" min="0.5" max="5" value="2"
@@ -116,12 +119,18 @@
                 <Region HBox.hgrow="ALWAYS"/>
 
                 <!-- Complexity Display -->
-                <VBox spacing="2" alignment="CENTER_RIGHT">
-                    <Label fx:id="timeComplexityLabel" text="Time: O(V + E)"
-                           textFill="#22c55e" style="-fx-font-size: 11; -fx-font-weight: bold;"/>
-                    <Label fx:id="spaceComplexityLabel" text="Space: O(V)"
-                           textFill="#f59e0b" style="-fx-font-size: 11; -fx-font-weight: bold;"/>
-                </VBox>
+                <HBox spacing="20" alignment="CENTER"
+                      style="-fx-background-color: rgba(15, 23, 42, 0.8); -fx-padding: 6 18; -fx-background-radius: 12; -fx-border-color: #334155; -fx-border-radius: 12; -fx-border-width: 1;">
+                    <VBox alignment="CENTER" spacing="2">
+                        <Label text="Time Complexity" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
+                        <Label text="O(V + E)" textFill="#22c55e" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                    </VBox>
+                    <Separator orientation="VERTICAL" style="-fx-opacity: 0.2;"/>
+                    <VBox alignment="CENTER" spacing="2">
+                        <Label text="Space Complexity" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
+                        <Label text="O(V)" textFill="#f59e0b" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                    </VBox>
+                </HBox>
 
             </HBox>
         </VBox>

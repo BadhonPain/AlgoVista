@@ -15,6 +15,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import com.AlgoVista.utils.ShortcutManager;
 
 import java.io.IOException;
 import java.util.*;
@@ -25,8 +26,9 @@ public class GraphTraversalController {
     @FXML private ComboBox<String> algorithmCombo;
     @FXML private Spinner<Integer> startNodeSpinner, nodesSpinner, edgesSpinner;
     @FXML private Slider speedSlider;
+    @FXML private Label speedLabel;
     @FXML private Button playButton, pauseButton, resetButton;
-    @FXML private Label traversalOrderLabel, timeComplexityLabel, spaceComplexityLabel;
+    @FXML private Label traversalOrderLabel;
     @FXML private TextArea distanceTableArea;
     @FXML private Label algorithmInfoLabel;
     @FXML private Button finishCustomButton;
@@ -53,6 +55,11 @@ public class GraphTraversalController {
 
     @FXML
     public void initialize() {
+        speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (speedLabel != null) {
+                speedLabel.setText(String.format("%.1fx", newVal.doubleValue()));
+            }
+        });
         gc = graphCanvas.getGraphicsContext2D();
 
         // Initialize graph type toggle group
@@ -87,6 +94,17 @@ public class GraphTraversalController {
 
         // At the end of initialize() method
         updateAlgorithmInfo();
+
+        graphCanvas.sceneProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                ShortcutManager.register(newVal,
+                    this::playTraversal,
+                    null, // Step not implemented explicitly as a method yet?
+                    this::resetTraversal,
+                    this::backToCategory
+                );
+            }
+        });
     }
 
     @FXML
@@ -414,11 +432,8 @@ public class GraphTraversalController {
             case "Bellman-Ford":
                 timeComplexity = "Time: O(V × E) = O(" + V + " × " + E + ")";
                 spaceComplexity = "Space: O(V) = O(" + V + ")";
-                break;
+                // Complexity is now static in FXML
         }
-
-        timeComplexityLabel.setText(timeComplexity);
-        spaceComplexityLabel.setText(spaceComplexity);
     }
 
     private void drawGraph() {

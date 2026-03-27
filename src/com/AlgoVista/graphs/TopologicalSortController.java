@@ -16,6 +16,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import com.AlgoVista.utils.ShortcutManager;
 
 import java.io.IOException;
 import java.util.*;
@@ -32,6 +33,7 @@ public class TopologicalSortController {
     @FXML private Spinner<Integer> nodesSpinner;
     @FXML private Spinner<Integer> edgesSpinner;
     @FXML private Slider speedSlider;
+    @FXML private Label speedLabel;
 
     // Graph data (directed)
     private int numNodes;
@@ -87,8 +89,35 @@ public class TopologicalSortController {
     public void initialize() {
         nodesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(3, 12, 7));
         edgesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(3, 20, 8));
+        speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (speedLabel != null) {
+                speedLabel.setText(String.format("%.1fx", newVal.doubleValue()));
+            }
+            if (autoTimeline != null) {
+                autoTimeline.setRate(newVal.doubleValue());
+            }
+        });
         buildCodePanel();
         loadDefaultGraph();
+
+        graphCanvas.sceneProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                ShortcutManager.register(newVal,
+                    this::playPauseToggle,
+                    this::stepForward,
+                    this::resetSort,
+                    this::backToCategory
+                );
+            }
+        });
+    }
+
+    private void playPauseToggle() {
+        if (isRunning) {
+            stopAuto();
+        } else {
+            runSort();
+        }
     }
 
     // ─────────── DEFAULT / RANDOM GRAPHS ───────────
@@ -257,7 +286,7 @@ public class TopologicalSortController {
         if (stepCodeLine == null) buildKahnSteps();
         if (!isRunning) {
             isRunning = true;
-            autoTimeline = new Timeline(new KeyFrame(Duration.millis(speedSlider.getValue()), e -> {
+            autoTimeline = new Timeline(new KeyFrame(Duration.millis(800), e -> {
                 if (currentStep < stepCodeLine.size()) {
                     applyStep(currentStep++);
                 } else {
@@ -265,6 +294,7 @@ public class TopologicalSortController {
                 }
             }));
             autoTimeline.setCycleCount(Timeline.INDEFINITE);
+            autoTimeline.setRate(speedSlider.getValue());
             autoTimeline.play();
         }
     }

@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import com.AlgoVista.utils.ShortcutManager;
 
 import java.io.IOException;
 import java.util.List;
@@ -20,7 +21,7 @@ public class BSTTraversalController {
     @FXML private Canvas bstCanvas;
     @FXML private TextField valueInput, customBSTInput;
     @FXML private Slider speedSlider;
-    @FXML private Label statusLabel, traversalTypeLabel;
+    @FXML private Label statusLabel, traversalTypeLabel, speedLabel;
     @FXML private HBox traversalBox;
     @FXML private HBox queueBox;
     @FXML private Spinner<Integer> sizeSpinner;
@@ -44,11 +45,38 @@ public class BSTTraversalController {
         bstCanvas.widthProperty().addListener(evt -> updateVisualization());
         bstCanvas.heightProperty().addListener(evt -> updateVisualization());
 
+        speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (speedLabel != null) {
+                speedLabel.setText(String.format("%.1fx", newVal.doubleValue()));
+            }
+        });
+
         updateVisualization();
         statusLabel.setText("Ready. Build a tree then select a traversal.");
         traversalTypeLabel.setText("All Traversals — O(n)");
         traversalTypeLabel.setStyle("-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #94a3b8; " +
                 "-fx-background-color: rgba(148,163,184,0.12); -fx-padding: 6 14; -fx-background-radius: 20;");
+
+        // Register Keyboard Shortcuts
+        bstCanvas.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                ShortcutManager.register(newScene, 
+                    this::playPauseToggle, 
+                    this::nextStep, 
+                    this::clearTree, 
+                    this::backToCategory
+                );
+            }
+        });
+    }
+
+    private void playPauseToggle() {
+        if (animation == null) return;
+        if (animation.getStatus() == Timeline.Status.RUNNING) {
+            pauseAnimation();
+        } else {
+            playAnimation();
+        }
     }
 
     @FXML

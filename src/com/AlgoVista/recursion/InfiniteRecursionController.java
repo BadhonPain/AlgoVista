@@ -13,6 +13,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import com.AlgoVista.utils.ShortcutManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,6 +32,8 @@ public class InfiniteRecursionController {
     private Button autoPlayBtn;
     @FXML
     private Slider speedSlider;
+    @FXML
+    private Label speedLabel;
 
     private boolean isPlaying = false;
     private int currentStepIndex = 0;
@@ -63,6 +66,11 @@ public class InfiniteRecursionController {
 
     @FXML
     public void initialize() {
+        speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (speedLabel != null) {
+                speedLabel.setText(String.format("%.1fx", newVal.doubleValue()));
+            }
+        });
         for (int i = 0; i < sourceCode.length; i++) {
             Label lineLabel = new Label(sourceCode[i]);
             lineLabel.setStyle("-fx-text-fill: #cbd5e1; -fx-padding: 2 10; -fx-background-radius: 4;");
@@ -73,6 +81,17 @@ public class InfiniteRecursionController {
 
         buildSimulationSteps();
         renderStep(0);
+
+        stackContainer.sceneProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                ShortcutManager.register(newVal,
+                    this::toggleAutoPlay,
+                    this::stepForward,
+                    this::resetSimulation,
+                    this::backToCategory
+                );
+            }
+        });
     }
 
     private void buildSimulationSteps() {
@@ -201,7 +220,10 @@ public class InfiniteRecursionController {
             new Thread(() -> {
                 while (isPlaying && currentStepIndex < steps.size() - 1) {
                     try {
-                        long delay = (long) speedSlider.getValue();
+                        long delay = 400;
+                        if (speedSlider != null) {
+                            delay = (long) (400 / speedSlider.getValue());
+                        }
                         Thread.sleep(delay);
                     } catch (InterruptedException e) {
                         e.printStackTrace();

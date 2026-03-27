@@ -16,6 +16,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import com.AlgoVista.utils.ShortcutManager;
+import javafx.animation.Animation;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,17 +32,52 @@ public class BinarySearchController {
     @FXML private TextField customArrayInput;
     @FXML private Label statusLabel;
     @FXML private Label stepLabel;
-    @FXML private Label complexityLabel;
+    @FXML private javafx.scene.control.Slider speedSlider;
+    @FXML private Label speedLabel;
+
+    private double animationSpeed = 1.0;
 
     private List<Integer> data;
     private List<StackPane> nodes;
     private int low, high, mid;
     private int searchSteps = 0;
     private boolean searching = false;
+    private PauseTransition currentStepAnimation;
 
     @FXML
     public void initialize() {
+        if (speedSlider != null) {
+            speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+                animationSpeed = newVal.doubleValue();
+                if (speedLabel != null) {
+                    speedLabel.setText(String.format("%.1fx", animationSpeed));
+                }
+            });
+        }
         generateNewArray();
+
+        arrayContainer.sceneProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                ShortcutManager.register(newVal,
+                    this::playPauseToggle,
+                    null, // Step forward isn't granular here
+                    this::generateNewArray,
+                    this::backToCategory
+                );
+            }
+        });
+    }
+
+    private void playPauseToggle() {
+        if (currentStepAnimation != null) {
+            if (currentStepAnimation.getStatus() == Animation.Status.RUNNING) {
+                currentStepAnimation.pause();
+            } else {
+                currentStepAnimation.play();
+            }
+        } else if (!searching) {
+            startSearch();
+        }
     }
 
     @FXML
@@ -134,7 +171,6 @@ public class BinarySearchController {
             int target = Integer.parseInt(targetStr);
             searching = true;
             searchSteps = 0;
-            complexityLabel.setVisible(false);
             statusLabel.setText("Searching for " + target + "...");
             resetHighlights();
             animateSearch(target);
@@ -155,7 +191,6 @@ public class BinarySearchController {
             statusLabel.setText("NOT FOUND");
             statusLabel.setTextFill(Color.web("#ef4444"));
             stepLabel.setText("The target " + target + " is not in the array.");
-            showComplexity("WORST");
             searching = false;
             return;
         }
@@ -183,8 +218,8 @@ public class BinarySearchController {
         
         stepLabel.setText("Checking index " + mid + " (value: " + data.get(mid) + ")");
 
-        PauseTransition pause = new PauseTransition(Duration.seconds(1.2));
-        pause.setOnFinished(e -> {
+        currentStepAnimation = new PauseTransition(Duration.seconds(1.2 / animationSpeed));
+        currentStepAnimation.setOnFinished(e -> {
             int midVal = data.get(mid);
             if (midVal == target) {
                 midRect.setFill(Color.web("#10b981")); // Emerald green
@@ -193,20 +228,12 @@ public class BinarySearchController {
                 stepLabel.setText("Found " + target + " at index " + mid);
                 searching = false;
                 
-                ScaleTransition st = new ScaleTransition(Duration.millis(300), nodes.get(mid));
+                ScaleTransition st = new ScaleTransition(Duration.millis(300 / animationSpeed), nodes.get(mid));
                 st.setByX(0.3);
                 st.setByY(0.3);
                 st.setAutoReverse(true);
                 st.setCycleCount(2);
-                st.play();
-                
-                if (searchSteps == 1) {
-                    showComplexity("BEST");
-                } else if (low == high) {
-                    showComplexity("WORST");
-                } else {
-                    showComplexity("AVERAGE");
-                }
+                st.play();                
                 
             } else {
                 midRect.setFill(Color.web("#1e293b")); // Revert mid color
@@ -218,12 +245,12 @@ public class BinarySearchController {
                     statusLabel.setText(target + " > " + midVal + " | Searching RIGHT");
                     low = mid + 1;
                 }
-                PauseTransition nextPause = new PauseTransition(Duration.seconds(0.8));
+                PauseTransition nextPause = new PauseTransition(Duration.seconds(0.8 / animationSpeed));
                 nextPause.setOnFinished(ev -> performStep(target));
                 nextPause.play();
             }
         });
-        pause.play();
+        currentStepAnimation.play();
     }
 
     @FXML
@@ -236,30 +263,11 @@ public class BinarySearchController {
     }
 
     private void resetHighlights() {
-        complexityLabel.setVisible(false);
         for (StackPane node : nodes) {
             Rectangle rect = (Rectangle) node.getChildren().get(0);
             rect.setFill(Color.web("#1e293b"));
             rect.setStroke(Color.web("#334155"));
             rect.setOpacity(1.0);
-        }
-    }
-
-    private void showComplexity(String type) {
-        complexityLabel.setVisible(true);
-        switch (type) {
-            case "BEST":
-                complexityLabel.setText("Best Case : Time Complexity O(1)");
-                complexityLabel.setStyle("-fx-background-color: rgba(46, 204, 113, 0.2); -fx-text-fill: #2ecc71; -fx-padding: 3 15 3 15; -fx-background-radius: 12; -fx-font-weight: bold;");
-                break;
-            case "WORST":
-                complexityLabel.setText("Worst Case : Time complexity O(logn)");
-                complexityLabel.setStyle("-fx-background-color: rgba(231, 76, 60, 0.2); -fx-text-fill: #e74c3c; -fx-padding: 3 15 3 15; -fx-background-radius: 12; -fx-font-weight: bold;");
-                break;
-            default:
-                complexityLabel.setText("Average case : Time Complexity O(logn)");
-                complexityLabel.setStyle("-fx-background-color: rgba(52, 152, 219, 0.2); -fx-text-fill: #3498db; -fx-padding: 3 15 3 15; -fx-background-radius: 12; -fx-font-weight: bold;");
-                break;
         }
     }
 

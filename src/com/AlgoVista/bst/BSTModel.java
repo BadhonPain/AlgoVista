@@ -302,8 +302,4 @@ public class BSTModel {
         if (node == null) return 0;
         return 1 + Math.max(getMaxDepthOf(node.left), getMaxDepthOf(node.right));
     }
-
-    private int getMaxDepthRec(BSTNode node) {
-        return getMaxDepthOf(node);
-    }
 }
