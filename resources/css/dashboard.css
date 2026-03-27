@@ -1,0 +1,113 @@
+.dashboard-root {
+    -fx-background-color: radial-gradient(focus-angle 0deg , focus-distance 0% , center 50% 50% , radius 100% , #1e293b 0% , #0f172a 100%);
+}
+
+/* Glassmorphism Navigation Bar */
+.nav-bar {
+    -fx-background-color: rgba(30, 41, 59, 0.5);
+    -fx-border-color: rgba(255, 255, 255, 0.05);
+    -fx-border-width: 0 0 1 0;
+}
+
+.nav-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: linear-gradient(to bottom, #ffffff, #94a3b8);
+    -fx-letter-spacing: 1px;
+}
+
+.nav-link {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #94a3b8;
+    -fx-cursor: hand;
+}
+
+.nav-link:hover {
+    -fx-text-fill: #38bdf8;
+    -fx-effect: dropshadow(gaussian, rgba(56, 189, 248, 0.4), 10, 0, 0, 0);
+}
+
+.nav-link-active {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #38bdf8;
+    -fx-border-color: #38bdf8;
+    -fx-border-width: 0 0 2 0;
+    -fx-padding: 0 0 5 0;
+}
+
+/* Headers */
+.header-title {
+    -fx-font-size: 42px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.header-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #94a3b8;
+    -fx-letter-spacing: 2px;
+}
+
+/* Premium Search Capsule */
+.search-container {
+    -fx-background-color: rgba(30, 41, 59, 0.4);
+    -fx-background-radius: 30;
+    -fx-border-color: rgba(56, 189, 248, 0.1);
+    -fx-border-width: 1;
+    -fx-border-radius: 30;
+    -fx-padding: 2;
+}
+
+.search-field {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #475569;
+    -fx-font-size: 15px;
+    -fx-padding: 10 25;
+}
+
+.search-field:focused {
+    /* Focus styling handled by container via CSS grouping in JS or just simple border if needed */
+}
+
+/* Content Area */
+.content-scroll {
+    -fx-background: transparent;
+    -fx-background-color: transparent;
+}
+
+.content-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Overlay & Modals */
+.overlay-dim {
+    -fx-background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-panel {
+    -fx-background-color: #1e293b;
+    -fx-background-radius: 20;
+    -fx-border-color: rgba(56, 189, 248, 0.2);
+    -fx-border-width: 1;
+    -fx-border-radius: 20;
+    -fx-padding: 30;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 30, 0, 0, 15);
+}
+
+/* SCROLLBAR STYLING */
+.scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-width: 8;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-background-radius: 10;
+}
+
+.scroll-bar:vertical .thumb:hover {
+    -fx-background-color: rgba(56, 189, 248, 0.3);
+}
