@@ -1,36 +1,36 @@
 module com.AlgoVista {
     requires javafx.controls;
     requires javafx.fxml;
+    requires javafx.graphics;
 
-    // This allows JavaFX to load your screens
-    opens com.AlgoVista.dashboard to javafx.fxml;
-
+    // This allows JavaFX to load your screens and controllers
+    opens com.AlgoVista.dashboard;
     exports com.AlgoVista.dashboard;
 
-    opens com.AlgoVista.graphs to javafx.fxml;
-
+    opens com.AlgoVista.graphs;
     exports com.AlgoVista.graphs;
 
-    opens com.AlgoVista.heap to javafx.fxml;
-
+    opens com.AlgoVista.heap;
     exports com.AlgoVista.heap;
 
-    opens com.AlgoVista.bst to javafx.fxml;
-
+    opens com.AlgoVista.bst;
     exports com.AlgoVista.bst;
 
-    opens com.AlgoVista.recursion to javafx.fxml;
-
+    opens com.AlgoVista.recursion;
     exports com.AlgoVista.recursion;
 
-    opens com.AlgoVista.images to javafx.graphics, javafx.fxml;
-
-    opens com.AlgoVista.trees to javafx.fxml;
+    opens com.AlgoVista.trees;
     exports com.AlgoVista.trees;
 
-    opens com.AlgoVista.dnc to javafx.fxml;
+    opens com.AlgoVista.dnc;
     exports com.AlgoVista.dnc;
 
-    opens com.AlgoVista.dp to javafx.fxml;
+    // Explicitly opening and exporting the DP module
+    opens com.AlgoVista.dp;
     exports com.AlgoVista.dp;
+
+    // Resources and Utilities
+    opens com.AlgoVista.images;
+    opens com.AlgoVista.utils;
+    exports com.AlgoVista.utils;
 }

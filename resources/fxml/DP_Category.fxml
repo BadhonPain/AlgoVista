@@ -10,7 +10,7 @@
       style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #1e293b); -fx-padding: 30;"
       xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.AlgoVista.dp.DPCategoryController">
+      fx:controller="com.AlgoVista.dashboard.DPCategoryController">
     <children>
         <!-- Top Bar with Back Button and Header -->
         <BorderPane>
