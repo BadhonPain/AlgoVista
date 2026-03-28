@@ -40,7 +40,11 @@ public class CardController {
                 fxmlPath = "/fxml/ArrayVisualizer.fxml";
             } else if (algo.equals("Stack")) {
                 fxmlPath = "/fxml/StackVisualizer.fxml";
-            }                                         // ← this } was missing!
+            } else if (algo.equals("Queue")) {
+                fxmlPath = "/fxml/QueueVisualizer.fxml";
+            } else if (algo.equals("Sorting")) {
+                fxmlPath = "/fxml/SortingCategory.fxml";
+            }
 
             if (fxmlPath != null) {
                 FXMLLoader loader = new FXMLLoader();

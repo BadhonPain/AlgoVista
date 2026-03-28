@@ -41,7 +41,7 @@
 .queue-card {
     -fx-background-color: #1A1A1A;
     -fx-background-image: url('../com/AlgoVista/images/queue.png');
-    -fx-background-size:70% auto;
+    -fx-background-size: 70% auto;
     -fx-background-position: center 25%;
     -fx-background-repeat: no-repeat;
 }
@@ -95,9 +95,18 @@
 }
 
 /* Hover effect */
-.divide-conquer-card:hover, .recursion-card:hover, .array-card:hover, .linked-list-card:hover, .stack-card:hover, .queue-card:hover,
-.graph-card:hover, .bst-card:hover, .heap-card:hover, .sorting-card:hover,
-.dp-card:hover, .advanced-card:hover {
+.divide-conquer-card:hover,
+.recursion-card:hover,
+.array-card:hover,
+.linked-list-card:hover,
+.stack-card:hover,
+.queue-card:hover,
+.graph-card:hover,
+.bst-card:hover,
+.heap-card:hover,
+.sorting-card:hover,
+.dp-card:hover,
+.advanced-card:hover {
     -fx-scale-x: 1.05;
     -fx-scale-y: 1.05;
     -fx-effect: dropshadow(gaussian, rgba(56, 189, 248, 0.6), 15, 0, 0, 3);
@@ -165,4 +174,78 @@
     -fx-border-radius: 12;
     -fx-min-width: 45px;
     -fx-alignment: center;
+}
+
+.array-bar {
+    -fx-background-color: #3b82f6;
+    -fx-background-radius: 5 5 0 0;
+}
+
+.array-bar.active {
+    -fx-background-color: #ef4444;
+}
+
+.array-bar.sorted {
+    -fx-background-color: #080e0c;
+}
+
+.array-bar-value {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.array-bar-index {
+    -fx-text-fill: #94a3b8;
+    -fx-font-size: 12px;
+}
+
+.code-line {
+    -fx-padding: 2 5;
+}
+
+.code-line.active {
+    -fx-background-color: rgba(59, 130, 246, 0.3);
+    -fx-border-color: transparent transparent transparent #3b82f6;
+    -fx-border-width: 0 0 0 3;
+}
+
+.code-line-number {
+    -fx-text-fill: #64748b;
+    -fx-min-width: 30;
+    -fx-font-family: monospace;
+}
+
+.code-line-text {
+    -fx-text-fill: black;
+    -fx-font-family: monospace;
+    -fx-font-size: 14px;
+}
+
+.variable-row {
+    -fx-padding: 3;
+    -fx-border-color: #334155;
+    -fx-border-width: 0 0 1 0;
+}
+
+.variable-name {
+    -fx-text-fill: #3b82f6;
+    -fx-font-weight: bold;
+}
+
+.variable-value {
+    -fx-text-fill: #e2e8f0;
+}
+
+.language-label {
+    -fx-text-fill: #64748b;
+    -fx-padding: 5 10;
+    -fx-cursor: hand;
+    -fx-border-radius: 5;
+    -fx-font-weight: bold;
+}
+
+.language-label.active {
+    -fx-text-fill: white;
+    -fx-background-color: #3b82f6;
 }

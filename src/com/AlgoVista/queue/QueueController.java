@@ -1,4 +1,4 @@
-package com.AlgoVista.stack;
+package com.AlgoVista.queue;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -9,46 +9,44 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
 
-public class StackController {
+public class QueueController {
 
     @FXML private Spinner<Integer> capacitySpinner;
     @FXML private TextField valueInput;
-    @FXML private VBox stackContainer;
+    @FXML private FlowPane queueContainer;
     @FXML private VBox stepLogContainer;
     @FXML private Label outputLabel;
     @FXML private VBox complexitiesContainer;
 
-    private StackModel model;
+    private QueueModel model;
     private boolean isAnimating = false;
 
     @FXML
     public void initialize() {
-        model = new StackModel(8); // Default capacity 8
+        model = new QueueModel(8); // Default capacity 8
         capacitySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 20, 8));
         
         setupComplexities();
-        renderStackInstantly();
-        logResult("Stack Visualizer initialized. Ready for simulation.");
+        renderQueueInstantly();
+        logResult("Queue Visualizer initialized. Ready for simulation.");
     }
 
     private void setupComplexities() {
-        addComplexityRow("Push", "Insert an element at the top of the stack", "O(1)");
-        addComplexityRow("Pop", "Remove the top element", "O(1)");
-        addComplexityRow("Peek / Top", "Access the top element without removing it", "O(1)");
-        addComplexityRow("Is Empty", "Check whether the stack has no elements", "O(1)");
-        addComplexityRow("Is Full", "Check whether the stack reached capacity", "O(1)");
+        addComplexityRow("Enqueue", "Add an element to the rear of the queue", "O(1)");
+        addComplexityRow("Dequeue", "Remove the front element", "O(1)");
+        addComplexityRow("Peek / Front", "Access front element without removing", "O(1)");
+        addComplexityRow("Is Empty", "Check whether the queue has no elements", "O(1)");
+        addComplexityRow("Is Full", "Check whether the queue reached capacity", "O(1)");
         addComplexityRow("Size", "Return the current number of elements", "O(1)");
-        addComplexityRow("Search", "Scan stack elements to find a value", "O(n)");
+        addComplexityRow("Search", "Scan queue elements to find a value", "O(n)");
         addComplexityRow("Traverse / Display", "Visit and display all elements", "O(n)");
         addComplexityRow("Clear", "Remove all elements", "O(n)");
-        addComplexityRow("Generate Random Stack", "Fill stack with multiple random values", "O(n)");
-        addComplexityRow("Space Complexity", "Memory used to store stack elements", "O(n)");
+        addComplexityRow("Space Complexity", "Memory used to store queue elements", "O(n)");
     }
 
     private void addComplexityRow(String operation, String description, String complexity) {
@@ -91,14 +89,14 @@ public class StackController {
     // --- Core Operations ---
     
     @FXML
-    private void createStack() {
+    private void createQueue() {
         if (isAnimating) return;
         int cap = capacitySpinner.getValue();
-        model = new StackModel(cap);
+        model = new QueueModel(cap);
         stepLogContainer.getChildren().clear();
-        logStep("Created empty stack with capacity " + cap);
-        renderStackInstantly();
-        logResult("New stack created successfully.");
+        logStep("Created empty circular queue with capacity " + cap);
+        renderQueueInstantly();
+        logResult("New queue created successfully.");
     }
 
     @FXML
@@ -108,46 +106,45 @@ public class StackController {
         model.generateSample(cap, 1, 99);
         stepLogContainer.getChildren().clear();
         logStep("Generated random elements up to capacity " + cap);
-        renderStackInstantly();
-        logResult("Random stack generated successfully.");
+        renderQueueInstantly();
+        logResult("Random queue generated successfully.");
     }
 
     @FXML
-    private void push() {
+    private void enqueue() {
         if (isAnimating) return;
         Integer val = getInputValue();
         if (val == null) return;
 
         stepLogContainer.getChildren().clear();
-        logStep("PUSH OP initiating for value " + val + "...");
+        logStep("ENQUEUE OP initiating for value " + val + "...");
         
         isAnimating = true;
 
         new Thread(() -> {
             try {
                 Thread.sleep(800);
-                logStep("Step 1: Checking if stack is full...");
+                logStep("Step 1: Checking if queue is full...");
                 
                 if (model.isFull()) {
-                    logStep("Stack is full! Cannot push.");
-                    logResult("Push failed. Stack Overflow condition.");
-                    showAlert("Stack Overflow", "Cannot push, the stack is full.");
+                    logStep("Queue is full! Cannot enqueue.");
+                    logResult("Enqueue failed. Queue Overflow condition.");
+                    showAlert("Queue Overflow", "Cannot enqueue, the queue is full.");
                     return;
                 }
                 
-                logStep("Stack is not full. Proceeding.");
+                logStep("Queue is not full. Proceeding.");
                 Thread.sleep(1000);
                 
-                boolean success = model.push(val);
+                boolean success = model.enqueue(val);
                 if (success) {
-                    logStep("Step 2: Incrementing TOP pointer and inserting value " + val);
-                    Platform.runLater(this::renderStackInstantly); // Redraw with new element
+                    logStep("Step 2: Calculating new REAR index via (rear + 1) % capacity and inserting value " + val);
+                    Platform.runLater(this::renderQueueInstantly);
                     
                     Platform.runLater(() -> {
-                        int indexInVBox = model.getCapacity() - 1 - model.getTopIndex();
-                        if (indexInVBox >= 0 && indexInVBox < stackContainer.getChildren().size()) {
-                            HBox row = (HBox) stackContainer.getChildren().get(indexInVBox);
-                            VBox cellBox = (VBox) row.getChildren().get(1);
+                        int rearIndex = model.getRear();
+                        if (rearIndex >= 0 && rearIndex < queueContainer.getChildren().size()) {
+                            VBox cellBox = (VBox) queueContainer.getChildren().get(rearIndex);
                             Label dataLabel = (Label) cellBox.getChildren().get(0);
                             String oldStyle = dataLabel.getStyle();
                             dataLabel.setStyle(oldStyle.replace("-fx-background-color: #34495e;", "-fx-background-color: #2ecc71;"));
@@ -158,8 +155,8 @@ public class StackController {
                         }
                     });
                     
-                    logStep("Step 3: Pushed value successfully.");
-                    logResult("Pushed " + val + " onto the stack.");
+                    logStep("Step 3: Enqueued successfully.");
+                    logResult("Enqueued " + val + " to the queue.");
                     Platform.runLater(() -> valueInput.clear());
                 }
             } catch (Exception e) {
@@ -171,45 +168,44 @@ public class StackController {
     }
 
     @FXML
-    private void pop() {
+    private void dequeue() {
         if (isAnimating) return;
         
         stepLogContainer.getChildren().clear();
-        logStep("POP OP initiating...");
+        logStep("DEQUEUE OP initiating...");
         isAnimating = true;
 
         new Thread(() -> {
             try {
                 Thread.sleep(800);
-                logStep("Step 1: Checking if stack is empty...");
+                logStep("Step 1: Checking if queue is empty...");
                 
                 if (model.isEmpty()) {
-                    logStep("Stack is empty! Cannot pop.");
-                    logResult("Pop failed. Stack Underflow condition.");
-                    showAlert("Stack Underflow", "Cannot pop, the stack is empty.");
+                    logStep("Queue is empty! Cannot dequeue.");
+                    logResult("Dequeue failed. Queue Underflow condition.");
+                    showAlert("Queue Underflow", "Cannot dequeue, the queue is empty.");
                     return;
                 }
                 
-                logStep("Stack has elements. Proceeding.");
+                logStep("Queue has elements. Proceeding.");
                 
                 Platform.runLater(() -> {
-                    int indexInVBox = model.getCapacity() - 1 - model.getTopIndex();
-                    if (indexInVBox >= 0 && indexInVBox < stackContainer.getChildren().size()) {
-                        HBox row = (HBox) stackContainer.getChildren().get(indexInVBox);
-                        VBox cellBox = (VBox) row.getChildren().get(1);
+                    int frontIndex = model.getFront();
+                    if (frontIndex >= 0 && frontIndex < queueContainer.getChildren().size()) {
+                        VBox cellBox = (VBox) queueContainer.getChildren().get(frontIndex);
                         Label dataLabel = (Label) cellBox.getChildren().get(0);
                         dataLabel.setStyle(dataLabel.getStyle().replace("-fx-background-color: #34495e;", "-fx-background-color: #e74c3c;"));
-                        logStep("Step 2: Identifying current TOP element (" + model.peek() + ") for removal.");
+                        logStep("Step 2: Identifying current FRONT element (" + model.peek() + ") for removal.");
                     }
                 });
                 
                 Thread.sleep(1000);
                 if (model.isEmpty()) return;
                 
-                Integer popped = model.pop();
-                logStep("Step 3: Value " + popped + " removed. TOP pointer decremented.");
-                Platform.runLater(this::renderStackInstantly);
-                logResult("Popped " + popped + " from the stack.");
+                Integer dequeued = model.dequeue();
+                logStep("Step 3: Value " + dequeued + " removed. FRONT pointer incremented via (front + 1) % capacity.");
+                Platform.runLater(this::renderQueueInstantly);
+                logResult("Dequeued " + dequeued + " from the queue.");
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
@@ -226,8 +222,8 @@ public class StackController {
         logStep("PEEK OP initiating...");
         
         if (model.isEmpty()) {
-            logStep("Stack is empty. No top element.");
-            logResult("Peek failed: Stack is empty.");
+            logStep("Queue is empty. No front element.");
+            logResult("Peek failed: Queue is empty.");
             return;
         }
 
@@ -235,15 +231,14 @@ public class StackController {
         
         new Thread(() -> {
             try {
-                logStep("Accessing top element pointer...");
+                logStep("Accessing FRONT pointer...");
                 
                 String[] savedStyle = {null};
                 
                 Platform.runLater(() -> {
-                    int indexInVBox = model.getCapacity() - 1 - model.getTopIndex();
-                    if (indexInVBox >= 0 && indexInVBox < stackContainer.getChildren().size()) {
-                        HBox row = (HBox) stackContainer.getChildren().get(indexInVBox);
-                        VBox cellBox = (VBox) row.getChildren().get(1);
+                    int frontIndex = model.getFront();
+                    if (frontIndex >= 0 && frontIndex < queueContainer.getChildren().size()) {
+                        VBox cellBox = (VBox) queueContainer.getChildren().get(frontIndex);
                         Label dataLabel = (Label) cellBox.getChildren().get(0);
                         
                         savedStyle[0] = dataLabel.getStyle();
@@ -254,15 +249,14 @@ public class StackController {
                 Thread.sleep(1200);
                 
                 Platform.runLater(() -> {
-                    int indexInVBox = model.getCapacity() - 1 - model.getTopIndex();
-                    if (indexInVBox >= 0 && indexInVBox < stackContainer.getChildren().size()) {
-                        HBox row = (HBox) stackContainer.getChildren().get(indexInVBox);
-                        VBox cellBox = (VBox) row.getChildren().get(1);
+                    int frontIndex = model.getFront();
+                    if (frontIndex >= 0 && frontIndex < queueContainer.getChildren().size()) {
+                        VBox cellBox = (VBox) queueContainer.getChildren().get(frontIndex);
                         Label dataLabel = (Label) cellBox.getChildren().get(0);
                         if(savedStyle[0] != null) dataLabel.setStyle(savedStyle[0]);
                     }
-                    logStep("Top element is " + model.peek() + ".");
-                    logResult("Top element is " + model.peek());
+                    logStep("Front element is " + model.peek() + ".");
+                    logResult("Front element is " + model.peek());
                 });
             } catch (Exception e) {
                 e.printStackTrace();
@@ -282,8 +276,8 @@ public class StackController {
         logStep("SEARCH OP initiating for value " + target + "...");
         
         if (model.isEmpty()) {
-            logStep("Stack is empty. Search termination immediately.");
-            logResult("Value not found (Empty Stack).");
+            logStep("Queue is empty. Search termination immediately.");
+            logResult("Value not found (Empty Queue).");
             return;
         }
 
@@ -292,21 +286,22 @@ public class StackController {
         new Thread(() -> {
             try {
                 int[] elements = model.getElements();
-                int top = model.getTopIndex();
+                int front = model.getFront();
+                int size = model.getSize();
+                int capacity = model.getCapacity();
                 boolean[] foundTracker = {false};
 
-                for (int i = top; i >= 0; i--) {
+                for (int count = 0; count < size; count++) {
                     if (foundTracker[0]) break;
                     
-                    final int currIndex = i;
+                    int currIndex = (front + count) % capacity;
                     Thread.sleep(800);
                     
-                    logStep("Checking index " + currIndex + " from bottom (Value: " + elements[currIndex] + ")");
+                    logStep("Checking index " + currIndex + " from front (Value: " + elements[currIndex] + ")");
                     
+                    final int finalCount = count;
                     Platform.runLater(() -> {
-                        int vBoxIdx = model.getCapacity() - 1 - currIndex;
-                        HBox row = (HBox) stackContainer.getChildren().get(vBoxIdx);
-                        VBox cellBox = (VBox) row.getChildren().get(1);
+                        VBox cellBox = (VBox) queueContainer.getChildren().get(currIndex);
                         Label dataLabel = (Label) cellBox.getChildren().get(0);
                         String oldStyle = dataLabel.getStyle();
                         
@@ -314,8 +309,8 @@ public class StackController {
                         
                         if (elements[currIndex] == target) {
                             foundTracker[0] = true;
-                            logStep("Match found! Distance from top = " + (top - currIndex + 1));
-                            logResult("Found value " + target + " at logical index " + currIndex + ".");
+                            logStep("Match found! Distance from front = " + finalCount);
+                            logResult("Found value " + target + " at array index " + currIndex + ".");
                             PauseTransition end = new PauseTransition(Duration.millis(1500));
                             end.setOnFinished(ev -> dataLabel.setStyle(oldStyle));
                             end.play();
@@ -326,7 +321,6 @@ public class StackController {
                         }
                     });
                     
-                    // Wait out the visual highlight phase
                     if (elements[currIndex] == target) {
                         Thread.sleep(1500);
                     } else {
@@ -336,7 +330,7 @@ public class StackController {
                 
                 Thread.sleep(200);
                 if (!foundTracker[0]) {
-                    logStep("Reached bottom. Element not found.");
+                    logStep("Reached end of queue. Element not found.");
                     logResult("Search failed. Element " + target + " not present.");
                 }
             } catch (Exception e) {
@@ -355,8 +349,8 @@ public class StackController {
         logStep("TRAVERSE OP initiating...");
         
         if (model.isEmpty()) {
-            logStep("Empty Stack.");
-            logResult("Stack is empty.");
+            logStep("Empty Queue.");
+            logResult("Queue is empty.");
             return;
         }
         
@@ -365,20 +359,20 @@ public class StackController {
         new Thread(() -> {
             try {
                 int[] elements = model.getElements();
-                int top = model.getTopIndex();
+                int front = model.getFront();
+                int size = model.getSize();
+                int capacity = model.getCapacity();
                 
-                logStep("Traversing from TOP down to BOTTOM...");
+                logStep("Traversing from FRONT to REAR...");
                 
-                for (int i = top; i >= 0; i--) {
-                    final int currIndex = i;
+                for (int count = 0; count < size; count++) {
+                    int currIndex = (front + count) % capacity;
                     Thread.sleep(800);
                     
                     logStep("Visiting element at index " + currIndex + " (Value: " + elements[currIndex] + ")");
                     
                     Platform.runLater(() -> {
-                        int vBoxIdx = model.getCapacity() - 1 - currIndex;
-                        HBox row = (HBox) stackContainer.getChildren().get(vBoxIdx);
-                        VBox cellBox = (VBox) row.getChildren().get(1);
+                        VBox cellBox = (VBox) queueContainer.getChildren().get(currIndex);
                         Label dataLabel = (Label) cellBox.getChildren().get(0);
                         String oldStyle = dataLabel.getStyle();
                         
@@ -389,11 +383,11 @@ public class StackController {
                         end.play();
                     });
                     
-                    Thread.sleep(1000); // Wait for highlight to mostly finish
+                    Thread.sleep(1000); 
                 }
                 
                 logStep("Traversal complete.");
-                logResult("Traversing from TOP to BOTTOM:\n" + model.traverse());
+                logResult("Traversing from FRONT to REAR:\n" + model.traverse());
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
@@ -408,7 +402,7 @@ public class StackController {
         stepLogContainer.getChildren().clear();
         boolean empty = model.isEmpty();
         logStep("Checked isEmpty(). Result: " + empty);
-        logResult("Is Stack Empty? -> " + String.valueOf(empty).toUpperCase());
+        logResult("Is Queue Empty? -> " + String.valueOf(empty).toUpperCase());
     }
 
     @FXML
@@ -417,15 +411,15 @@ public class StackController {
         stepLogContainer.getChildren().clear();
         boolean full = model.isFull();
         logStep("Checked isFull(). Result: " + full);
-        logResult("Is Stack Full? -> " + String.valueOf(full).toUpperCase());
+        logResult("Is Queue Full? -> " + String.valueOf(full).toUpperCase());
     }
 
     @FXML
     private void getSize() {
         if (isAnimating) return;
         stepLogContainer.getChildren().clear();
-        int size = model.size();
-        logStep("Top pointer is at index " + model.getTopIndex() + ". Size is Top+1.");
+        int size = model.getSize();
+        logStep("Counted nodes from Front to Rear.");
         logResult("Current Size: " + size + " / " + model.getCapacity());
     }
 
@@ -435,41 +429,47 @@ public class StackController {
         stepLogContainer.getChildren().clear();
         logStep("CLEAR OP Executed.");
         model.clear();
-        renderStackInstantly();
-        logResult("Stack fully cleared.");
+        renderQueueInstantly();
+        logResult("Queue fully cleared.");
     }
 
     // --- Visualization & Helpers ---
 
-    private void renderStackInstantly() {
-        stackContainer.getChildren().clear();
+    private void renderQueueInstantly() {
+        queueContainer.getChildren().clear();
         
         int capacity = model.getCapacity();
         int[] elements = model.getElements();
-        int top = model.getTopIndex();
+        int front = model.getFront();
+        int rear = model.getRear();
+        boolean isEmpty = model.isEmpty();
+        int size = model.getSize();
 
-        // VBox renders from top to bottom child-wise.
-        // Array index capacities: top of container is index (capacity - 1), bottom is index 0.
-        for (int i = capacity - 1; i >= 0; i--) {
-            boolean isActive = (i <= top);
-            boolean isTop = (i == top);
+        // Render entire array capacity
+        for (int i = 0; i < capacity; i++) {
+            boolean isActive = false;
+            
+            // Check if current index i is within the active logical queue range
+            if (!isEmpty) {
+                if (front <= rear) {
+                    isActive = (i >= front && i <= rear);
+                } else {
+                    isActive = (i >= front || i <= rear);
+                }
+            }
+            
+            boolean isFront = (!isEmpty && i == front);
+            boolean isRear = (!isEmpty && i == rear);
+            
             String val = isActive ? String.valueOf(elements[i]) : "";
             
-            HBox row = createStackCell(val, i, isActive, isTop);
-            stackContainer.getChildren().add(row);
+            VBox cell = createQueueCell(val, i, isActive, isFront, isRear);
+            queueContainer.getChildren().add(cell);
         }
     }
 
-    private HBox createStackCell(String valStr, int index, boolean isActive, boolean isTop) {
-        HBox row = new HBox(15);
-        row.setAlignment(Pos.CENTER);
-
-        // Optional Left space padding or pointer (TOP marker)
-        Label topMarker = new Label(isTop ? "TOP →" : "     ");
-        topMarker.setStyle("-fx-font-weight: bold; -fx-text-fill: #e74c3c; -fx-min-width: 45;");
-
-        // Main Box
-        VBox box = new VBox(0);
+    private VBox createQueueCell(String valStr, int index, boolean isActive, boolean isFront, boolean isRear) {
+        VBox box = new VBox(5);
         box.setAlignment(Pos.CENTER);
         
         String bgStyle = isActive ? "-fx-background-color: #34495e;" : "-fx-background-color: #ecf0f1;";
@@ -480,28 +480,39 @@ public class StackController {
                 bgStyle +
                 "-fx-border-color: #2c3e50;" +
                 "-fx-border-width: 2;" +
-                "-fx-min-width: 130;" +
-                "-fx-max-width: 130;" +
-                "-fx-min-height: 40;" +
-                "-fx-max-height: 40;" +
+                "-fx-min-width: 50;" +
+                "-fx-max-width: 50;" +
+                "-fx-min-height: 50;" +
+                "-fx-max-height: 50;" +
                 "-fx-alignment: center;" +
-                "-fx-font-size: 20;" +
+                "-fx-font-size: 18;" + // Enhanced text size
                 "-fx-font-weight: bold;" +
                 "-fx-text-fill: " + textFill + ";"
         );
-        box.getChildren().add(dataLabel);
-
-        // Right side index marker cleanly integrated
-        Label idxMarker = new Label("[" + index + "]");
-        idxMarker.setStyle("-fx-text-fill: #7f8c8d; -fx-font-size: 13; -fx-min-width: 25;");
         
-        row.getChildren().addAll(topMarker, box, idxMarker);
-        return row;
+        Label idxLabel = new Label("[" + index + "]");
+        idxLabel.setStyle("-fx-text-fill: #7f8c8d; -fx-font-size: 11;");
+        
+        HBox tags = new HBox(5);
+        tags.setAlignment(Pos.CENTER);
+        if (isFront) {
+            Label fTag = new Label("F");
+            fTag.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 2 5; -fx-background-radius: 3; -fx-font-size: 10; -fx-font-weight: bold;");
+            tags.getChildren().add(fTag);
+        }
+        if (isRear) {
+            Label rTag = new Label("R");
+            rTag.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 2 5; -fx-background-radius: 3; -fx-font-size: 10; -fx-font-weight: bold;");
+            tags.getChildren().add(rTag);
+        }
+        
+        box.getChildren().addAll(dataLabel, idxLabel, tags);
+        return box;
     }
 
     private void logStep(String stepDescription) {
         Label l = new Label("• " + stepDescription);
-        l.setStyle("-fx-text-fill: #34495e; -fx-font-size: 15;");
+        l.setStyle("-fx-text-fill: #34495e; -fx-font-size: 13;");
         l.setWrapText(true);
         Platform.runLater(() -> stepLogContainer.getChildren().add(l));
     }
@@ -526,7 +537,7 @@ public class StackController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/dashboard.fxml"));
             Parent root = loader.load();
 
-            Stage stage = (Stage) stackContainer.getScene().getWindow();
+            Stage stage = (Stage) queueContainer.getScene().getWindow();
             double width = stage.getWidth();
             double height = stage.getHeight();
             Scene scene = new Scene(root, width, height);

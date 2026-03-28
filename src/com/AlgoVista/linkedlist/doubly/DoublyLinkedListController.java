@@ -21,8 +21,10 @@ public class DoublyLinkedListController {
     @FXML private FlowPane listContainer;
     @FXML private Label outputLabel;
     @FXML private VBox complexitiesContainer;
+    @FXML private VBox stepLogContainer;
 
     private DoublyLinkedListModel model;
+    private boolean isAnimating = false;
 
     @FXML
     public void initialize() {
@@ -100,130 +102,425 @@ public class DoublyLinkedListController {
 
     @FXML
     private void prepend() {
+        if (isAnimating) return;
         Integer val = getInputValue();
         if (val == null) return;
         
-        model.prepend(val);
-        updateVisualization();
-        logMessage("Prepended " + val + " to the list.");
-        valueInput.clear();
+        isAnimating = true;
+        if (stepLogContainer != null) stepLogContainer.getChildren().clear();
+        logStep("PREPEND OP initiating...");
+
+        new Thread(() -> {
+            try {
+                logStep("Creating new node with value [" + val + "]...");
+                Thread.sleep(800);
+                
+                logStep("Setting new node's next pointer to current Head, and Head's prev to new node...");
+                Thread.sleep(800);
+                
+                model.prepend(val);
+                
+                logStep("Updating Head pointer to the new node...");
+                javafx.application.Platform.runLater(() -> updateVisualization());
+                Thread.sleep(800);
+                
+                javafx.application.Platform.runLater(() -> highlightNode(0, "#2ecc71")); // green highlight
+                Thread.sleep(600);
+                
+                logStep("Prepend complete.");
+                logMessage("Prepended " + val + " to the list.");
+            } catch (Exception e) {} 
+            finally { 
+                javafx.application.Platform.runLater(() -> valueInput.clear());
+                isAnimating = false; 
+            }
+        }).start();
     }
 
     @FXML
     private void append() {
+        if (isAnimating) return;
         Integer val = getInputValue();
         if (val == null) return;
         
-        model.append(val);
-        updateVisualization();
-        logMessage("Appended " + val + " to the list.");
-        valueInput.clear();
+        isAnimating = true;
+        if (stepLogContainer != null) stepLogContainer.getChildren().clear();
+        logStep("APPEND OP initiating...");
+
+        new Thread(() -> {
+            try {
+                logStep("Creating new node with value [" + val + "]...");
+                Thread.sleep(800);
+                
+                logStep("Jumping to Tail pointer, or traversing if Tail not cached...");
+                int size = 0;
+                DoublyNode curr = model.getHead();
+                while (curr != null) {
+                    final int currIdx = size;
+                    logStep("Passing index " + currIdx + "...");
+                    javafx.application.Platform.runLater(() -> highlightNode(currIdx, "#3498db")); // blue
+                    Thread.sleep(600);
+                    curr = curr.getNext();
+                    size++;
+                }
+                
+                if (size > 0) logStep("Found Tail. Setting Tail's next to new node, and new node's prev to Tail...");
+                else logStep("List is empty. Setting Head & Tail to new node...");
+                Thread.sleep(800);
+                
+                model.append(val);
+                
+                javafx.application.Platform.runLater(() -> updateVisualization());
+                Thread.sleep(500);
+                
+                int finalIdx = size; // new node is placed at size
+                javafx.application.Platform.runLater(() -> highlightNode(finalIdx, "#2ecc71")); // green
+                Thread.sleep(600);
+                
+                logStep("Append complete.");
+                logMessage("Appended " + val + " to the list.");
+            } catch (Exception e) {} 
+            finally { 
+                javafx.application.Platform.runLater(() -> valueInput.clear());
+                isAnimating = false; 
+            }
+        }).start();
     }
 
     @FXML
     private void insertAt() {
+        if (isAnimating) return;
         Integer val = getInputValue();
         Integer idx = getInputIndex();
         if (val == null || idx == null) return;
         
-        boolean success = model.insertAt(idx, val);
-        if (success) {
-            updateVisualization();
-            logMessage("Inserted " + val + " at index " + idx + ".");
-            valueInput.clear();
-            indexInput.clear();
-        } else {
-            showAlert("Invalid Index", "Cannot insert at index " + idx + ". Index out of bounds.");
-        }
+        isAnimating = true;
+        if (stepLogContainer != null) stepLogContainer.getChildren().clear();
+        logStep("INSERT_AT OP initiating...");
+
+        new Thread(() -> {
+            try {
+                logStep("Creating new node with value [" + val + "]...");
+                Thread.sleep(800);
+                
+                logStep("Traversing list to target index " + idx + "...");
+                int currIdx = 0;
+                DoublyNode curr = model.getHead();
+                while (curr != null && currIdx < idx - 1) {
+                    final int cIdx = currIdx;
+                    javafx.application.Platform.runLater(() -> highlightNode(cIdx, "#3498db")); // blue
+                    Thread.sleep(600);
+                    curr = curr.getNext();
+                    currIdx++;
+                }
+                
+                if (idx > 0 && curr == null) {
+                    logStep("Index out of bounds mapping.");
+                    javafx.application.Platform.runLater(() -> showAlert("Invalid Index", "Cannot insert at index " + idx + "."));
+                } else {
+                    logStep("Found insertion point. Rewiring prev and next pointers...");
+                    Thread.sleep(800);
+                    
+                    boolean success = model.insertAt(idx, val);
+                    if (success) {
+                        javafx.application.Platform.runLater(() -> updateVisualization());
+                        Thread.sleep(500);
+                        javafx.application.Platform.runLater(() -> highlightNode(idx, "#2ecc71"));
+                        logStep("Insert complete.");
+                        logMessage("Inserted " + val + " at index " + idx + ".");
+                    }
+                }
+            } catch (Exception e) {} 
+            finally { 
+                javafx.application.Platform.runLater(() -> {
+                    valueInput.clear();
+                    indexInput.clear();
+                });
+                isAnimating = false; 
+            }
+        }).start();
     }
 
     @FXML
     private void deleteByValue() {
+        if (isAnimating) return;
         Integer val = getInputValue();
         if (val == null) return;
         
-        boolean success = model.deleteByValue(val);
-        if (success) {
-            updateVisualization();
-            logMessage("Deleted first occurrence of value " + val + ".");
-            valueInput.clear();
-        } else {
-            showAlert("Value Not Found", "The value " + val + " was not found in the list.");
-        }
+        isAnimating = true;
+        if (stepLogContainer != null) stepLogContainer.getChildren().clear();
+        logStep("DELETE_BY_VALUE OP initiating...");
+
+        new Thread(() -> {
+            try {
+                logStep("Searching for value [" + val + "]...");
+                int currIdx = 0;
+                DoublyNode curr = model.getHead();
+                boolean found = false;
+                
+                while (curr != null) {
+                    final int cIdx = currIdx;
+                    logStep("Checking index " + currIdx + "...");
+                    javafx.application.Platform.runLater(() -> highlightNode(cIdx, "#3498db")); // blue
+                    Thread.sleep(800);
+                    
+                    if (curr.getValue() == val) {
+                        found = true;
+                        logStep("Found value at index " + currIdx + "! Marking for deletion...");
+                        javafx.application.Platform.runLater(() -> highlightNode(cIdx, "#e74c3c")); // red
+                        Thread.sleep(1000);
+                        break;
+                    }
+                    curr = curr.getNext();
+                    currIdx++;
+                }
+                
+                if (found) {
+                    logStep("Bypassing the node's prev and next pointers...");
+                    model.deleteByValue(val);
+                    Thread.sleep(800);
+                    javafx.application.Platform.runLater(() -> updateVisualization());
+                    logStep("Deletion complete.");
+                    logMessage("Deleted first occurrence of value " + val + ".");
+                } else {
+                    logStep("Value not found in the list.");
+                    javafx.application.Platform.runLater(() -> showAlert("Not Found", "Value " + val + " not found."));
+                }
+            } catch (Exception e) {} 
+            finally { 
+                javafx.application.Platform.runLater(() -> valueInput.clear());
+                isAnimating = false; 
+            }
+        }).start();
     }
 
     @FXML
     private void deleteAt() {
+        if (isAnimating) return;
         Integer idx = getInputIndex();
         if (idx == null) return;
         
-        boolean success = model.deleteAt(idx);
-        if (success) {
-            updateVisualization();
-            logMessage("Deleted node at index " + idx + ".");
-            indexInput.clear();
-        } else {
-            showAlert("Invalid Index", "Cannot delete at index " + idx + ". Index out of bounds.");
-        }
+        isAnimating = true;
+        if (stepLogContainer != null) stepLogContainer.getChildren().clear();
+        logStep("DELETE_AT OP initiating...");
+
+        new Thread(() -> {
+            try {
+                logStep("Traversing to index " + idx + "...");
+                int currIdx = 0;
+                DoublyNode curr = model.getHead();
+                boolean found = false;
+                
+                while (curr != null && currIdx <= idx) {
+                    final int cIdx = currIdx;
+                    if (currIdx == idx) {
+                        found = true;
+                        logStep("Reached node at index " + idx + ". Marking for deletion.");
+                        javafx.application.Platform.runLater(() -> highlightNode(cIdx, "#e74c3c")); // red
+                        Thread.sleep(1000);
+                        break;
+                    } else {
+                        javafx.application.Platform.runLater(() -> highlightNode(cIdx, "#3498db")); // blue
+                        Thread.sleep(600);
+                    }
+                    curr = curr.getNext();
+                    currIdx++;
+                }
+
+                if (found) {
+                    logStep("Bypassing the node's prev and next pointers...");
+                    model.deleteAt(idx);
+                    Thread.sleep(800);
+                    javafx.application.Platform.runLater(() -> updateVisualization());
+                    logStep("Deletion complete.");
+                    logMessage("Deleted node at index " + idx + ".");
+                } else {
+                    logStep("Index out of bounds.");
+                    javafx.application.Platform.runLater(() -> showAlert("Invalid Index", "Cannot delete at index " + idx));
+                }
+            } catch (Exception e) {} 
+            finally { 
+                javafx.application.Platform.runLater(() -> indexInput.clear());
+                isAnimating = false; 
+            }
+        }).start();
     }
 
     @FXML
     private void search() {
+        if (isAnimating) return;
         Integer val = getInputValue();
         if (val == null) return;
         
-        int idx = model.search(val);
-        if (idx != -1) {
-            logMessage("Value " + val + " found at index " + idx + ".");
-            highlightNode(idx);
-        } else {
-            logMessage("Value " + val + " not found in the list.");
-            showAlert("Not Found", "Value " + val + " is not present in the list.");
-        }
+        isAnimating = true;
+        if (stepLogContainer != null) stepLogContainer.getChildren().clear();
+        logStep("SEARCH OP initiating...");
+
+        new Thread(() -> {
+            try {
+                logStep("Searching for value [" + val + "]...");
+                int currIdx = 0;
+                DoublyNode curr = model.getHead();
+                boolean found = false;
+                
+                while (curr != null) {
+                    final int cIdx = currIdx;
+                    logStep("Checking index " + currIdx + "...");
+                    javafx.application.Platform.runLater(() -> highlightNode(cIdx, "#3498db")); // blue
+                    Thread.sleep(800);
+                    
+                    if (curr.getValue() == val) {
+                        found = true;
+                        logStep("Match found at index " + currIdx + "!!");
+                        javafx.application.Platform.runLater(() -> highlightNode(cIdx, "#2ecc71")); // green
+                        Thread.sleep(1000);
+                        break;
+                    }
+                    curr = curr.getNext();
+                    currIdx++;
+                }
+
+                if (!found) {
+                    logStep("Reached end of list. Value not found.");
+                    javafx.application.Platform.runLater(() -> showAlert("Not Found", "Value " + val + " is not present."));
+                }
+            } catch (Exception e) {} 
+            finally { 
+                isAnimating = false; 
+                javafx.application.Platform.runLater(() -> valueInput.clear());
+            }
+        }).start();
     }
 
     @FXML
     private void traverseForward() {
+        if (isAnimating) return;
         if (model.isEmpty()) {
             logMessage("List is empty.");
-        } else {
-            String result = model.traverseForward();
-            logMessage("Forward Traversal:\n" + result);
+            return;
         }
+
+        isAnimating = true;
+        if (stepLogContainer != null) stepLogContainer.getChildren().clear();
+        logStep("TRAVERSE FORWARD OP initiating...");
+
+        new Thread(() -> {
+            try {
+                int currIdx = 0;
+                DoublyNode curr = model.getHead();
+                
+                while (curr != null) {
+                    final int cIdx = currIdx;
+                    final int cVal = curr.getValue();
+                    logStep("Visiting Node " + cIdx + " [Value: " + cVal + "]");
+                    javafx.application.Platform.runLater(() -> highlightNode(cIdx, "#9b59b6")); // purple
+                    Thread.sleep(800);
+                    
+                    curr = curr.getNext();
+                    currIdx++;
+                }
+                
+                logStep("Reached end of list (null).");
+                logMessage("Forward Traversal:\n" + model.traverseForward());
+            } catch (Exception e) {} 
+            finally { isAnimating = false; }
+        }).start();
     }
 
     @FXML
     private void traverseBackward() {
+        if (isAnimating) return;
         if (model.isEmpty()) {
             logMessage("List is empty.");
-        } else {
-            String result = model.traverseBackward();
-            logMessage("Backward Traversal:\n" + result);
+            return;
         }
+
+        isAnimating = true;
+        if (stepLogContainer != null) stepLogContainer.getChildren().clear();
+        logStep("TRAVERSE BACKWARD OP initiating...");
+
+        new Thread(() -> {
+            try {
+                logStep("Jumping to Tail pointer...");
+                DoublyNode curr = model.getHead();
+                int size = 0;
+                while(curr != null && curr.getNext() != null) { curr = curr.getNext(); size++; }
+                
+                int currIdx = size;
+                
+                while (curr != null) {
+                    final int cIdx = currIdx;
+                    final int cVal = curr.getValue();
+                    logStep("Visiting Node " + cIdx + " [Value: " + cVal + "]");
+                    javafx.application.Platform.runLater(() -> highlightNode(cIdx, "#8e44ad")); // dark purple
+                    Thread.sleep(800);
+                    
+                    curr = curr.getPrev();
+                    currIdx--;
+                }
+                
+                logStep("Reached head of list (null).");
+                logMessage("Backward Traversal:\n" + model.traverseBackward());
+            } catch (Exception e) {} 
+            finally { isAnimating = false; }
+        }).start();
     }
 
     @FXML
     private void reverse() {
+        if (isAnimating) return;
         if (model.isEmpty()) {
             showAlert("Empty List", "Cannot reverse an empty list.");
             return;
         }
-        model.reverse();
-        updateVisualization();
-        logMessage("Reversed the doubly linked list.");
+        
+        isAnimating = true;
+        if (stepLogContainer != null) stepLogContainer.getChildren().clear();
+        logStep("REVERSE OP initiating...");
+
+        new Thread(() -> {
+            try {
+                logStep("Iterating through the list to swap prev and next pointers on every node...");
+                Thread.sleep(1000);
+                
+                int size = 0;
+                DoublyNode temp = model.getHead();
+                while (temp != null) { size++; temp = temp.getNext(); }
+                
+                for(int i=0; i<size; i++) {
+                    final int cIdx = i;
+                    logStep("Swapping pointers for Node " + cIdx);
+                    javafx.application.Platform.runLater(() -> highlightNode(cIdx, "#e67e22")); // orange
+                    Thread.sleep(600);
+                }
+                
+                logStep("Updating Head indicator to the previous Tail node...");
+                model.reverse();
+                Thread.sleep(800);
+                
+                javafx.application.Platform.runLater(() -> updateVisualization());
+                logStep("Reversal complete. List is now backwards.");
+                logMessage("Reversed the doubly linked list.");
+            } catch (Exception e) {} 
+            finally { isAnimating = false; }
+        }).start();
     }
 
     @FXML
     private void generateList() {
+        if (isAnimating) return;
         int size = sizeSpinner.getValue();
         model.generateSample(size, 1, 99);
+        if (stepLogContainer != null) stepLogContainer.getChildren().clear();
         updateVisualization();
         logMessage("Generated a random list of size " + size + ".");
     }
 
     @FXML
     private void clear() {
+        if (isAnimating) return;
         model.clear();
+        if (stepLogContainer != null) stepLogContainer.getChildren().clear();
         updateVisualization();
         logMessage("Cleared the list.");
     }
@@ -236,18 +533,18 @@ public class DoublyLinkedListController {
 
         if (current == null) {
             Label emptyLbl = new Label("List is empty");
-            emptyLbl.setStyle("-fx-font-size: 18; -fx-text-fill: #95a5a6;");
+            emptyLbl.setStyle("-fx-font-size: 20; -fx-text-fill: #95a5a6;");
             listContainer.getChildren().add(emptyLbl);
             return;
         }
 
         // Add 'null' at the beginning
         Label nullStartLabel = new Label("null");
-        nullStartLabel.setStyle("-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #e74c3c;");
+        nullStartLabel.setStyle("-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #e74c3c;");
         nullStartLabel.setTranslateY(20);
 
         Label arrowFromNull = new Label("↔");
-        arrowFromNull.setStyle("-fx-font-size: 24; -fx-text-fill: #34495e; -fx-font-weight: bold;");
+        arrowFromNull.setStyle("-fx-font-size: 28; -fx-text-fill: #34495e; -fx-font-weight: bold;");
         arrowFromNull.setTranslateY(15);
 
         listContainer.getChildren().addAll(nullStartLabel, arrowFromNull);
@@ -260,7 +557,7 @@ public class DoublyLinkedListController {
             // Create Arrow Double-Sided
             if (current.getNext() != null) {
                 Label arrow = new Label("↔");
-                arrow.setStyle("-fx-font-size: 24; -fx-text-fill: #34495e; -fx-font-weight: bold;");
+                arrow.setStyle("-fx-font-size: 28; -fx-text-fill: #34495e; -fx-font-weight: bold;");
                 arrow.setTranslateY(15);
                 listContainer.getChildren().add(arrow);
             }
@@ -271,11 +568,11 @@ public class DoublyLinkedListController {
 
         // Add 'null' at the end
         Label arrowToNull = new Label("↔");
-        arrowToNull.setStyle("-fx-font-size: 24; -fx-text-fill: #34495e; -fx-font-weight: bold;");
+        arrowToNull.setStyle("-fx-font-size: 28; -fx-text-fill: #34495e; -fx-font-weight: bold;");
         arrowToNull.setTranslateY(15);
         
         Label nullEndLabel = new Label("null");
-        nullEndLabel.setStyle("-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #e74c3c;");
+        nullEndLabel.setStyle("-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #e74c3c;");
         nullEndLabel.setTranslateY(20);
 
         listContainer.getChildren().addAll(arrowToNull, nullEndLabel);
@@ -296,7 +593,7 @@ public class DoublyLinkedListController {
                 "-fx-min-height: 40;" +
                 "-fx-max-height: 40;" +
                 "-fx-alignment: center;" +
-                "-fx-font-size: 16;" +
+                "-fx-font-size: 20;" +
                 "-fx-font-weight: bold;" +
                 "-fx-text-fill: black;"
         );
@@ -312,7 +609,7 @@ public class DoublyLinkedListController {
                 "-fx-min-height: 20;" +
                 "-fx-max-height: 20;" +
                 "-fx-alignment: center;" +
-                "-fx-font-size: 11;" +
+                "-fx-font-size: 13;" +
                 "-fx-font-weight: bold;" +
                 "-fx-text-fill: #c0392b;"
         );
@@ -321,16 +618,12 @@ public class DoublyLinkedListController {
         return container;
     }
 
-    private void highlightNode(int index) {
-        // Compute actual child index (null + arrow + node0 + arrow + node1...)
-        // node 0 -> child 2
-        // node 1 -> child 4
+    private void highlightNode(int index, String hexColor) {
         int childIndex = 2 + (index * 2);
         if (childIndex < listContainer.getChildren().size()) {
             VBox nodeContainer = (VBox) listContainer.getChildren().get(childIndex);
             Label valueLabel = (Label) nodeContainer.getChildren().get(0);
 
-            // Pop animation and color change
             ScaleTransition st = new ScaleTransition(Duration.millis(300), nodeContainer);
             st.setFromX(1.0); st.setToX(1.3);
             st.setFromY(1.0); st.setToY(1.3);
@@ -339,9 +632,8 @@ public class DoublyLinkedListController {
             st.play();
 
             String oldStyle = valueLabel.getStyle();
-            valueLabel.setStyle(oldStyle.replace("-fx-background-color: #f39c12;", "-fx-background-color: #2ecc71;"));
+            valueLabel.setStyle(oldStyle.replaceAll("-fx-background-color: #[0-9a-fA-F]{6};", "-fx-background-color: " + hexColor + ";"));
             
-            // Restore after short delay
             new Thread(() -> {
                 try {
                     Thread.sleep(1500);
@@ -353,8 +645,19 @@ public class DoublyLinkedListController {
         }
     }
 
+    private void logStep(String stepDescription) {
+        javafx.application.Platform.runLater(() -> {
+            Label l = new Label("• " + stepDescription);
+            l.setStyle("-fx-text-fill: #34495e; -fx-font-size: 17;");
+            l.setWrapText(true);
+            if (stepLogContainer != null) {
+                stepLogContainer.getChildren().add(l);
+            }
+        });
+    }
+
     private void logMessage(String message) {
-        outputLabel.setText(message);
+        javafx.application.Platform.runLater(() -> outputLabel.setText(message));
     }
 
     private void showAlert(String title, String message) {

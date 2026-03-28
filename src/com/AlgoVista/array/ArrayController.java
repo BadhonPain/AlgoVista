@@ -21,8 +21,10 @@ public class ArrayController {
     @FXML private FlowPane arrayContainer;
     @FXML private Label outputLabel;
     @FXML private VBox complexitiesContainer;
+    @FXML private VBox stepLogContainer;
 
     private ArrayModel model;
+    private boolean isAnimating = false;
 
     @FXML
     public void initialize() {
@@ -103,22 +105,27 @@ public class ArrayController {
 
     @FXML
     private void createArray() {
+        if (isAnimating) return;
         int size = sizeSpinner.getValue();
         model = new ArrayModel(size); // Reinitialize with new capacity
+        if (stepLogContainer != null) stepLogContainer.getChildren().clear();
         updateVisualization();
         logMessage("Created empty array with capacity " + size + ".");
     }
 
     @FXML
     private void generateRandom() {
+        if (isAnimating) return;
         int size = sizeSpinner.getValue();
         model.generateSample(size, 1, 99);
+        if (stepLogContainer != null) stepLogContainer.getChildren().clear();
         updateVisualization();
         logMessage("Generated a random array of size " + size + ".");
     }
 
     @FXML
     private void insertAtEnd() {
+        if (isAnimating) return;
         Integer val = getInputValue();
         if (val == null) return;
         
@@ -135,6 +142,7 @@ public class ArrayController {
 
     @FXML
     private void insertAtIndex() {
+        if (isAnimating) return;
         Integer val = getInputValue();
         Integer idx = getInputIndex();
         if (val == null || idx == null) return;
@@ -153,6 +161,7 @@ public class ArrayController {
 
     @FXML
     private void updateValue() {
+        if (isAnimating) return;
         Integer val = getInputValue();
         Integer idx = getInputIndex();
         if (val == null || idx == null) return;
@@ -171,6 +180,7 @@ public class ArrayController {
 
     @FXML
     private void deleteAtIndex() {
+        if (isAnimating) return;
         Integer idx = getInputIndex();
         if (idx == null) return;
 
@@ -193,6 +203,7 @@ public class ArrayController {
 
     @FXML
     private void deleteByValue() {
+        if (isAnimating) return;
         Integer val = getInputValue();
         if (val == null) return;
         
@@ -208,6 +219,7 @@ public class ArrayController {
 
     @FXML
     private void search() {
+        if (isAnimating) return;
         Integer val = getInputValue();
         if (val == null) return;
         
@@ -223,38 +235,216 @@ public class ArrayController {
 
     @FXML
     private void traverse() {
+        if (isAnimating) return;
         if (model.isEmpty()) {
             logMessage("Array is empty.");
-        } else {
-            String result = model.traverse();
-            logMessage("Traversal Result:\n" + result);
+            return;
         }
+        
+        if (stepLogContainer != null) stepLogContainer.getChildren().clear();
+        logStep("TRAVERSE OP initiating...");
+        isAnimating = true;
+
+        new Thread(() -> {
+            try {
+                int size = model.getSize();
+                int[] elements = model.getElements();
+
+                for (int i = 0; i < size; i++) {
+                    final int idx = i;
+                    final int val = elements[i];
+                    Thread.sleep(800);
+                    
+                    logStep("Visiting index " + idx + " (Value: " + val + ")");
+                    
+                    javafx.application.Platform.runLater(() -> {
+                        if (idx < arrayContainer.getChildren().size()) {
+                            VBox cell = (VBox) arrayContainer.getChildren().get(idx);
+                            Label dataLbl = (Label) cell.getChildren().get(0);
+                            String oldStyle = dataLbl.getStyle();
+                            dataLbl.setStyle(oldStyle.replace("-fx-background-color: #9b59b6;", "-fx-background-color: #f1c40f;")); // yellow
+                            
+                            javafx.animation.PauseTransition pt = new javafx.animation.PauseTransition(javafx.util.Duration.millis(800));
+                            pt.setOnFinished(ev -> dataLbl.setStyle(oldStyle));
+                            pt.play();
+                        }
+                    });
+                    
+                    Thread.sleep(1000);
+                }
+                logStep("Traversal complete.");
+                logMessage("Traversal Result:\n" + model.traverse());
+            } catch (Exception e) { e.printStackTrace(); } 
+            finally { isAnimating = false; }
+        }).start();
     }
 
     @FXML
     private void reverse() {
+        if (isAnimating) return;
         if (model.isEmpty()) {
             showAlert("Empty Array", "Cannot reverse an empty array.");
             return;
         }
-        model.reverse();
-        updateVisualization();
-        logMessage("Reversed the array elements.");
+
+        if (stepLogContainer != null) stepLogContainer.getChildren().clear();
+        logStep("REVERSE OP initiating...");
+        isAnimating = true;
+
+        new Thread(() -> {
+            try {
+                int size = model.getSize();
+                int left = 0;
+                int right = size - 1;
+
+                while (left < right) {
+                    final int lIdx = left;
+                    final int rIdx = right;
+                    
+                    logStep("Highlighting elements to swap: indices " + lIdx + " and " + rIdx + "...");
+                    
+                    String[] oldStyleL = new String[1];
+                    String[] oldStyleR = new String[1];
+                    
+                    javafx.application.Platform.runLater(() -> {
+                        if (lIdx < arrayContainer.getChildren().size() && rIdx < arrayContainer.getChildren().size()) {
+                            VBox lCell = (VBox) arrayContainer.getChildren().get(lIdx);
+                            VBox rCell = (VBox) arrayContainer.getChildren().get(rIdx);
+                            Label lLbl = (Label) lCell.getChildren().get(0);
+                            Label rLbl = (Label) rCell.getChildren().get(0);
+                            
+                            oldStyleL[0] = lLbl.getStyle();
+                            oldStyleR[0] = rLbl.getStyle();
+                            
+                            lLbl.setStyle(oldStyleL[0].replace("-fx-background-color: #9b59b6;", "-fx-background-color: #e67e22;")); // orange
+                            rLbl.setStyle(oldStyleR[0].replace("-fx-background-color: #9b59b6;", "-fx-background-color: #e67e22;"));
+                        }
+                    });
+                    
+                    Thread.sleep(1200);
+                    logStep("Swapping values in array...");
+                    model.swap(left, right);
+                    
+                    javafx.application.Platform.runLater(() -> {
+                        if (lIdx < arrayContainer.getChildren().size() && rIdx < arrayContainer.getChildren().size()) {
+                            VBox lCell = (VBox) arrayContainer.getChildren().get(lIdx);
+                            VBox rCell = (VBox) arrayContainer.getChildren().get(rIdx);
+                            Label lLbl = (Label) lCell.getChildren().get(0);
+                            Label rLbl = (Label) rCell.getChildren().get(0);
+                            
+                            lLbl.setText(String.valueOf(model.getElements()[lIdx]));
+                            rLbl.setText(String.valueOf(model.getElements()[rIdx]));
+                            
+                            if (oldStyleL[0] != null) lLbl.setStyle(oldStyleL[0]);
+                            if (oldStyleR[0] != null) rLbl.setStyle(oldStyleR[0]);
+                        }
+                    });
+                    
+                    Thread.sleep(800);
+                    left++;
+                    right--;
+                }
+                
+                logStep("Reversal complete.");
+                logMessage("Reversed the array elements.");
+            } catch (Exception e) { e.printStackTrace(); } 
+            finally { isAnimating = false; }
+        }).start();
     }
 
     @FXML
     private void sort() {
+        if (isAnimating) return;
         if (model.isEmpty()) {
             showAlert("Empty Array", "Cannot sort an empty array.");
             return;
         }
-        model.sort();
-        updateVisualization();
-        logMessage("Sorted the array using Bubble Sort.");
+
+        if (stepLogContainer != null) stepLogContainer.getChildren().clear();
+        logStep("BUBBLE SORT OP initiating...");
+        isAnimating = true;
+
+        new Thread(() -> {
+            try {
+                int size = model.getSize();
+                boolean swapped;
+                for (int i = 0; i < size - 1; i++) {
+                    swapped = false;
+                    for (int j = 0; j < size - i - 1; j++) {
+                        final int idx1 = j;
+                        final int idx2 = j + 1;
+                        
+                        logStep("Comparing index " + idx1 + " and " + idx2);
+                        javafx.application.Platform.runLater(() -> animateCompare(idx1, idx2, "#3498db"));
+                        Thread.sleep(1000);
+                        
+                        if (model.getElements()[j] > model.getElements()[j + 1]) {
+                            logStep("Value " + model.getElements()[j] + " > " + model.getElements()[j + 1] + ". Swapping!");
+                            javafx.application.Platform.runLater(() -> animateCompare(idx1, idx2, "#e74c3c"));
+                            Thread.sleep(800);
+                            model.swap(j, j + 1);
+                            
+                            javafx.application.Platform.runLater(() -> {
+                                if (idx1 < arrayContainer.getChildren().size() && idx2 < arrayContainer.getChildren().size()) {
+                                    VBox cell1 = (VBox) arrayContainer.getChildren().get(idx1);
+                                    VBox cell2 = (VBox) arrayContainer.getChildren().get(idx2);
+                                    Label l1 = (Label) cell1.getChildren().get(0);
+                                    Label l2 = (Label) cell2.getChildren().get(0);
+                                    l1.setText(String.valueOf(model.getElements()[idx1]));
+                                    l2.setText(String.valueOf(model.getElements()[idx2]));
+                                }
+                            });
+                            swapped = true;
+                            Thread.sleep(800);
+                        }
+                        
+                        javafx.application.Platform.runLater(() -> animateCompare(idx1, idx2, "#9b59b6"));
+                    }
+                    
+                    final int sortedIdx = size - 1 - i;
+                    logStep("Index " + sortedIdx + " is now strictly sorted in place.");
+                    javafx.application.Platform.runLater(() -> markSorted(sortedIdx));
+                    
+                    if (!swapped) {
+                        logStep("No swaps occurred entirely. Array is fully sorted early!");
+                        break;
+                    }
+                }
+                
+                javafx.application.Platform.runLater(() -> {
+                    for(int i=0; i<size; i++) markSorted(i); 
+                });
+                
+                logStep("Bubble Sort complete.");
+                logMessage("Sorted the array using Bubble Sort.");
+            } catch (Exception e) { e.printStackTrace(); } 
+            finally { isAnimating = false; }
+        }).start();
+    }
+
+    private void animateCompare(int i, int j, String colorHex) {
+        if (i < arrayContainer.getChildren().size() && j < arrayContainer.getChildren().size()) {
+            VBox cell1 = (VBox) arrayContainer.getChildren().get(i);
+            VBox cell2 = (VBox) arrayContainer.getChildren().get(j);
+            Label l1 = (Label) cell1.getChildren().get(0);
+            Label l2 = (Label) cell2.getChildren().get(0);
+            
+            l1.setStyle(l1.getStyle().replaceAll("-fx-background-color: #[0-9a-fA-F]{6};", "-fx-background-color: " + colorHex + ";"));
+            l2.setStyle(l2.getStyle().replaceAll("-fx-background-color: #[0-9a-fA-F]{6};", "-fx-background-color: " + colorHex + ";"));
+        }
+    }
+
+    private void markSorted(int i) {
+        if (i < arrayContainer.getChildren().size() && i >= 0) {
+            VBox cell = (VBox) arrayContainer.getChildren().get(i);
+            Label l = (Label) cell.getChildren().get(0);
+            l.setStyle(l.getStyle().replaceAll("-fx-background-color: #[0-9a-fA-F]{6};", "-fx-background-color: #2ecc71;")); // green
+        }
     }
 
     @FXML
     private void clear() {
+        if (isAnimating) return;
         model.clear();
         updateVisualization();
         logMessage("Cleared the array.");
@@ -265,7 +455,7 @@ public class ArrayController {
 
         if (model.isEmpty() && model.getCapacity() == 0) {
             Label emptyLbl = new Label("Array is empty/uninitialized");
-            emptyLbl.setStyle("-fx-font-size: 18; -fx-text-fill: #95a5a6;");
+            emptyLbl.setStyle("-fx-font-size: 20; -fx-text-fill: #95a5a6;");
             arrayContainer.getChildren().add(emptyLbl);
             return;
         }
@@ -303,7 +493,7 @@ public class ArrayController {
                 "-fx-min-height: 55;" +
                 "-fx-max-height: 55;" +
                 "-fx-alignment: center;" +
-                "-fx-font-size: 18;" +
+                "-fx-font-size: 20;" +
                 "-fx-font-weight: bold;" +
                 "-fx-text-fill: " + textFill + ";"
         );
@@ -319,9 +509,9 @@ public class ArrayController {
                 "-fx-min-height: 20;" +
                 "-fx-max-height: 20;" +
                 "-fx-alignment: center;" +
-                "-fx-font-size: 11;" +
+                "-fx-font-size: 20;" +
                 "-fx-font-weight: bold;" +
-                "-fx-text-fill: #e74c3c;"
+                "-fx-text-fill: #2c3e50;"
         );
 
         container.getChildren().addAll(valueLabel, indexLabel);
@@ -356,8 +546,19 @@ public class ArrayController {
         }
     }
 
+    private void logStep(String stepDescription) {
+        javafx.application.Platform.runLater(() -> {
+            Label l = new Label("• " + stepDescription);
+            l.setStyle("-fx-text-fill: #34495e; -fx-font-size: 17;");
+            l.setWrapText(true);
+            if (stepLogContainer != null) {
+                stepLogContainer.getChildren().add(l);
+            }
+        });
+    }
+
     private void logMessage(String message) {
-        outputLabel.setText(message);
+        javafx.application.Platform.runLater(() -> outputLabel.setText(message));
     }
 
     private void showAlert(String title, String message) {
