@@ -4,7 +4,7 @@ module com.AlgoVista {
     requires javafx.graphics;
 
     // This allows JavaFX to load your screens and controllers
-    opens com.AlgoVista.dashboard;
+    opens com.AlgoVista.dashboard to javafx.fxml;
     exports com.AlgoVista.dashboard;
 
     opens com.AlgoVista.graphs;

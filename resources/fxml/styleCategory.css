@@ -20,5 +20,5 @@
 .structure-card:hover, .traversal-card:hover {
     -fx-scale-x: 1.05;
     -fx-scale-y: 1.05;
-    -fx-effect: dropshadow(gaussian, rgba(56, 189, 248, 0.6), 15, 0, 0, 3);
+    -fx-effect: drop shadow(gaussian, rgba(56, 189, 248, 0.6), 15, 0, 0, 3);
 }
