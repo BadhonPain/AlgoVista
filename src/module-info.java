@@ -29,6 +29,18 @@ module com.AlgoVista {
     opens com.AlgoVista.dp;
     exports com.AlgoVista.dp;
 
+    // newly added modules from joya's branch
+    opens com.AlgoVista.array to javafx.fxml;
+    exports com.AlgoVista.array;
+    opens com.AlgoVista.linkedlist to javafx.fxml;
+    exports com.AlgoVista.linkedlist;
+    opens com.AlgoVista.stack to javafx.fxml;
+    exports com.AlgoVista.stack;
+    opens com.AlgoVista.queue to javafx.fxml;
+    exports com.AlgoVista.queue;
+    opens com.AlgoVista.sorting to javafx.fxml;
+    exports com.AlgoVista.sorting;
+
     // Resources and Utilities
     opens com.AlgoVista.images;
     opens com.AlgoVista.utils;
