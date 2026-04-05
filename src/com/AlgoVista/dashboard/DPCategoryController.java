@@ -1,4 +1,4 @@
-package com.AlgoVista.dp;
+package com.AlgoVista.dashboard;
 
 import com.AlgoVista.graphs.GraphSubCardController;
 import javafx.fxml.FXML;
