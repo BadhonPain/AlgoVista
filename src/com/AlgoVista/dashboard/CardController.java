@@ -88,7 +88,7 @@ public class CardController {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
                 Parent root = loader.load();
                 Stage stage = (Stage) algoName.getScene().getWindow();
-                Scene scene = new Scene(root, stage.getWidth(), stage.getHeight());
+                Scene scene = new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight());
                 stage.setScene(scene);
             }
         } catch (IOException e) {

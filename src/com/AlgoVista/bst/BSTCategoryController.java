@@ -91,8 +91,8 @@ public class BSTCategoryController {
             Parent root = loader.load();
 
             Stage stage = (Stage) cardContainer.getScene().getWindow();
-            double width = stage.getWidth();
-            double height = stage.getHeight();
+            double width = stage.getScene().getWidth();
+            double height = stage.getScene().getHeight();
             double x = stage.getX();
             double y = stage.getY();
 
@@ -112,8 +112,8 @@ public class BSTCategoryController {
             Parent root = loader.load();
 
             Stage stage = (Stage) cardContainer.getScene().getWindow();
-            double width = stage.getWidth();
-            double height = stage.getHeight();
+            double width = stage.getScene().getWidth();
+            double height = stage.getScene().getHeight();
             double x = stage.getX();
             double y = stage.getY();
 
@@ -133,8 +133,8 @@ public class BSTCategoryController {
             Parent root = loader.load();
 
             Stage stage = (Stage) cardContainer.getScene().getWindow();
-            double width = stage.getWidth();
-            double height = stage.getHeight();
+            double width = stage.getScene().getWidth();
+            double height = stage.getScene().getHeight();
             double x = stage.getX();
             double y = stage.getY();
 

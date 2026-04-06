@@ -567,7 +567,7 @@ public class DFSController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/GraphAlgorithmsCategory.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) graphCanvas.getScene().getWindow();
-            double w = stage.getWidth(), h = stage.getHeight(), x = stage.getX(), y = stage.getY();
+            double w = stage.getScene().getWidth(), h = stage.getScene().getHeight(), x = stage.getX(), y = stage.getY();
             stage.setScene(new Scene(root, w, h));
             stage.setX(x); stage.setY(y);
         } catch (IOException e) {

@@ -58,8 +58,8 @@ public class LinkedListMenuController {
             Parent root = loader.load();
 
             Stage stage = (Stage) singlyCard.getScene().getWindow();
-            double width = stage.getWidth();
-            double height = stage.getHeight();
+            double width = stage.getScene().getWidth();
+            double height = stage.getScene().getHeight();
             double x = stage.getX();
             double y = stage.getY();
 

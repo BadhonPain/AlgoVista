@@ -17,6 +17,9 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.util.Duration;
+import javafx.application.Platform;
+import javafx.stage.Stage;
+import javafx.animation.KeyFrame;
 
 import java.io.IOException;
 import java.util.*;
@@ -34,6 +37,8 @@ public class DashboardController {
     @FXML private TextField searchField;
     @FXML private StackPane overlayPane;
     @FXML private VBox modalContent;
+    @FXML private ScrollPane mainScrollPane;
+    @FXML private VBox scrollContent;
 
     private final List<String> algorithms = Arrays.asList(
             "Array", "Linked List", "Stack", "Queue", "Sorting", "Graph",
@@ -43,9 +48,34 @@ public class DashboardController {
     public void initialize() {
         loadCards(""); // Load all cards initially
         
-        // Ensure overlay is hidden but interactive setup
+        // Setup overlay interaction
         overlayPane.setOnMouseClicked(e -> closeModal());
-        modalContent.setOnMouseClicked(e -> e.consume()); // Prevent closing when clicking inside modal
+        modalContent.setOnMouseClicked(e -> e.consume()); 
+
+        // Robust automatic layout fix for ScrollPane & TilePane calculation bugs
+        Platform.runLater(() -> {
+            if (mainScrollPane != null && scrollContent != null) {
+                mainScrollPane.viewportBoundsProperty().addListener((obs, oldV, newV) -> {
+                    scrollContent.setPrefWidth(newV.getWidth());
+                    scrollContent.requestLayout();
+                });
+            }
+            
+            if (rootPane.getScene() != null && rootPane.getScene().getWindow() instanceof Stage) {
+                Stage stage = (Stage) rootPane.getScene().getWindow();
+                
+                // Add listener to maximized property to force a layout recalculation
+                stage.maximizedProperty().addListener((obs, oldVal, newVal) -> {
+                    Timeline timeline = new Timeline(
+                        new KeyFrame(Duration.millis(150), evt -> {
+                            rootPane.requestLayout();
+                            rootPane.applyCss();
+                        })
+                    );
+                    timeline.play();
+                });
+            }
+        });
     }
 
     @FXML

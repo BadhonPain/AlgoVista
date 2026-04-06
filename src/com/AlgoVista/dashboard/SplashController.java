@@ -191,7 +191,7 @@ public class SplashController {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/dashboard.fxml"));
                 Parent root = loader.load();
                 Stage stage = (Stage) rootPane.getScene().getWindow();
-                Scene scene = new Scene(root, stage.getWidth(), stage.getHeight());
+                Scene scene = new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight());
                 root.setOpacity(0);
                 stage.setScene(scene);
                 FadeTransition fadeIn = new FadeTransition(Duration.millis(1000), root);

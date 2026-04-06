@@ -538,8 +538,8 @@ public class QueueController {
             Parent root = loader.load();
 
             Stage stage = (Stage) queueContainer.getScene().getWindow();
-            double width = stage.getWidth();
-            double height = stage.getHeight();
+            double width = stage.getScene().getWidth();
+            double height = stage.getScene().getHeight();
             Scene scene = new Scene(root, width, height);
             stage.setScene(scene);
         } catch (IOException e) {

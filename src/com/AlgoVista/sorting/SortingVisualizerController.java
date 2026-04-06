@@ -161,7 +161,7 @@ public class SortingVisualizerController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SortingCategory.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
+            stage.setScene(new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight()));
         } catch (IOException e) { e.printStackTrace(); }
     }
 
