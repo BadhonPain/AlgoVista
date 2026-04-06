@@ -4,6 +4,9 @@ import javafx.animation.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import java.net.URL;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -46,13 +49,34 @@ public class SplashController {
 
     private final Random random = new Random();
     private AnimationTimer binaryRainTimer;
+    private MediaPlayer mediaPlayer;
 
     @FXML
     public void initialize() {
+        playSplashSound();
         setupBackgroundGrid();
         createParticles();
         setupDataPulse();
         playCinematicSequence();
+    }
+
+    private void playSplashSound() {
+        try {
+            URL resource = getClass().getResource("/com/AlgoVista/sounds/helicopter.mp3");
+            if (resource != null) {
+                Media media = new Media(resource.toString());
+                mediaPlayer = new MediaPlayer(media);
+                mediaPlayer.setOnError(() -> {
+                    System.out.println("CRITICAL AUDIO ERROR: " + mediaPlayer.getError());
+                });
+                mediaPlayer.setVolume(1.0); // Full volume for cinematic effect
+                mediaPlayer.play();
+            } else {
+                System.out.println("Audio file not found at: /com/AlgoVista/sounds/helicopter.mp3");
+            }
+        } catch (Exception e) {
+            System.out.println("Audio could not be loaded: " + e.getMessage());
+        }
     }
 
     private void setupBackgroundGrid() {
@@ -184,6 +208,16 @@ public class SplashController {
 
     private void transitionToDashboard() {
         binaryRainTimer.stop();
+        
+        // Gracefully fade out audio matching the graphical fade
+        if (mediaPlayer != null) {
+            Timeline fadeAudio = new Timeline(
+                new KeyFrame(Duration.millis(1000), new KeyValue(mediaPlayer.volumeProperty(), 0.0))
+            );
+            fadeAudio.setOnFinished(e -> mediaPlayer.stop());
+            fadeAudio.play();
+        }
+        
         FadeTransition fadeOut = new FadeTransition(Duration.millis(1000), rootPane);
         fadeOut.setToValue(0.0);
         fadeOut.setOnFinished(event -> {

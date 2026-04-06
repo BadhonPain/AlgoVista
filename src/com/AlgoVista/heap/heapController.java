@@ -491,11 +491,11 @@ public class heapController {
         }
     }
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+        private void showAlert(String title, String message) {
+        if (title != null && (title.toLowerCase().contains("complete") || title.toLowerCase().contains("ready") || title.toLowerCase().contains("custom mode"))) {
+            com.AlgoVista.utils.CustomAlert.showInfo(title, message);
+        } else {
+            com.AlgoVista.utils.CustomAlert.showError(title, message);
+        }
     }
 }
