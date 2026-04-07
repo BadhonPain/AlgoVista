@@ -25,7 +25,7 @@
                 <style>
                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
                 </style>
-                <VBox style="-fx-background-image: url('file:///C:/Users/User/.gemini/antigravity/brain/ec8461aa-6f63-4f38-8d24-f391b0dd7a40/bubble_sort_icon_1775577979777.png'); -fx-background-size: cover; -fx-background-radius: 10 10 0 0;" prefHeight="200" prefWidth="250"/>
+                <VBox style="-fx-background-color: linear-gradient(to bottom right, #3498db, #2ecc71); -fx-background-radius: 10 10 0 0;" prefHeight="200" prefWidth="250"/>
                 <VBox alignment="CENTER" prefHeight="50" style="-fx-padding: 10;">
                     <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;" text="Bubble Sort"/>
                 </VBox>
@@ -35,7 +35,7 @@
                 <style>
                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
                 </style>
-                <VBox style="-fx-background-image: url('file:///C:/Users/User/.gemini/antigravity/brain/ec8461aa-6f63-4f38-8d24-f391b0dd7a40/selection_sort_icon_1775578128546.png'); -fx-background-size: cover; -fx-background-radius: 10 10 0 0;" prefHeight="200" prefWidth="250"/>
+                <VBox style="-fx-background-color: linear-gradient(to bottom right, #e74c3c, #f1c40f); -fx-background-radius: 10 10 0 0;" prefHeight="200" prefWidth="250"/>
                 <VBox alignment="CENTER" prefHeight="50" style="-fx-padding: 10;">
                     <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;" text="Selection Sort"/>
                 </VBox>
@@ -45,7 +45,7 @@
                 <style>
                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
                 </style>
-                <VBox style="-fx-background-image: url('file:///C:/Users/User/.gemini/antigravity/brain/ec8461aa-6f63-4f38-8d24-f391b0dd7a40/insertion_sort_icon_1775578515576.png'); -fx-background-size: cover; -fx-background-radius: 10 10 0 0;" prefHeight="200" prefWidth="250"/>
+                <VBox style="-fx-background-color: linear-gradient(to bottom right, #9b59b6, #3498db); -fx-background-radius: 10 10 0 0;" prefHeight="200" prefWidth="250"/>
                 <VBox alignment="CENTER" prefHeight="50" style="-fx-padding: 10;">
                     <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;" text="Insertion Sort"/>
                 </VBox>
@@ -55,7 +55,7 @@
                 <style>
                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
                 </style>
-                <VBox style="-fx-background-image: url('file:///C:/Users/User/.gemini/antigravity/brain/ec8461aa-6f63-4f38-8d24-f391b0dd7a40/counting_sort_icon_1775578596852.png'); -fx-background-size: cover; -fx-background-radius: 10 10 0 0;" prefHeight="200" prefWidth="250"/>
+                <VBox style="-fx-background-color: linear-gradient(to bottom right, #1abc9c, #16a085); -fx-background-radius: 10 10 0 0;" prefHeight="200" prefWidth="250"/>
                 <VBox alignment="CENTER" prefHeight="50" style="-fx-padding: 10;">
                     <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;" text="Counting Sort"/>
                 </VBox>
@@ -65,7 +65,7 @@
                 <style>
                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
                 </style>
-                <VBox style="-fx-background-image: url('file:///C:/Users/User/.gemini/antigravity/brain/ec8461aa-6f63-4f38-8d24-f391b0dd7a40/radix_sort_icon_1775585699199.png'); -fx-background-size: cover; -fx-background-radius: 10 10 0 0;" prefHeight="200" prefWidth="250"/>
+                <VBox style="-fx-background-color: linear-gradient(to bottom right, #e67e22, #d35400); -fx-background-radius: 10 10 0 0;" prefHeight="200" prefWidth="250"/>
                 <VBox alignment="CENTER" prefHeight="50" style="-fx-padding: 10;">
                     <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;" text="Radix Sort"/>
                 </VBox>
@@ -75,7 +75,7 @@
                 <style>
                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
                 </style>
-                <VBox style="-fx-background-image: url('file:///C:/Users/User/.gemini/antigravity/brain/ec8461aa-6f63-4f38-8d24-f391b0dd7a40/bucket_sort_icon_1775585722001.png'); -fx-background-size: cover; -fx-background-radius: 10 10 0 0;" prefHeight="200" prefWidth="250"/>
+                <VBox style="-fx-background-color: linear-gradient(to bottom right, #34495e, #2c3e50); -fx-background-radius: 10 10 0 0;" prefHeight="200" prefWidth="250"/>
                 <VBox alignment="CENTER" prefHeight="50" style="-fx-padding: 10;">
                     <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;" text="Bucket Sort"/>
                 </VBox>
@@ -83,3 +83,4 @@
         </FlowPane>
     </center>
 </BorderPane>
+

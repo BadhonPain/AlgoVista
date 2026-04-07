@@ -36,6 +36,10 @@ module com.AlgoVista {
     exports com.AlgoVista.array;
     opens com.AlgoVista.linkedlist to javafx.fxml;
     exports com.AlgoVista.linkedlist;
+    opens com.AlgoVista.linkedlist.singly to javafx.fxml;
+    exports com.AlgoVista.linkedlist.singly;
+    opens com.AlgoVista.linkedlist.doubly to javafx.fxml;
+    exports com.AlgoVista.linkedlist.doubly;
     opens com.AlgoVista.stack to javafx.fxml;
     exports com.AlgoVista.stack;
     opens com.AlgoVista.queue to javafx.fxml;
