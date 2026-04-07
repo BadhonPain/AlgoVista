@@ -40,6 +40,11 @@ public class QuickSortController {
     @FXML private javafx.scene.control.Slider speedSlider;
     @FXML private Label speedLabel;
 
+    // Complexity Boxes
+    @FXML private VBox bestCaseBox;
+    @FXML private VBox worstCaseBox;
+    @FXML private VBox spaceCaseBox;
+
     private double animationSpeed = 1.0;
 
     private List<Integer> data;
@@ -78,12 +83,40 @@ public class QuickSortController {
             if (newVal != null) {
                 ShortcutManager.register(newVal,
                     this::playPauseToggle,
-                    null, // QuickSort tree generation is handled by sequential transition
+                    null,
                     this::generateNewArray,
                     this::backToCategory
                 );
             }
         });
+    }
+
+    private void highlightComplexity(VBox activeBox) {
+        clearComplexityHighlights();
+        if (activeBox != null) {
+            activeBox.setStyle("-fx-background-color: rgba(245, 158, 11, 0.15); " +
+                             "-fx-border-color: #f59e0b; " +
+                             "-fx-border-width: 1.5; " +
+                             "-fx-border-radius: 5; " +
+                             "-fx-background-radius: 5;");
+        }
+    }
+
+    private void clearComplexityHighlights() {
+        String baseStyle = "-fx-padding: 2 5; -fx-background-radius: 5;";
+        if (bestCaseBox != null) bestCaseBox.setStyle(baseStyle);
+        if (worstCaseBox != null) worstCaseBox.setStyle(baseStyle);
+        if (spaceCaseBox != null) spaceCaseBox.setStyle(baseStyle);
+    }
+
+    private boolean isSortedOrReverseSorted(List<Integer> list) {
+        boolean sorted = true;
+        boolean reverseSorted = true;
+        for (int i = 0; i < list.size() - 1; i++) {
+            if (list.get(i) > list.get(i + 1)) sorted = false;
+            if (list.get(i) < list.get(i + 1)) reverseSorted = false;
+        }
+        return sorted || reverseSorted;
     }
 
     private void playPauseToggle() {
@@ -102,6 +135,7 @@ public class QuickSortController {
     private void generateNewArray() {
         if (sorting) return;
         treeContainer.getChildren().clear();
+        clearComplexityHighlights();
         data = new ArrayList<>();
         Random rand = new Random();
         for (int i = 0; i < 8; i++) {
@@ -182,6 +216,15 @@ public class QuickSortController {
     private void startSort() {
         if (sorting) return;
         sorting = true;
+        
+        // Detect Case
+        String strategy = pivotSelector.getValue();
+        if (isSortedOrReverseSorted(data) && (strategy.equals("FIRST") || strategy.equals("LAST"))) {
+            highlightComplexity(worstCaseBox);
+        } else {
+            highlightComplexity(bestCaseBox);
+        }
+
         treeContainer.getChildren().clear();
         renderInitialArray();
         

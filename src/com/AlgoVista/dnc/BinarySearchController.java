@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -35,6 +36,12 @@ public class BinarySearchController {
     @FXML private javafx.scene.control.Slider speedSlider;
     @FXML private Label speedLabel;
 
+    // Complexity Boxes
+    @FXML private VBox bestCaseBox;
+    @FXML private VBox avgCaseBox;
+    @FXML private VBox worstCaseBox;
+    @FXML private VBox spaceCaseBox;
+
     private double animationSpeed = 1.0;
 
     private List<Integer> data;
@@ -49,7 +56,6 @@ public class BinarySearchController {
         if (speedSlider != null) {
             double initSpeed = com.AlgoVista.utils.SettingsManager.getSpeed();
             speedSlider.setValue(initSpeed);
-            animationSpeed = com.AlgoVista.utils.SettingsManager.getTimelineRate(initSpeed);
             animationSpeed = com.AlgoVista.utils.SettingsManager.getTimelineRate(initSpeed);
             if (speedLabel != null) { speedLabel.setText(String.format("%.2fx", initSpeed)); }
         }
@@ -67,12 +73,31 @@ public class BinarySearchController {
             if (newVal != null) {
                 ShortcutManager.register(newVal,
                     this::playPauseToggle,
-                    null, // Step forward isn't granular here
+                    null,
                     this::generateNewArray,
                     this::backToCategory
                 );
             }
         });
+    }
+
+    private void highlightComplexity(VBox activeBox) {
+        clearComplexityHighlights();
+        if (activeBox != null) {
+            activeBox.setStyle("-fx-background-color: rgba(245, 158, 11, 0.15); " +
+                             "-fx-border-color: #f59e0b; " +
+                             "-fx-border-width: 1.5; " +
+                             "-fx-border-radius: 5; " +
+                             "-fx-background-radius: 5;");
+        }
+    }
+
+    private void clearComplexityHighlights() {
+        String baseStyle = "-fx-padding: 2 5; -fx-background-radius: 5;";
+        if (bestCaseBox != null) bestCaseBox.setStyle(baseStyle);
+        if (avgCaseBox != null) avgCaseBox.setStyle(baseStyle);
+        if (worstCaseBox != null) worstCaseBox.setStyle(baseStyle);
+        if (spaceCaseBox != null) spaceCaseBox.setStyle(baseStyle);
     }
 
     private void playPauseToggle() {
@@ -110,6 +135,7 @@ public class BinarySearchController {
         statusLabel.setText("Ready to search.");
         stepLabel.setText("Random array generated and sorted.");
         resetHighlights();
+        clearComplexityHighlights();
     }
 
     @FXML
@@ -142,6 +168,7 @@ public class BinarySearchController {
             statusLabel.setText("Custom array created!");
             stepLabel.setText("Data sorted for binary search.");
             resetHighlights();
+            clearComplexityHighlights();
         } catch (NumberFormatException e) {
             statusLabel.setText("Invalid format! Use: 1, 2, 3");
         }
@@ -176,6 +203,17 @@ public class BinarySearchController {
 
         try {
             int target = Integer.parseInt(targetStr);
+            
+            // Detect Performance Case
+            int firstMidIdx = (data.size() - 1) / 2;
+            if (data.get(firstMidIdx) == target) {
+                highlightComplexity(bestCaseBox);
+            } else if (!data.contains(target) || data.get(0) == target || data.get(data.size()-1) == target) {
+                highlightComplexity(worstCaseBox);
+            } else {
+                highlightComplexity(avgCaseBox);
+            }
+
             searching = true;
             searchSteps = 0;
             statusLabel.setText("Searching for " + target + "...");
@@ -204,7 +242,6 @@ public class BinarySearchController {
 
         mid = low + (high - low) / 2;
         
-        // Visual feedback for search range
         for (int i = 0; i < nodes.size(); i++) {
             Rectangle rect = (Rectangle) nodes.get(i).getChildren().get(0);
             if (i >= low && i <= high) {
@@ -218,9 +255,8 @@ public class BinarySearchController {
             }
         }
 
-        // Highlight mid
         Rectangle midRect = (Rectangle) nodes.get(mid).getChildren().get(0);
-        midRect.setFill(Color.web("#f39c12")); // Orange for mid
+        midRect.setFill(Color.web("#f39c12")); 
         midRect.setStroke(Color.WHITE);
         
         stepLabel.setText("Checking index " + mid + " (value: " + data.get(mid) + ")");
@@ -229,7 +265,7 @@ public class BinarySearchController {
         currentStepAnimation.setOnFinished(e -> {
             int midVal = data.get(mid);
             if (midVal == target) {
-                midRect.setFill(Color.web("#10b981")); // Emerald green
+                midRect.setFill(Color.web("#10b981")); 
                 statusLabel.setText("TARGET FOUND!");
                 statusLabel.setTextFill(Color.web("#10b981"));
                 stepLabel.setText("Found " + target + " at index " + mid);
@@ -243,7 +279,7 @@ public class BinarySearchController {
                 st.play();                
                 
             } else {
-                midRect.setFill(Color.web("#1e293b")); // Revert mid color
+                midRect.setFill(Color.web("#1e293b")); 
                 midRect.setStroke(Color.web("#334155"));
                 if (target < midVal) {
                     statusLabel.setText(target + " < " + midVal + " | Searching LEFT");
@@ -264,6 +300,7 @@ public class BinarySearchController {
     private void resetSearch() {
         if (searching) return;
         resetHighlights();
+        clearComplexityHighlights();
         statusLabel.setText("Ready to search.");
         statusLabel.setTextFill(Color.web("#94a3b8"));
         stepLabel.setText("Search logic reset.");
@@ -283,7 +320,6 @@ public class BinarySearchController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DNC_Category.fxml"));
             Parent root = loader.load();
-
             Stage stage = (Stage) arrayContainer.getScene().getWindow();
             Scene scene = new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight());
             stage.setScene(scene);

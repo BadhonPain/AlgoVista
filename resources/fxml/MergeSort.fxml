@@ -33,17 +33,17 @@
             <right>
                 <HBox spacing="20" alignment="CENTER"
                       style="-fx-background-color: rgba(15, 23, 42, 0.8); -fx-padding: 6 18; -fx-background-radius: 12; -fx-border-color: #334155; -fx-border-radius: 12; -fx-border-width: 1;">
-                    <VBox alignment="CENTER" spacing="2">
+                    <VBox fx:id="bestCaseBox" alignment="CENTER" spacing="2" style="-fx-padding: 2 5; -fx-background-radius: 5;">
                         <Label text="Best Time" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
                         <Label text="O(n log n)" textFill="#22c55e" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
                     </VBox>
                     <Separator orientation="VERTICAL" style="-fx-opacity: 0.2;"/>
-                    <VBox alignment="CENTER" spacing="2">
+                    <VBox fx:id="worstCaseBox" alignment="CENTER" spacing="2" style="-fx-padding: 2 5; -fx-background-radius: 5;">
                         <Label text="Worst Time" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
                         <Label text="O(n log n)" textFill="#ef4444" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
                     </VBox>
                     <Separator orientation="VERTICAL" style="-fx-opacity: 0.2;"/>
-                    <VBox alignment="CENTER" spacing="2">
+                    <VBox fx:id="spaceCaseBox" alignment="CENTER" spacing="2" style="-fx-padding: 2 5; -fx-background-radius: 5;">
                         <Label text="Space" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
                         <Label text="O(n)" textFill="#f59e0b" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
                     </VBox>
