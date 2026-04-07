@@ -42,50 +42,21 @@
             <HBox alignment="CENTER" spacing="40">
                 
                 <!-- Singly Linked List Card -->
-                <VBox fx:id="singlyCard" alignment="CENTER" spacing="20" prefWidth="300" prefHeight="350"
-                      onMouseClicked="#openSinglyLinkedList"
-                      style="-fx-background-color: rgba(255, 255, 255, 0.05); -fx-background-radius: 15; 
-                             -fx-border-color: rgba(255,255,255,0.1); -fx-border-radius: 15;">
-                    <padding>
-                        <Insets top="20" right="20" bottom="30" left="20"/>
-                    </padding>
-                    <!-- Visual representation -->
-                    <ImageView fitHeight="120" fitWidth="220" preserveRatio="true">
-                        <image>
-                            <Image url="@../com/AlgoVista/images/sll.png" />
-                        </image>
-                    </ImageView>
-                    <Label text="Singly Linked List" textFill="WHITE" style="-fx-font-weight: bold; -fx-font-size: 22;" />
-                    <Label text="Nodes contain data and a pointer to the next node." 
-                           textFill="#94a3b8" wrapText="true" textAlignment="CENTER" style="-fx-font-size: 14;"/>
-                    <cursor>
-                        <Cursor fx:constant="HAND" />
-                    </cursor>
-                    <VBox.margin>
-                        <Insets />
-                    </VBox.margin>
+                <VBox fx:id="singlyCard" onMouseClicked="#openSinglyLinkedList" prefWidth="320" prefHeight="260"
+                      style="-fx-background-color: rgba(255, 255, 255, 0.05); -fx-background-radius: 15; -fx-border-color: rgba(255,255,255,0.1); -fx-border-radius: 15; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);">
+                    <VBox style="-fx-background-image: url('@../com/AlgoVista/images/sll.png'); -fx-background-size: cover; -fx-background-position: center; -fx-background-radius: 15 15 0 0;" VBox.vgrow="ALWAYS"/>
+                    <VBox alignment="CENTER" prefHeight="70" style="-fx-padding: 10;">
+                        <Label text="Singly Linked List" textFill="WHITE" style="-fx-font-weight: bold; -fx-font-size: 22;" />
+                    </VBox>
                 </VBox>
 
                 <!-- Doubly Linked List Card -->
-                <VBox fx:id="doublyCard" alignment="CENTER" spacing="20" prefWidth="300" prefHeight="350"
-                      onMouseClicked="#openDoublyLinkedList"
-                      style="-fx-background-color: rgba(255, 255, 255, 0.05); -fx-background-radius: 15;
-                             -fx-border-color: rgba(255,255,255,0.1); -fx-border-radius: 15;">
-                    <padding>
-                        <Insets top="20" right="20" bottom="30" left="20"/>
-                    </padding>
-                    <!-- Visual representation -->
-                    <ImageView fitHeight="120" fitWidth="220" preserveRatio="true">
-                        <image>
-                            <Image url="@../com/AlgoVista/images/dll.png" />
-                        </image>
-                    </ImageView>
-                    <Label text="Doubly Linked List" textFill="WHITE" style="-fx-font-weight: bold; -fx-font-size: 22;" />
-                    <Label text="Nodes contain data and pointers to previous and next nodes." 
-                           textFill="#94a3b8" wrapText="true" textAlignment="CENTER" style="-fx-font-size: 14;"/>
-                    <cursor>
-                        <Cursor fx:constant="HAND" />
-                    </cursor>
+                <VBox fx:id="doublyCard" onMouseClicked="#openDoublyLinkedList" prefWidth="320" prefHeight="260"
+                      style="-fx-background-color: rgba(255, 255, 255, 0.05); -fx-background-radius: 15; -fx-border-color: rgba(255,255,255,0.1); -fx-border-radius: 15; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);">
+                    <VBox style="-fx-background-image: url('@../com/AlgoVista/images/dll.png'); -fx-background-size: cover; -fx-background-position: center; -fx-background-radius: 15 15 0 0;" VBox.vgrow="ALWAYS"/>
+                    <VBox alignment="CENTER" prefHeight="70" style="-fx-padding: 10;">
+                        <Label text="Doubly Linked List" textFill="WHITE" style="-fx-font-weight: bold; -fx-font-size: 22;" />
+                    </VBox>
                 </VBox>
 
             </HBox>
