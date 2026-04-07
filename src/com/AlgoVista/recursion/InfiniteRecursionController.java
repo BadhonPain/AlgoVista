@@ -14,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import com.AlgoVista.utils.ShortcutManager;
+import javafx.scene.media.AudioClip;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,6 +39,8 @@ public class InfiniteRecursionController {
     private boolean isPlaying = false;
     private int currentStepIndex = 0;
     private List<Label> codeLines = new ArrayList<>();
+    
+    private AudioClip siren;
 
     // Hardcoded Python code
     private final String[] sourceCode = {
@@ -66,14 +69,20 @@ public class InfiniteRecursionController {
 
     @FXML
     public void initialize() {
+        try {
+            String sirenPath = getClass().getResource("/com/AlgoVista/sounds/siren.wav").toExternalForm();
+            siren = new AudioClip(sirenPath);
+            siren.setCycleCount(AudioClip.INDEFINITE);
+        } catch (Exception e) {
+            System.err.println("Could not load siren sound: " + e.getMessage());
+        }
+
         if (speedSlider != null) {
             double initSpeed = com.AlgoVista.utils.SettingsManager.getSpeed();
             speedSlider.setValue(initSpeed);
             if (speedLabel != null) { speedLabel.setText(String.format("%.2fx", initSpeed)); }
-            
         }
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-            
             if (speedLabel != null) {
                 speedLabel.setText(String.format("%.2fx", newVal.doubleValue()));
             }
@@ -147,10 +156,7 @@ public class InfiniteRecursionController {
         for (int i = 0; i < codeLines.size(); i++) {
             if (step.isOverflow && i == step.lineIndex) {
                 codeLines.get(i).setStyle(
-                        "-fx-text-fill: white; -fx-background-color: #ef4444; -fx-padding: 2 10; -fx-background-radius: 4; -fx-font-weight: bold;"); // Red
-                                                                                                                                                     // background
-                                                                                                                                                     // for
-                                                                                                                                                     // error
+                        "-fx-text-fill: white; -fx-background-color: #ef4444; -fx-padding: 2 10; -fx-background-radius: 4; -fx-font-weight: bold;"); 
             } else if (i == step.lineIndex) {
                 codeLines.get(i).setStyle(
                         "-fx-text-fill: white; -fx-background-color: #3b82f6; -fx-padding: 2 10; -fx-background-radius: 4; -fx-font-weight: bold;");
@@ -169,7 +175,6 @@ public class InfiniteRecursionController {
             frame.setMaxWidth(Double.MAX_VALUE);
             frame.setAlignment(Pos.CENTER);
 
-            // If overflow, color the entire stack or heavily glitch the top
             if (step.isOverflow) {
                 frame.setStyle(
                         "-fx-background-color: #991b1b; -fx-text-fill: #fca5a5; -fx-padding: 8; -fx-font-weight: bold; -fx-background-radius: 5; -fx-border-color: #ef4444; -fx-border-width: 2; -fx-border-radius: 5; -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.8), 10, 0, 0, 0);");
@@ -183,16 +188,25 @@ public class InfiniteRecursionController {
 
         // Console
         consoleArea.setText(step.consoleText);
-        // Scroll to bottom of text area
         consoleArea.selectPositionCaret(consoleArea.getLength());
         consoleArea.deselect();
 
         if (step.isOverflow) {
             consoleArea.setStyle(
                     "-fx-control-inner-background: #450a0a; -fx-text-fill: #fca5a5; -fx-font-family: 'Consolas'; -fx-font-size: 14px; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;");
+            
+            // Sound logic: play looping siren if not already playing
+            if (siren != null && !siren.isPlaying()) {
+                siren.play();
+            }
         } else {
             consoleArea.setStyle(
                     "-fx-control-inner-background: #0f172a; -fx-text-fill: #10b981; -fx-font-family: 'Consolas'; -fx-font-size: 14px; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;");
+            
+            // Stop sound if it was playing and we are no longer in overflow
+            if (siren != null && siren.isPlaying()) {
+                siren.stop();
+            }
         }
 
         // Update buttons
@@ -215,6 +229,7 @@ public class InfiniteRecursionController {
     private void resetSimulation() {
         isPlaying = false;
         autoPlayBtn.setText("Auto Play");
+        if (siren != null) siren.stop();
         currentStepIndex = 0;
         renderStep(currentStepIndex);
     }
@@ -227,10 +242,7 @@ public class InfiniteRecursionController {
             new Thread(() -> {
                 while (isPlaying && currentStepIndex < steps.size() - 1) {
                     try {
-                        long delay = 400;
-                        if (speedSlider != null) {
-                            delay = (long)((400) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier());
-                        }
+                        long delay = (long)((400) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier());
                         Thread.sleep(delay);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -250,7 +262,8 @@ public class InfiniteRecursionController {
 
     @FXML
     private void backToCategory() {
-        isPlaying = false; // Stop auto-play thread if running
+        isPlaying = false; 
+        if (siren != null) siren.stop();
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/fxml/RecursionCategory.fxml"));
