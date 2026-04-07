@@ -35,6 +35,12 @@ public class BSTTraversalController {
 
     @FXML
     public void initialize() {
+        if (speedSlider != null) {
+            double initSpeed = com.AlgoVista.utils.SettingsManager.getSpeed();
+            speedSlider.setValue(initSpeed);
+            
+            if (speedLabel != null) { speedLabel.setText(String.format("%.2fx", initSpeed)); }
+        }
         model = new BSTModel();
         visualizer = new BSTVisualizer(bstCanvas);
         
@@ -47,7 +53,7 @@ public class BSTTraversalController {
 
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (speedLabel != null) {
-                speedLabel.setText(String.format("%.1fx", newVal.doubleValue()));
+                speedLabel.setText(String.format("%.2fx", newVal.doubleValue()));
             }
         });
 
@@ -205,7 +211,7 @@ public class BSTTraversalController {
         queueBox.getChildren().clear();
 
         currentStep = 0;
-        double speed = speedSlider.getValue();
+        double speed = com.AlgoVista.utils.SettingsManager.getTimelineRate(speedSlider.getValue());
         Duration duration = Duration.millis(1200 / speed);
 
         animation = new Timeline(new KeyFrame(duration, e -> {

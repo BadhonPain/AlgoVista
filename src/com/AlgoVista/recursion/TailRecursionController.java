@@ -77,9 +77,16 @@ public class TailRecursionController {
 
     @FXML
     public void initialize() {
+        if (speedSlider != null) {
+            double initSpeed = com.AlgoVista.utils.SettingsManager.getSpeed();
+            speedSlider.setValue(initSpeed);
+            if (speedLabel != null) { speedLabel.setText(String.format("%.2fx", initSpeed)); }
+            
+        }
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            
             if (speedLabel != null) {
-                speedLabel.setText(String.format("%.1fx", newVal.doubleValue()));
+                speedLabel.setText(String.format("%.2fx", newVal.doubleValue()));
             }
         });
         for (int i = 0; i < sourceCode.length; i++) {
@@ -237,7 +244,7 @@ public class TailRecursionController {
                     try {
                         long delay = 800;
                         if (speedSlider != null) {
-                            delay = (long) (800 / speedSlider.getValue());
+                            delay = (long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier());
                         }
                         Thread.sleep(delay);
                     } catch (InterruptedException e) {

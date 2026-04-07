@@ -87,14 +87,19 @@ public class TopologicalSortController {
 
     @FXML
     public void initialize() {
+        if (speedSlider != null) {
+            double initSpeed = com.AlgoVista.utils.SettingsManager.getSpeed();
+            speedSlider.setValue(initSpeed);
+            if (speedLabel != null) { speedLabel.setText(String.format("%.2fx", initSpeed)); }
+        }
         nodesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(3, 12, 7));
         edgesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(3, 20, 8));
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (speedLabel != null) {
-                speedLabel.setText(String.format("%.1fx", newVal.doubleValue()));
+                speedLabel.setText(String.format("%.2fx", newVal.doubleValue()));
             }
             if (autoTimeline != null) {
-                autoTimeline.setRate(newVal.doubleValue());
+                autoTimeline.setRate(com.AlgoVista.utils.SettingsManager.getTimelineRate(newVal.doubleValue()));
             }
         });
         buildCodePanel();
@@ -294,7 +299,7 @@ public class TopologicalSortController {
                 }
             }));
             autoTimeline.setCycleCount(Timeline.INDEFINITE);
-            autoTimeline.setRate(speedSlider.getValue());
+            autoTimeline.setRate(com.AlgoVista.utils.SettingsManager.getTimelineRate(speedSlider.getValue()));
             autoTimeline.play();
         }
     }

@@ -3,6 +3,7 @@ module com.AlgoVista {
     requires javafx.fxml;
     requires javafx.graphics;
     requires javafx.media;
+    requires java.prefs;
 
     // This allows JavaFX to load your screens and controllers
     opens com.AlgoVista.dashboard to javafx.fxml;

@@ -113,19 +113,19 @@ public class DoublyLinkedListController {
         new Thread(() -> {
             try {
                 logStep("Creating new node with value [" + val + "]...");
-                Thread.sleep(800);
+                Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                 
                 logStep("Setting new node's next pointer to current Head, and Head's prev to new node...");
-                Thread.sleep(800);
+                Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                 
                 model.prepend(val);
                 
                 logStep("Updating Head pointer to the new node...");
                 javafx.application.Platform.runLater(() -> updateVisualization());
-                Thread.sleep(800);
+                Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                 
                 javafx.application.Platform.runLater(() -> highlightNode(0, "#2ecc71")); // green highlight
-                Thread.sleep(600);
+                Thread.sleep((long)((600) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                 
                 logStep("Prepend complete.");
                 logMessage("Prepended " + val + " to the list.");
@@ -150,7 +150,7 @@ public class DoublyLinkedListController {
         new Thread(() -> {
             try {
                 logStep("Creating new node with value [" + val + "]...");
-                Thread.sleep(800);
+                Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                 
                 logStep("Jumping to Tail pointer, or traversing if Tail not cached...");
                 int size = 0;
@@ -159,23 +159,23 @@ public class DoublyLinkedListController {
                     final int currIdx = size;
                     logStep("Passing index " + currIdx + "...");
                     javafx.application.Platform.runLater(() -> highlightNode(currIdx, "#3498db")); // blue
-                    Thread.sleep(600);
+                    Thread.sleep((long)((600) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                     curr = curr.getNext();
                     size++;
                 }
                 
                 if (size > 0) logStep("Found Tail. Setting Tail's next to new node, and new node's prev to Tail...");
                 else logStep("List is empty. Setting Head & Tail to new node...");
-                Thread.sleep(800);
+                Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                 
                 model.append(val);
                 
                 javafx.application.Platform.runLater(() -> updateVisualization());
-                Thread.sleep(500);
+                Thread.sleep((long)((500) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                 
                 int finalIdx = size; // new node is placed at size
                 javafx.application.Platform.runLater(() -> highlightNode(finalIdx, "#2ecc71")); // green
-                Thread.sleep(600);
+                Thread.sleep((long)((600) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                 
                 logStep("Append complete.");
                 logMessage("Appended " + val + " to the list.");
@@ -201,7 +201,7 @@ public class DoublyLinkedListController {
         new Thread(() -> {
             try {
                 logStep("Creating new node with value [" + val + "]...");
-                Thread.sleep(800);
+                Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                 
                 logStep("Traversing list to target index " + idx + "...");
                 int currIdx = 0;
@@ -209,7 +209,7 @@ public class DoublyLinkedListController {
                 while (curr != null && currIdx < idx - 1) {
                     final int cIdx = currIdx;
                     javafx.application.Platform.runLater(() -> highlightNode(cIdx, "#3498db")); // blue
-                    Thread.sleep(600);
+                    Thread.sleep((long)((600) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                     curr = curr.getNext();
                     currIdx++;
                 }
@@ -219,12 +219,12 @@ public class DoublyLinkedListController {
                     javafx.application.Platform.runLater(() -> showAlert("Invalid Index", "Cannot insert at index " + idx + "."));
                 } else {
                     logStep("Found insertion point. Rewiring prev and next pointers...");
-                    Thread.sleep(800);
+                    Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                     
                     boolean success = model.insertAt(idx, val);
                     if (success) {
                         javafx.application.Platform.runLater(() -> updateVisualization());
-                        Thread.sleep(500);
+                        Thread.sleep((long)((500) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                         javafx.application.Platform.runLater(() -> highlightNode(idx, "#2ecc71"));
                         logStep("Insert complete.");
                         logMessage("Inserted " + val + " at index " + idx + ".");
@@ -262,13 +262,13 @@ public class DoublyLinkedListController {
                     final int cIdx = currIdx;
                     logStep("Checking index " + currIdx + "...");
                     javafx.application.Platform.runLater(() -> highlightNode(cIdx, "#3498db")); // blue
-                    Thread.sleep(800);
+                    Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                     
                     if (curr.getValue() == val) {
                         found = true;
                         logStep("Found value at index " + currIdx + "! Marking for deletion...");
                         javafx.application.Platform.runLater(() -> highlightNode(cIdx, "#e74c3c")); // red
-                        Thread.sleep(1000);
+                        Thread.sleep((long)((1000) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                         break;
                     }
                     curr = curr.getNext();
@@ -278,7 +278,7 @@ public class DoublyLinkedListController {
                 if (found) {
                     logStep("Bypassing the node's prev and next pointers...");
                     model.deleteByValue(val);
-                    Thread.sleep(800);
+                    Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                     javafx.application.Platform.runLater(() -> updateVisualization());
                     logStep("Deletion complete.");
                     logMessage("Deleted first occurrence of value " + val + ".");
@@ -317,11 +317,11 @@ public class DoublyLinkedListController {
                         found = true;
                         logStep("Reached node at index " + idx + ". Marking for deletion.");
                         javafx.application.Platform.runLater(() -> highlightNode(cIdx, "#e74c3c")); // red
-                        Thread.sleep(1000);
+                        Thread.sleep((long)((1000) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                         break;
                     } else {
                         javafx.application.Platform.runLater(() -> highlightNode(cIdx, "#3498db")); // blue
-                        Thread.sleep(600);
+                        Thread.sleep((long)((600) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                     }
                     curr = curr.getNext();
                     currIdx++;
@@ -330,7 +330,7 @@ public class DoublyLinkedListController {
                 if (found) {
                     logStep("Bypassing the node's prev and next pointers...");
                     model.deleteAt(idx);
-                    Thread.sleep(800);
+                    Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                     javafx.application.Platform.runLater(() -> updateVisualization());
                     logStep("Deletion complete.");
                     logMessage("Deleted node at index " + idx + ".");
@@ -367,13 +367,13 @@ public class DoublyLinkedListController {
                     final int cIdx = currIdx;
                     logStep("Checking index " + currIdx + "...");
                     javafx.application.Platform.runLater(() -> highlightNode(cIdx, "#3498db")); // blue
-                    Thread.sleep(800);
+                    Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                     
                     if (curr.getValue() == val) {
                         found = true;
                         logStep("Match found at index " + currIdx + "!!");
                         javafx.application.Platform.runLater(() -> highlightNode(cIdx, "#2ecc71")); // green
-                        Thread.sleep(1000);
+                        Thread.sleep((long)((1000) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                         break;
                     }
                     curr = curr.getNext();
@@ -414,7 +414,7 @@ public class DoublyLinkedListController {
                     final int cVal = curr.getValue();
                     logStep("Visiting Node " + cIdx + " [Value: " + cVal + "]");
                     javafx.application.Platform.runLater(() -> highlightNode(cIdx, "#9b59b6")); // purple
-                    Thread.sleep(800);
+                    Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                     
                     curr = curr.getNext();
                     currIdx++;
@@ -453,7 +453,7 @@ public class DoublyLinkedListController {
                     final int cVal = curr.getValue();
                     logStep("Visiting Node " + cIdx + " [Value: " + cVal + "]");
                     javafx.application.Platform.runLater(() -> highlightNode(cIdx, "#8e44ad")); // dark purple
-                    Thread.sleep(800);
+                    Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                     
                     curr = curr.getPrev();
                     currIdx--;
@@ -481,7 +481,7 @@ public class DoublyLinkedListController {
         new Thread(() -> {
             try {
                 logStep("Iterating through the list to swap prev and next pointers on every node...");
-                Thread.sleep(1000);
+                Thread.sleep((long)((1000) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                 
                 int size = 0;
                 DoublyNode temp = model.getHead();
@@ -491,12 +491,12 @@ public class DoublyLinkedListController {
                     final int cIdx = i;
                     logStep("Swapping pointers for Node " + cIdx);
                     javafx.application.Platform.runLater(() -> highlightNode(cIdx, "#e67e22")); // orange
-                    Thread.sleep(600);
+                    Thread.sleep((long)((600) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                 }
                 
                 logStep("Updating Head indicator to the previous Tail node...");
                 model.reverse();
-                Thread.sleep(800);
+                Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                 
                 javafx.application.Platform.runLater(() -> updateVisualization());
                 logStep("Reversal complete. List is now backwards.");
@@ -636,7 +636,7 @@ public class DoublyLinkedListController {
             
             new Thread(() -> {
                 try {
-                    Thread.sleep(1500);
+                    Thread.sleep((long)((1500) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                     javafx.application.Platform.runLater(() -> valueLabel.setStyle(oldStyle));
                 } catch (InterruptedException e) {
                     e.printStackTrace();

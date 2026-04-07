@@ -23,10 +23,12 @@ public class Main extends Application {
                 
                 // Add a global listener directly to the window (Stage)
                 stage.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-                    try {
-                        clickSound.play();
-                    } catch (Exception ex) {
-                        // Ignore rapid click errors
+                    if (com.AlgoVista.utils.SettingsManager.isAudioEnabled()) {
+                        try {
+                            clickSound.play();
+                        } catch (Exception ex) {
+                            // Ignore rapid click errors
+                        }
                     }
                 });
             }

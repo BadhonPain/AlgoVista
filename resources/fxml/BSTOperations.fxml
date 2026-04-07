@@ -182,7 +182,7 @@
                         <Label text="Speed:" textFill="#94a3b8" style="-fx-font-weight: bold; -fx-font-size: 13;"/>
                         <Label fx:id="speedLabel" text="1.5x" textFill="#0ea5e9" style="-fx-font-weight: bold; -fx-font-size: 13;"/>
                     </HBox>
-                    <Slider fx:id="speedSlider" min="0.5" max="5" value="1.5" prefWidth="140"
+                    <Slider fx:id="speedSlider" min="0.25" max="2.0" value="1.0" prefWidth="140"
                             showTickMarks="false" style="-fx-cursor: hand;"/>
 
                     <Region HBox.hgrow="ALWAYS"/>

@@ -123,7 +123,7 @@ public class QueueController {
 
         new Thread(() -> {
             try {
-                Thread.sleep(800);
+                Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                 logStep("Step 1: Checking if queue is full...");
                 
                 if (model.isFull()) {
@@ -134,7 +134,7 @@ public class QueueController {
                 }
                 
                 logStep("Queue is not full. Proceeding.");
-                Thread.sleep(1000);
+                Thread.sleep((long)((1000) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                 
                 boolean success = model.enqueue(val);
                 if (success) {
@@ -177,7 +177,7 @@ public class QueueController {
 
         new Thread(() -> {
             try {
-                Thread.sleep(800);
+                Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                 logStep("Step 1: Checking if queue is empty...");
                 
                 if (model.isEmpty()) {
@@ -199,7 +199,7 @@ public class QueueController {
                     }
                 });
                 
-                Thread.sleep(1000);
+                Thread.sleep((long)((1000) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                 if (model.isEmpty()) return;
                 
                 Integer dequeued = model.dequeue();
@@ -246,7 +246,7 @@ public class QueueController {
                     }
                 });
                 
-                Thread.sleep(1200);
+                Thread.sleep((long)((1200) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                 
                 Platform.runLater(() -> {
                     int frontIndex = model.getFront();
@@ -295,7 +295,7 @@ public class QueueController {
                     if (foundTracker[0]) break;
                     
                     int currIndex = (front + count) % capacity;
-                    Thread.sleep(800);
+                    Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                     
                     logStep("Checking index " + currIndex + " from front (Value: " + elements[currIndex] + ")");
                     
@@ -322,13 +322,13 @@ public class QueueController {
                     });
                     
                     if (elements[currIndex] == target) {
-                        Thread.sleep(1500);
+                        Thread.sleep((long)((1500) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                     } else {
-                        Thread.sleep(300);
+                        Thread.sleep((long)((300) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                     }
                 }
                 
-                Thread.sleep(200);
+                Thread.sleep((long)((200) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                 if (!foundTracker[0]) {
                     logStep("Reached end of queue. Element not found.");
                     logResult("Search failed. Element " + target + " not present.");
@@ -367,7 +367,7 @@ public class QueueController {
                 
                 for (int count = 0; count < size; count++) {
                     int currIndex = (front + count) % capacity;
-                    Thread.sleep(800);
+                    Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                     
                     logStep("Visiting element at index " + currIndex + " (Value: " + elements[currIndex] + ")");
                     
@@ -383,7 +383,7 @@ public class QueueController {
                         end.play();
                     });
                     
-                    Thread.sleep(1000); 
+                    Thread.sleep((long)((1000) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier())); 
                 }
                 
                 logStep("Traversal complete.");

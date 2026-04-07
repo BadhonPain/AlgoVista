@@ -24,7 +24,7 @@
 
                 <Button text="Random Array" onAction="#generateArray" styleClass="btn-primary"/>
                 <Label text="Speed:" styleClass="text-muted" style="-fx-font-weight: bold; -fx-text-fill: white;"/>
-                <Slider fx:id="speedSlider" min="0.1" max="5.0" value="1.0" prefWidth="80"/>
+                <Slider fx:id="speedSlider" min="0.25" max="2.0" value="1.0" prefWidth="80"/>
 
                 <HBox spacing="5">
                     <Button text="I&lt;" onAction="#stepBackward" styleClass="btn-icon"/>

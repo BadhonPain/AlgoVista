@@ -126,7 +126,7 @@
                 
                 <Label text="Speed:" textFill="#475569" style="-fx-font-weight: bold; -fx-font-size: 14;"/>
                 <Label fx:id="speedLabel" text="1.5x" textFill="#0ea5e9" style="-fx-font-weight: bold; -fx-font-size: 14;"/>
-                <Slider fx:id="speedSlider" min="0.5" max="5" value="1.5" prefWidth="150" showTickMarks="false" style="-fx-cursor: hand;"/>
+                <Slider fx:id="speedSlider" min="0.25" max="2.0" value="1.0" prefWidth="150" showTickMarks="false" style="-fx-cursor: hand;"/>
                 <Region HBox.hgrow="ALWAYS"/>
                 <Label fx:id="statusLabel" text="Ready. Select an operation." textFill="#64748b" style="-fx-font-size: 14; -fx-font-style: italic; -fx-font-weight: bold;"/>
                 <Region HBox.hgrow="ALWAYS"/>

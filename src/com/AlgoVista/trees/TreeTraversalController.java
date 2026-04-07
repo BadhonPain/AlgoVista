@@ -110,10 +110,15 @@ public class TreeTraversalController {
 
     @FXML
     public void initialize() {
+        if (speedSlider != null) {
+            double initSpeed = com.AlgoVista.utils.SettingsManager.getSpeed();
+            speedSlider.setValue(initSpeed);
+            if (speedLabel != null) { speedLabel.setText(String.format("%.2fx", initSpeed)); }
+        }
         buildDefaultTree();
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (speedLabel != null) {
-                speedLabel.setText(String.format("%.1fx", newVal.doubleValue() / 1000.0));
+                speedLabel.setText(String.format("%.2fx", newVal.doubleValue()));
             }
         });
 
@@ -318,8 +323,8 @@ public class TreeTraversalController {
         if (snapshots == null) buildSnapshots();
         if (!isRunning) {
             isRunning = true;
-            double invertedDelay = speedSlider.getMax() + speedSlider.getMin() - speedSlider.getValue();
-            autoTimeline = new Timeline(new KeyFrame(Duration.millis(invertedDelay), e -> {
+            double delayMillis = 800.0 * com.AlgoVista.utils.SettingsManager.getSleepMultiplier();
+            autoTimeline = new Timeline(new KeyFrame(Duration.millis(delayMillis), e -> {
                 if (currentStep < snapshots.size()) applyStep(currentStep++);
                 else stopAuto();
             }));

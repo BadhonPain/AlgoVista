@@ -100,7 +100,7 @@
                          <Label text="Speed:" textFill="#cbd5e1" HBox.hgrow="ALWAYS"/>
                          <Label fx:id="speedLabel" text="1.0x" textFill="#f59e0b"/>
                     </HBox>
-                    <Slider fx:id="speedSlider" min="0.1" max="3.0" value="1.0" />
+                    <Slider fx:id="speedSlider" min="0.25" max="2.0" value="1.0" />
                 </VBox>
 
                 <Separator style="-fx-opacity: 0.1;"/>

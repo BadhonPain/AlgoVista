@@ -48,9 +48,14 @@ public class SortingVisualizerController {
     @FXML
     public void initialize() {
         if (speedSlider != null) {
+            double initSpeed = com.AlgoVista.utils.SettingsManager.getSpeed();
+            speedSlider.setValue(initSpeed);
+            
+        }
+        if (speedSlider != null) {
             speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
                 if (timeline != null) {
-                    timeline.setRate(newVal.doubleValue());
+                    timeline.setRate(com.AlgoVista.utils.SettingsManager.getTimelineRate(newVal.doubleValue()));
                 }
             });
         }
@@ -79,7 +84,7 @@ public class SortingVisualizerController {
         timeline = new Timeline(new KeyFrame(Duration.millis(600), e -> stepForward(null)));
         timeline.setCycleCount(Timeline.INDEFINITE);
         if (speedSlider != null) {
-            timeline.setRate(speedSlider.getValue());
+            timeline.setRate(com.AlgoVista.utils.SettingsManager.getTimelineRate(speedSlider.getValue()));
         }
     }
 

@@ -40,9 +40,15 @@ public class heapController {
 
     @FXML
     public void initialize() {
+        if (speedSlider != null) {
+            double initSpeed = com.AlgoVista.utils.SettingsManager.getSpeed();
+            speedSlider.setValue(initSpeed);
+            
+            if (speedLabel != null) { speedLabel.setText(String.format("%.2fx", initSpeed)); }
+        }
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (speedLabel != null) {
-                speedLabel.setText(String.format("%.1fx", newVal.doubleValue()));
+                speedLabel.setText(String.format("%.2fx", newVal.doubleValue()));
             }
         });
         // Initialize heap type
@@ -263,7 +269,7 @@ public class heapController {
             animation.stop();
         }
 
-        double speed = speedSlider.getValue();
+        double speed = com.AlgoVista.utils.SettingsManager.getTimelineRate(speedSlider.getValue());
         Duration duration = Duration.millis(1000 / speed);
 
         animation = new Timeline(new KeyFrame(duration, e -> {

@@ -40,7 +40,7 @@ public class CustomAlert {
             return;
         }
 
-        if (errorSound != null) {
+        if (com.AlgoVista.utils.SettingsManager.isAudioEnabled() && errorSound != null) {
             try { 
                 errorSound.play(); 
             } catch(Exception e) {

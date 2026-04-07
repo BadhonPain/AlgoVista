@@ -50,6 +50,13 @@ public class MergeSortController {
 
     @FXML
     public void initialize() {
+        if (speedSlider != null) {
+            double initSpeed = com.AlgoVista.utils.SettingsManager.getSpeed();
+            speedSlider.setValue(initSpeed);
+            animationSpeed = com.AlgoVista.utils.SettingsManager.getTimelineRate(initSpeed);
+            animationSpeed = com.AlgoVista.utils.SettingsManager.getTimelineRate(initSpeed);
+            if (speedLabel != null) { speedLabel.setText(String.format("%.2fx", initSpeed)); }
+        }
         // Auto-scroll to bottom when new layers are added
         treeContainer.heightProperty().addListener((obs, oldVal, newVal) -> {
             scrollPane.setVvalue(1.0);
@@ -57,9 +64,9 @@ public class MergeSortController {
 
         if (speedSlider != null) {
             speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-                animationSpeed = newVal.doubleValue();
+                animationSpeed = com.AlgoVista.utils.SettingsManager.getTimelineRate(newVal.doubleValue());
                 if (speedLabel != null) {
-                    speedLabel.setText(String.format("%.1fx", animationSpeed));
+                    speedLabel.setText(String.format("%.2fx", newVal.doubleValue()));
                 }
             });
         }

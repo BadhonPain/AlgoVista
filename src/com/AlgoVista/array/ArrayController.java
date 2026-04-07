@@ -253,7 +253,7 @@ public class ArrayController {
                 for (int i = 0; i < size; i++) {
                     final int idx = i;
                     final int val = elements[i];
-                    Thread.sleep(800);
+                    Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                     
                     logStep("Visiting index " + idx + " (Value: " + val + ")");
                     
@@ -270,7 +270,7 @@ public class ArrayController {
                         }
                     });
                     
-                    Thread.sleep(1000);
+                    Thread.sleep((long)((1000) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                 }
                 logStep("Traversal complete.");
                 logMessage("Traversal Result:\n" + model.traverse());
@@ -321,7 +321,7 @@ public class ArrayController {
                         }
                     });
                     
-                    Thread.sleep(1200);
+                    Thread.sleep((long)((1200) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                     logStep("Swapping values in array...");
                     model.swap(left, right);
                     
@@ -340,7 +340,7 @@ public class ArrayController {
                         }
                     });
                     
-                    Thread.sleep(800);
+                    Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                     left++;
                     right--;
                 }
@@ -376,12 +376,12 @@ public class ArrayController {
                         
                         logStep("Comparing index " + idx1 + " and " + idx2);
                         javafx.application.Platform.runLater(() -> animateCompare(idx1, idx2, "#3498db"));
-                        Thread.sleep(1000);
+                        Thread.sleep((long)((1000) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                         
                         if (model.getElements()[j] > model.getElements()[j + 1]) {
                             logStep("Value " + model.getElements()[j] + " > " + model.getElements()[j + 1] + ". Swapping!");
                             javafx.application.Platform.runLater(() -> animateCompare(idx1, idx2, "#e74c3c"));
-                            Thread.sleep(800);
+                            Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                             model.swap(j, j + 1);
                             
                             javafx.application.Platform.runLater(() -> {
@@ -395,7 +395,7 @@ public class ArrayController {
                                 }
                             });
                             swapped = true;
-                            Thread.sleep(800);
+                            Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                         }
                         
                         javafx.application.Platform.runLater(() -> animateCompare(idx1, idx2, "#9b59b6"));
@@ -537,7 +537,7 @@ public class ArrayController {
             // Restore after short delay
             new Thread(() -> {
                 try {
-                    Thread.sleep(1500);
+                    Thread.sleep((long)((1500) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
                     javafx.application.Platform.runLater(() -> valueLabel.setStyle(oldStyle));
                 } catch (InterruptedException e) {
                     e.printStackTrace();

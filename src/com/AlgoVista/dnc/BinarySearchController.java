@@ -47,10 +47,17 @@ public class BinarySearchController {
     @FXML
     public void initialize() {
         if (speedSlider != null) {
+            double initSpeed = com.AlgoVista.utils.SettingsManager.getSpeed();
+            speedSlider.setValue(initSpeed);
+            animationSpeed = com.AlgoVista.utils.SettingsManager.getTimelineRate(initSpeed);
+            animationSpeed = com.AlgoVista.utils.SettingsManager.getTimelineRate(initSpeed);
+            if (speedLabel != null) { speedLabel.setText(String.format("%.2fx", initSpeed)); }
+        }
+        if (speedSlider != null) {
             speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-                animationSpeed = newVal.doubleValue();
+                animationSpeed = com.AlgoVista.utils.SettingsManager.getTimelineRate(newVal.doubleValue());
                 if (speedLabel != null) {
-                    speedLabel.setText(String.format("%.1fx", animationSpeed));
+                    speedLabel.setText(String.format("%.2fx", newVal.doubleValue()));
                 }
             });
         }

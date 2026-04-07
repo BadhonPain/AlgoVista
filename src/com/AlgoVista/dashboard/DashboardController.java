@@ -98,7 +98,7 @@ public class DashboardController {
         modalContent.getChildren().add(content);
         
         overlayPane.setMouseTransparent(false);
-        FadeTransition ft = new FadeTransition(Duration.millis(300), overlayPane);
+        FadeTransition ft = new FadeTransition(Duration.millis(300 * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()), overlayPane);
         ft.setFromValue(overlayPane.getOpacity());
         ft.setToValue(1.0);
         ft.play();
@@ -353,6 +353,45 @@ public class DashboardController {
         
         advisoryBanner.getChildren().addAll(bannerHeader, bannerBody);
 
+        // Section 1.5: Global Preferences Layer
+        VBox prefsSection = new VBox(15);
+        prefsSection.setAlignment(Pos.CENTER);
+        Label prefsHeader = new Label("GLOBAL PREFERENCES");
+        prefsHeader.getStyleClass().add("settings-header");
+
+        // Audio Toggle Row
+        HBox audioRow = new HBox(15);
+        audioRow.setAlignment(Pos.CENTER);
+        Label audioLbl = new Label("UI Sound Effects");
+        audioLbl.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 13px; -fx-font-weight: bold;");
+        
+        StackPane toggleSwitch = buildMobileToggle();
+        audioRow.getChildren().addAll(audioLbl, toggleSwitch);
+
+        // Speed Slider Row
+        VBox speedRow = new VBox(8);
+        speedRow.setAlignment(Pos.CENTER);
+        Label speedLbl = new Label("Global Animation Speed");
+        speedLbl.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 13px; -fx-font-weight: bold;");
+        
+        Slider speedSlider = new Slider(0.25, 2.0, com.AlgoVista.utils.SettingsManager.getSpeed());
+        speedSlider.setShowTickMarks(true);
+        speedSlider.setShowTickLabels(true);
+        speedSlider.setMajorTickUnit(1.0);
+        speedSlider.setBlockIncrement(0.25);
+        speedSlider.setPrefWidth(250);
+        
+        Label speedValueLbl = new Label(String.format("%.2fx", speedSlider.getValue()));
+        speedValueLbl.setStyle("-fx-text-fill: #38bdf8; -fx-font-weight: bold;");
+        
+        speedSlider.valueProperty().addListener((obs, oldV, newV) -> {
+            com.AlgoVista.utils.SettingsManager.setSpeed(newV.doubleValue());
+            speedValueLbl.setText(String.format("%.2fx", newV.doubleValue()));
+        });
+        
+        speedRow.getChildren().addAll(speedLbl, speedSlider, speedValueLbl);
+        prefsSection.getChildren().addAll(prefsHeader, audioRow, speedRow);
+
         // Section 2: Keyboard Shortcuts Reference
         VBox shortcutSection = new VBox(15);
         Label shortcutHeader = new Label("KEYBOARD SHORTCUTS REFERENCE");
@@ -370,8 +409,43 @@ public class DashboardController {
 
         shortcutSection.getChildren().addAll(shortcutHeader, shortcuts);
 
-        content.getChildren().addAll(title, advisoryBanner, shortcutSection, createCloseButton());
+        content.getChildren().addAll(title, advisoryBanner, prefsSection, shortcutSection, createCloseButton());
         return content;
+    }
+
+    private StackPane buildMobileToggle() {
+        StackPane toggle = new StackPane();
+        toggle.setPrefSize(42, 22);
+        toggle.setMaxSize(42, 22);
+        
+        javafx.scene.shape.Rectangle bg = new javafx.scene.shape.Rectangle(42, 22);
+        bg.setArcWidth(22);
+        bg.setArcHeight(22);
+        
+        double thumbRadius = 8;
+        javafx.scene.shape.Circle thumb = new javafx.scene.shape.Circle(thumbRadius);
+        thumb.setFill(javafx.scene.paint.Color.WHITE);
+        thumb.setEffect(new javafx.scene.effect.DropShadow(2, javafx.scene.paint.Color.rgb(0,0,0,0.4)));
+        
+        // Initial state
+        boolean isEnabled = com.AlgoVista.utils.SettingsManager.isAudioEnabled();
+        bg.setFill(isEnabled ? javafx.scene.paint.Color.web("#38bdf8") : javafx.scene.paint.Color.web("#475569"));
+        toggle.setAlignment(isEnabled ? Pos.CENTER_RIGHT : Pos.CENTER_LEFT);
+        StackPane.setMargin(thumb, new Insets(0, 3, 0, 3));
+        
+        toggle.getChildren().addAll(bg, thumb);
+        toggle.setCursor(javafx.scene.Cursor.HAND);
+        
+        toggle.setOnMouseClicked(e -> {
+            boolean newState = !com.AlgoVista.utils.SettingsManager.isAudioEnabled();
+            com.AlgoVista.utils.SettingsManager.setAudioEnabled(newState);
+            
+            // Animate transition natively
+            bg.setFill(newState ? javafx.scene.paint.Color.web("#38bdf8") : javafx.scene.paint.Color.web("#475569"));
+            toggle.setAlignment(newState ? Pos.CENTER_RIGHT : Pos.CENTER_LEFT);
+        });
+        
+        return toggle;
     }
 
     private void addShortcutRow(GridPane grid, int row, String key, String action) {
