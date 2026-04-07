@@ -390,85 +390,66 @@ public class heapController {
 
     private void updateArrayView(heapModel.HeapOperation op) {
         arrayBox.getChildren().clear();
+        arrayBox.setSpacing(6);
+        arrayBox.setStyle("-fx-alignment: center-left; -fx-padding: 10;");
 
         List<Integer> heap = heapModel.getHeap();
-
         List<Integer> sortedToDraw = (op != null && op.sortedSnapshot != null)
                 ? op.sortedSnapshot
                 : heapModel.getLastSortedArray();
 
         if (heap.isEmpty() && (sortedToDraw == null || sortedToDraw.isEmpty())) {
-            Label emptyLabel = new Label("No elements in heap");
-            emptyLabel.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 13; -fx-font-style: italic; -fx-padding: 10;");
+            Label emptyLabel = new Label("Array is empty");
+            emptyLabel.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 13; -fx-font-style: italic;");
             arrayBox.getChildren().add(emptyLabel);
             return;
         }
 
+        // --- HEAP ELEMENTS ---
         for (int i = 0; i < heap.size(); i++) {
-            VBox cellBox = new VBox(6);
-            cellBox.setStyle("-fx-alignment: center;");
-
-            // Value box
-            String bgHex = visualizer.getNodeStateColorHex(i);
-            String borderHex = visualizer.getNodeStateStrokeHex(i);
-            Label valueLabel = getLabel(heap, i, bgHex, borderHex);
-
-            // Index box (below value)
-            Label indexLabel = new Label(String.valueOf(i));
-            indexLabel.setStyle(
-                    "-fx-text-fill: #94a3b8;" +
-                            "-fx-font-size: 11;" +
-                            "-fx-font-weight: bold;" +
-                            "-fx-alignment: center;"
-            );
-
-            cellBox.getChildren().addAll(valueLabel, indexLabel);
-            arrayBox.getChildren().add(cellBox);
+            arrayBox.getChildren().add(createArrayCell(heap.get(i), 
+                visualizer.getNodeStateColorHex(i), visualizer.getNodeStateStrokeHex(i), "#1e293b"));
         }
 
-        // Draw sorted elements if present
+        // --- DIVIDER ---
+        if (!heap.isEmpty() && sortedToDraw != null && !sortedToDraw.isEmpty()) {
+            javafx.scene.layout.Region divider = new javafx.scene.layout.Region();
+            divider.setPrefSize(2, 45);
+            divider.setStyle("-fx-background-color: #f59e0b; -fx-opacity: 0.4; -fx-translate-x: 5; -fx-translate-y: 0;");
+            arrayBox.getChildren().add(divider);
+            
+            // Spacer after divider
+            javafx.scene.layout.Region spacer = new javafx.scene.layout.Region();
+            spacer.setPrefSize(10, 5);
+            arrayBox.getChildren().add(spacer);
+        }
+
+        // --- SORTED ELEMENTS ---
         if (sortedToDraw != null && !sortedToDraw.isEmpty()) {
-            Label sortedDivider = new Label("| Sorted:");
-            sortedDivider.setStyle("-fx-text-fill: #f59e0b; -fx-font-weight: bold; -fx-font-size: 16; -fx-padding: 0 10 0 10; -fx-alignment: center;");
-            arrayBox.getChildren().add(sortedDivider);
-
             for (int i = 0; i < sortedToDraw.size(); i++) {
-                VBox cellBox = new VBox(6);
-                cellBox.setStyle("-fx-alignment: center;");
-
-                String bgHex = "#fef3c7"; // amber-100
-                String borderHex = "#f59e0b"; // amber-500
-                Label valueLabel = getLabel(sortedToDraw, i, bgHex, borderHex);
-
-                Label indexLabel = new Label("s" + i);
-                indexLabel.setStyle("-fx-text-fill: #f59e0b; -fx-font-size: 11; -fx-font-weight: bold; -fx-alignment: center;");
-
-                cellBox.getChildren().addAll(valueLabel, indexLabel);
-                arrayBox.getChildren().add(cellBox);
+                arrayBox.getChildren().add(createArrayCell(sortedToDraw.get(i), 
+                    "#fef3c7", "#f59e0b", "#92400e"));
             }
         }
     }
 
-    private static Label getLabel(List<Integer> heap, int i, String bgHex, String borderHex) {
-        Label valueLabel = new Label(String.valueOf(heap.get(i)));
-        String textFill = bgHex.equals("#e0f2fe") ? "#0369a1" : "#0f172a";
-        valueLabel.setStyle(
-                "-fx-background-color: " + bgHex + ";" +
-                        "-fx-border-color: " + borderHex + ";" +
-                        "-fx-border-width: 2;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-border-radius: 8;" +
-                        "-fx-min-width: 45;" +
-                        "-fx-max-width: 45;" +
-                        "-fx-min-height: 45;" +
-                        "-fx-max-height: 45;" +
-                        "-fx-alignment: center;" +
-                        "-fx-font-size: 16;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-text-fill: " + textFill + ";"
-        );
-        return valueLabel;
+    private Label createArrayCell(int value, String bgHex, String borderHex, String textHex) {
+        Label cell = new Label(String.valueOf(value));
+        cell.setPrefSize(45, 45);
+        cell.setStyle(String.format(
+            "-fx-background-color: %s; " +
+            "-fx-border-color: %s; " +
+            "-fx-border-width: 2; " +
+            "-fx-border-radius: 8; " +
+            "-fx-background-radius: 8; " +
+            "-fx-text-fill: %s; " +
+            "-fx-font-weight: bold; " +
+            "-fx-font-size: 15; " +
+            "-fx-alignment: center;", bgHex, borderHex, textHex
+        ));
+        return cell;
     }
+
 
     @FXML
     private void backToDashboard() {
