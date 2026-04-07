@@ -52,7 +52,7 @@
                     <!-- Visual representation -->
                     <ImageView fitHeight="120" fitWidth="220" preserveRatio="true">
                         <image>
-                            <Image url="@../images/sll.png" />
+                            <Image url="@../com/AlgoVista/images/sll.png" />
                         </image>
                     </ImageView>
                     <Label text="Singly Linked List" textFill="WHITE" style="-fx-font-weight: bold; -fx-font-size: 22;" />
@@ -77,7 +77,7 @@
                     <!-- Visual representation -->
                     <ImageView fitHeight="120" fitWidth="220" preserveRatio="true">
                         <image>
-                            <Image url="@../images/dll.png" />
+                            <Image url="@../com/AlgoVista/images/dll.png" />
                         </image>
                     </ImageView>
                     <Label text="Doubly Linked List" textFill="WHITE" style="-fx-font-weight: bold; -fx-font-size: 22;" />
