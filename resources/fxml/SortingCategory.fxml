@@ -13,7 +13,7 @@
         <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: #0f172a; -fx-padding: 15;">
             <Button onAction="#BackToDashBoard" styleClass="btn-primary" text="← Back" />
             <VBox>
-                <Label style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: white;" text="SORTING ALGORITHMS" />
+                <Label style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: white;" text="Sorting Algorithms" />
                 <Label style="-fx-text-fill: #94a3b8;" text="Select an algorithm to visualize" />
             </VBox>
         </HBox>
@@ -21,40 +21,64 @@
     <center>
         <FlowPane alignment="CENTER" hgap="25" vgap="25" style="-fx-padding: 30;">
             <!-- Bubble Sort -->
-            <VBox fx:id="bubbleCard" onMouseClicked="#openVisualizer" styleClass="ds-card" style="-fx-background-color: #334155; -fx-background-radius: 10; -fx-padding: 20; -fx-cursor: hand;" prefWidth="280">
-                <Label style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: white;" text="Bubble Sort" />
-                <Label style="-fx-text-fill: #cbd5e1; -fx-padding: 10 0 0 0;" text="Repeatedly swap adjacent elements if they are in wrong order." wrapText="true" />
-                <Label style="-fx-text-fill: #ef4444; -fx-font-weight: bold; -fx-padding: 10 0 0 0;" text="Time: O(n²)" />
+            <VBox fx:id="bubbleCard" onMouseClicked="#openVisualizer" styleClass="ds-card" style="-fx-background-color: #334155; -fx-background-radius: 10; -fx-cursor: hand;" prefWidth="250" prefHeight="250">
+                <style>
+                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
+                </style>
+                <VBox style="-fx-background-image: url('file:///C:/Users/User/.gemini/antigravity/brain/ec8461aa-6f63-4f38-8d24-f391b0dd7a40/bubble_sort_icon_1775577979777.png'); -fx-background-size: cover; -fx-background-radius: 10 10 0 0;" prefHeight="200" prefWidth="250"/>
+                <VBox alignment="CENTER" prefHeight="50" style="-fx-padding: 10;">
+                    <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;" text="Bubble Sort"/>
+                </VBox>
             </VBox>
             <!-- Selection Sort -->
-            <VBox fx:id="selectionCard" onMouseClicked="#openVisualizer" styleClass="ds-card" style="-fx-background-color: #334155; -fx-background-radius: 10; -fx-padding: 20; -fx-cursor: hand;" prefWidth="280">
-                <Label style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: white;" text="Selection Sort" />
-                <Label style="-fx-text-fill: #cbd5e1; -fx-padding: 10 0 0 0;" text="Find the minimum element and swap it with the beginning." wrapText="true" />
-                <Label style="-fx-text-fill: #ef4444; -fx-font-weight: bold; -fx-padding: 10 0 0 0;" text="Time: O(n²)" />
+            <VBox fx:id="selectionCard" onMouseClicked="#openVisualizer" styleClass="ds-card" style="-fx-background-color: #334155; -fx-background-radius: 10; -fx-cursor: hand;" prefWidth="250" prefHeight="250">
+                <style>
+                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
+                </style>
+                <VBox style="-fx-background-image: url('file:///C:/Users/User/.gemini/antigravity/brain/ec8461aa-6f63-4f38-8d24-f391b0dd7a40/selection_sort_icon_1775578128546.png'); -fx-background-size: cover; -fx-background-radius: 10 10 0 0;" prefHeight="200" prefWidth="250"/>
+                <VBox alignment="CENTER" prefHeight="50" style="-fx-padding: 10;">
+                    <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;" text="Selection Sort"/>
+                </VBox>
             </VBox>
             <!-- Insertion Sort -->
-            <VBox fx:id="insertionCard" onMouseClicked="#openVisualizer" styleClass="ds-card" style="-fx-background-color: #334155; -fx-background-radius: 10; -fx-padding: 20; -fx-cursor: hand;" prefWidth="280">
-                <Label style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: white;" text="Insertion Sort" />
-                <Label style="-fx-text-fill: #cbd5e1; -fx-padding: 10 0 0 0;" text="Build sorted array one element at a time." wrapText="true" />
-                <Label style="-fx-text-fill: #ef4444; -fx-font-weight: bold; -fx-padding: 10 0 0 0;" text="Time: O(n²)" />
+            <VBox fx:id="insertionCard" onMouseClicked="#openVisualizer" styleClass="ds-card" style="-fx-background-color: #334155; -fx-background-radius: 10; -fx-cursor: hand;" prefWidth="250" prefHeight="250">
+                <style>
+                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
+                </style>
+                <VBox style="-fx-background-image: url('file:///C:/Users/User/.gemini/antigravity/brain/ec8461aa-6f63-4f38-8d24-f391b0dd7a40/insertion_sort_icon_1775578515576.png'); -fx-background-size: cover; -fx-background-radius: 10 10 0 0;" prefHeight="200" prefWidth="250"/>
+                <VBox alignment="CENTER" prefHeight="50" style="-fx-padding: 10;">
+                    <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;" text="Insertion Sort"/>
+                </VBox>
             </VBox>
-            <!-- Merge Sort -->
-            <VBox fx:id="mergeCard" onMouseClicked="#openVisualizer" styleClass="ds-card" style="-fx-background-color: #334155; -fx-background-radius: 10; -fx-padding: 20; -fx-cursor: hand;" prefWidth="280">
-                <Label style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: white;" text="Merge Sort" />
-                <Label style="-fx-text-fill: #cbd5e1; -fx-padding: 10 0 0 0;" text="Divide array in half, sort halves recursively, then merge." wrapText="true" />
-                <Label style="-fx-text-fill: #22c55e; -fx-font-weight: bold; -fx-padding: 10 0 0 0;" text="Time: O(n log n)" />
+            <!-- Counting Sort -->
+            <VBox fx:id="countingCard" onMouseClicked="#openVisualizer" styleClass="ds-card" style="-fx-background-color: #334155; -fx-background-radius: 10; -fx-cursor: hand;" prefWidth="250" prefHeight="250">
+                <style>
+                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
+                </style>
+                <VBox style="-fx-background-image: url('file:///C:/Users/User/.gemini/antigravity/brain/ec8461aa-6f63-4f38-8d24-f391b0dd7a40/counting_sort_icon_1775578596852.png'); -fx-background-size: cover; -fx-background-radius: 10 10 0 0;" prefHeight="200" prefWidth="250"/>
+                <VBox alignment="CENTER" prefHeight="50" style="-fx-padding: 10;">
+                    <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;" text="Counting Sort"/>
+                </VBox>
             </VBox>
-            <!-- Quick Sort -->
-            <VBox fx:id="quickCard" onMouseClicked="#openVisualizer" styleClass="ds-card" style="-fx-background-color: #334155; -fx-background-radius: 10; -fx-padding: 20; -fx-cursor: hand;" prefWidth="280">
-                <Label style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: white;" text="Quick Sort" />
-                <Label style="-fx-text-fill: #cbd5e1; -fx-padding: 10 0 0 0;" text="Pick pivot, partition array around pivot, sort partitions." wrapText="true" />
-                <Label style="-fx-text-fill: #22c55e; -fx-font-weight: bold; -fx-padding: 10 0 0 0;" text="Time: O(n log n)" />
+            <!-- Radix Sort -->
+            <VBox fx:id="radixCard" onMouseClicked="#openVisualizer" styleClass="ds-card" style="-fx-background-color: #334155; -fx-background-radius: 10; -fx-cursor: hand;" prefWidth="250" prefHeight="250">
+                <style>
+                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
+                </style>
+                <VBox style="-fx-background-image: url('file:///C:/Users/User/.gemini/antigravity/brain/ec8461aa-6f63-4f38-8d24-f391b0dd7a40/radix_sort_icon_1775585699199.png'); -fx-background-size: cover; -fx-background-radius: 10 10 0 0;" prefHeight="200" prefWidth="250"/>
+                <VBox alignment="CENTER" prefHeight="50" style="-fx-padding: 10;">
+                    <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;" text="Radix Sort"/>
+                </VBox>
             </VBox>
-            <!-- Heap Sort -->
-            <VBox fx:id="heapCard" onMouseClicked="#openVisualizer" styleClass="ds-card" style="-fx-background-color: #334155; -fx-background-radius: 10; -fx-padding: 20; -fx-cursor: hand;" prefWidth="280">
-                <Label style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: white;" text="Heap Sort" />
-                <Label style="-fx-text-fill: #cbd5e1; -fx-padding: 10 0 0 0;" text="Build a max heap, repeatedly remove max element." wrapText="true" />
-                <Label style="-fx-text-fill: #22c55e; -fx-font-weight: bold; -fx-padding: 10 0 0 0;" text="Time: O(n log n)" />
+            <!-- Bucket Sort -->
+            <VBox fx:id="bucketCard" onMouseClicked="#openVisualizer" styleClass="ds-card" style="-fx-background-color: #334155; -fx-background-radius: 10; -fx-cursor: hand;" prefWidth="250" prefHeight="250">
+                <style>
+                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
+                </style>
+                <VBox style="-fx-background-image: url('file:///C:/Users/User/.gemini/antigravity/brain/ec8461aa-6f63-4f38-8d24-f391b0dd7a40/bucket_sort_icon_1775585722001.png'); -fx-background-size: cover; -fx-background-radius: 10 10 0 0;" prefHeight="200" prefWidth="250"/>
+                <VBox alignment="CENTER" prefHeight="50" style="-fx-padding: 10;">
+                    <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;" text="Bucket Sort"/>
+                </VBox>
             </VBox>
         </FlowPane>
     </center>

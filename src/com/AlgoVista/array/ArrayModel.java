@@ -4,18 +4,18 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class ArrayModel {
-    private int[] elements;
+    private Integer[] elements;
     private int size;
     private int capacity;
 
     public ArrayModel(int initialCapacity) {
         this.capacity = initialCapacity;
-        this.elements = new int[capacity];
-        this.size = 0;
+        this.elements = new Integer[capacity];
+        this.size = 0; // Initialize with size = 0
     }
 
-    public int[] getElements() {
-        return Arrays.copyOf(elements, size);
+    public Integer[] getElements() {
+        return Arrays.copyOf(elements, capacity);
     }
 
     public int getSize() {
@@ -27,7 +27,7 @@ public class ArrayModel {
     }
 
     public boolean isFull() {
-        return size == capacity;
+        return size >= capacity;
     }
 
     public boolean isEmpty() {
@@ -37,7 +37,7 @@ public class ArrayModel {
     public void generateSample(int size, int min, int max) {
         clear();
         if (size > capacity) {
-            resize(size);
+            size = capacity;
         }
         Random random = new Random();
         for (int i = 0; i < size; i++) {
@@ -48,9 +48,7 @@ public class ArrayModel {
 
     public boolean insertAtEnd(int value) {
         if (isFull()) {
-            resize(capacity * 2); 
-            // Return false if strictly fixed-size, but let's allow dynamic resizing for better UX
-            // Or return true since we resized
+            return false;
         }
         elements[size] = value;
         size++;
@@ -59,12 +57,11 @@ public class ArrayModel {
 
     public boolean insertAtIndex(int index, int value) {
         if (index < 0 || index > size) {
-            return false; // Out of bounds
+            return false;
         }
         if (isFull()) {
-            resize(capacity * 2);
+            return false;
         }
-        // Shift elements to the right
         for (int i = size; i > index; i--) {
             elements[i] = elements[i - 1];
         }
@@ -85,12 +82,17 @@ public class ArrayModel {
         if (index < 0 || index >= size) {
             return false;
         }
-        // Shift elements to the left
         for (int i = index; i < size - 1; i++) {
             elements[i] = elements[i + 1];
         }
         size--;
-        elements[size] = 0; // Clear the last element (optional but good practice)
+        elements[size] = null;
+        
+        capacity--; // Canvas physically shrinks
+        Integer[] newElements = new Integer[capacity];
+        System.arraycopy(elements, 0, newElements, 0, capacity);
+        this.elements = newElements;
+        
         return true;
     }
 
@@ -104,7 +106,7 @@ public class ArrayModel {
 
     public int search(int value) {
         for (int i = 0; i < size; i++) {
-            if (elements[i] == value) {
+            if (elements[i] != null && elements[i] == value) {
                 return i;
             }
         }
@@ -135,11 +137,10 @@ public class ArrayModel {
         }
     }
 
-    // Using Bubble Sort for educational purposes with O(n^2) complexity mentioned in UI
     public void sort() {
         for (int i = 0; i < size - 1; i++) {
             for (int j = 0; j < size - i - 1; j++) {
-                if (elements[j] > elements[j + 1]) {
+                if (elements[j] != null && elements[j + 1] != null && elements[j] > elements[j + 1]) {
                     swap(j, j + 1);
                 }
             }
@@ -155,16 +156,7 @@ public class ArrayModel {
     }
 
     public void clear() {
-        Arrays.fill(elements, 0);
-        size = 0;
-        capacity = 10; // reset capacity
-        elements = new int[capacity];
-    }
-
-    private void resize(int newCapacity) {
-        this.capacity = newCapacity;
-        int[] newArray = new int[capacity];
-        System.arraycopy(elements, 0, newArray, 0, size);
-        this.elements = newArray;
+        Arrays.fill(elements, null);
+        size = 0; 
     }
 }

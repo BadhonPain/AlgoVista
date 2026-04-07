@@ -32,9 +32,9 @@ public class SortingCategoryController {
             case "bubbleCard": algoType = "Bubble Sort"; break;
             case "selectionCard": algoType = "Selection Sort"; break;
             case "insertionCard": algoType = "Insertion Sort"; break;
-            case "mergeCard": algoType = "Merge Sort"; break;
-            case "quickCard": algoType = "Quick Sort"; break;
-            case "heapCard": algoType = "Heap Sort"; break;
+            case "countingCard": algoType = "Counting Sort"; break;
+            case "radixCard": algoType = "Radix Sort"; break;
+            case "bucketCard": algoType = "Bucket Sort"; break;
         }
 
         try {

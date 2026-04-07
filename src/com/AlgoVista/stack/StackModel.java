@@ -4,13 +4,13 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class StackModel {
-    private int[] elements;
+    private Integer[] elements;
     private int top;
     private int capacity;
 
     public StackModel(int capacity) {
         this.capacity = capacity;
-        this.elements = new int[capacity];
+        this.elements = new Integer[capacity];
         this.top = -1;
     }
 
@@ -22,7 +22,7 @@ public class StackModel {
         return top;
     }
 
-    public int[] getElements() {
+    public Integer[] getElements() {
         return elements.clone();
     }
 
@@ -51,8 +51,8 @@ public class StackModel {
         if (isEmpty()) {
             return null;
         }
-        int poppedValue = elements[top];
-        elements[top] = 0; // Clear it purely for visualization cleanliness
+        Integer poppedValue = elements[top];
+        elements[top] = null; // Clear it for visual tracking
         top--;
         return poppedValue;
     }
@@ -65,12 +65,8 @@ public class StackModel {
     }
 
     public int search(int value) {
-        // Standard stack search starts from top
-        // Returns the 1-based distance from top, or -1 if not found.
-        // For visualizer matching array, we might want the absolute index or the distance.
-        // Let's return the absolute array index to make highlighting easier for the Controller.
         for (int i = top; i >= 0; i--) {
-            if (elements[i] == value) {
+            if (elements[i] != null && elements[i] == value) {
                 return i;
             }
         }
@@ -78,7 +74,7 @@ public class StackModel {
     }
 
     public void clear() {
-        Arrays.fill(elements, 0);
+        Arrays.fill(elements, null);
         top = -1;
     }
 

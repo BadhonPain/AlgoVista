@@ -1,6 +1,7 @@
 package com.AlgoVista.linkedlist.singly;
 
-import javafx.animation.FillTransition;
+import javafx.animation.FadeTransition;
+import javafx.animation.TranslateTransition;
 import javafx.animation.ScaleTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,7 +25,7 @@ public class SinglyLinkedListController {
     @FXML private TextField indexInput;
     @FXML private FlowPane listContainer;
     @FXML private Label outputLabel;
-    @FXML private VBox complexitiesContainer;
+    @FXML private Label dynamicComplexityLabel;
     @FXML private VBox stepLogContainer;
 
     private SinglyLinkedListModel model;
@@ -37,53 +38,20 @@ public class SinglyLinkedListController {
         // Setup initial spinner configuration
         sizeSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 20, 5));
         
-        setupComplexities();
+        setComplexity("O(1)");
         updateVisualization();
         logMessage("Ready. Use the left panel to manipulate the Singly Linked List.");
     }
 
-    private void setupComplexities() {
-        addComplexityRow("Insert at Head", "Add new node at beginning", "O(1)");
-        addComplexityRow("Insert at Tail", "Add new node at end", "O(n)"); // Traversal required
-        addComplexityRow("Insert at Position", "Traverse to a position and insert node", "O(n)");
-        addComplexityRow("Delete at Head", "Remove first node", "O(1)");
-        addComplexityRow("Delete at Tail", "Remove last node", "O(n)"); // Traversal required
-        addComplexityRow("Delete by Value", "Search node by value and remove it", "O(n)");
-        addComplexityRow("Delete at Position", "Traverse to a position and remove node", "O(n)");
-        addComplexityRow("Search", "Find node by value", "O(n)");
-        addComplexityRow("Access by Index", "Traverse to position", "O(n)");
-        addComplexityRow("Traverse", "Visit all nodes in order", "O(n)");
-        addComplexityRow("Reverse List", "Reverse links iteratively", "O(n)");
-        addComplexityRow("Space Complexity", "Extra auxiliary space", "O(1)"); // In-place reverse
+    private void setComplexity(String complexity) {
+        javafx.application.Platform.runLater(() -> {
+            if (dynamicComplexityLabel != null) {
+                dynamicComplexityLabel.setText(complexity);
+            }
+        });
     }
 
-    private void addComplexityRow(String operation, String description, String complexity) {
-        HBox row = new HBox(10);
-        row.getStyleClass().add("complexity-row");
-        row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
-        VBox textContainer = new VBox(2);
-        javafx.scene.layout.HBox.setHgrow(textContainer, javafx.scene.layout.Priority.ALWAYS);
-        
-        Label nameLbl = new Label(operation);
-        nameLbl.getStyleClass().add("complexity-op-name");
-        
-        Label descLbl = new Label(description);
-        descLbl.getStyleClass().add("complexity-op-desc");
-        descLbl.setWrapText(true);
-
-        textContainer.getChildren().addAll(nameLbl, descLbl);
-
-        Label badge = new Label(complexity);
-        if (complexity.equals("O(1)") || complexity.startsWith("O(1)")) {
-            badge.getStyleClass().add("complexity-badge-o1");
-        } else {
-            badge.getStyleClass().add("complexity-badge-on");
-        }
-
-        row.getChildren().addAll(textContainer, badge);
-        complexitiesContainer.getChildren().add(row);
-    }
 
     private Integer getInputValue() {
         try {
@@ -111,6 +79,7 @@ public class SinglyLinkedListController {
         
         isAnimating = true;
         if (stepLogContainer != null) stepLogContainer.getChildren().clear();
+        setComplexity("O(1)");
         logStep("PREPEND OP initiating...");
 
         new Thread(() -> {
@@ -148,6 +117,7 @@ public class SinglyLinkedListController {
         
         isAnimating = true;
         if (stepLogContainer != null) stepLogContainer.getChildren().clear();
+        setComplexity("O(n)");
         logStep("APPEND OP initiating...");
 
         new Thread(() -> {
@@ -199,6 +169,7 @@ public class SinglyLinkedListController {
         
         isAnimating = true;
         if (stepLogContainer != null) stepLogContainer.getChildren().clear();
+        setComplexity("O(n)");
         logStep("INSERT_AT OP initiating...");
 
         new Thread(() -> {
@@ -252,6 +223,7 @@ public class SinglyLinkedListController {
 
         isAnimating = true;
         if (stepLogContainer != null) stepLogContainer.getChildren().clear();
+        setComplexity("O(n)");
         logStep("DELETE_BY_VALUE OP initiating...");
 
         new Thread(() -> {
@@ -305,6 +277,7 @@ public class SinglyLinkedListController {
         
         isAnimating = true;
         if (stepLogContainer != null) stepLogContainer.getChildren().clear();
+        setComplexity("O(n)");
         logStep("DELETE_AT OP initiating...");
 
         new Thread(() -> {
@@ -357,6 +330,7 @@ public class SinglyLinkedListController {
         
         isAnimating = true;
         if (stepLogContainer != null) stepLogContainer.getChildren().clear();
+        setComplexity("O(n)");
         logStep("SEARCH OP initiating...");
 
         new Thread(() -> {
@@ -405,6 +379,7 @@ public class SinglyLinkedListController {
 
         isAnimating = true;
         if (stepLogContainer != null) stepLogContainer.getChildren().clear();
+        setComplexity("O(n)");
         logStep("TRAVERSE OP initiating...");
 
         new Thread(() -> {
@@ -440,6 +415,7 @@ public class SinglyLinkedListController {
         
         isAnimating = true;
         if (stepLogContainer != null) stepLogContainer.getChildren().clear();
+        setComplexity("O(n)");
         logStep("REVERSE OP initiating...");
 
         new Thread(() -> {
@@ -480,6 +456,7 @@ public class SinglyLinkedListController {
         int size = sizeSpinner.getValue();
         model.generateSample(size, 1, 99);
         if (stepLogContainer != null) stepLogContainer.getChildren().clear();
+        setComplexity("O(n)");
         updateVisualization();
         logMessage("Generated a random list of size " + size + ".");
     }
@@ -489,6 +466,7 @@ public class SinglyLinkedListController {
         if (isAnimating) return;
         model.clear();
         if (stepLogContainer != null) stepLogContainer.getChildren().clear();
+        setComplexity("O(1)");
         updateVisualization();
         logMessage("Cleared the list.");
     }
@@ -509,6 +487,14 @@ public class SinglyLinkedListController {
         while (current != null) {
             // Create Node Box
             VBox nodeBox = createNodeBox(current.getValue(), index);
+            
+            // Slide/Fade node
+            FadeTransition ftNode = new FadeTransition(Duration.millis(300), nodeBox);
+            ftNode.setFromValue(0.0); ftNode.setToValue(1.0);
+            TranslateTransition ttNode = new TranslateTransition(Duration.millis(300), nodeBox);
+            ttNode.setFromY(-15); ttNode.setToY(0);
+            ftNode.play(); ttNode.play();
+
             listContainer.getChildren().add(nodeBox);
 
             // Create Arrow
@@ -516,6 +502,13 @@ public class SinglyLinkedListController {
                 Label arrow = new Label("➔");
                 arrow.setStyle("-fx-font-size: 28; -fx-text-fill: #34495e; -fx-font-weight: bold;");
                 arrow.setTranslateY(15);
+                
+                FadeTransition ftArr = new FadeTransition(Duration.millis(300), arrow);
+                ftArr.setFromValue(0.0); ftArr.setToValue(1.0);
+                TranslateTransition ttArr = new TranslateTransition(Duration.millis(300), arrow);
+                ttArr.setFromX(-10); ttArr.setToX(0);
+                ftArr.play(); ttArr.play();
+
                 listContainer.getChildren().add(arrow);
             }
 
@@ -529,8 +522,8 @@ public class SinglyLinkedListController {
         arrowToNull.setTranslateY(15);
         
         Label nullLabel = new Label("null");
-        nullLabel.setStyle("-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #e74c3c;");
-        nullLabel.setTranslateY(20);
+        nullLabel.setStyle("-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-color: #e74c3c; -fx-padding: 8 15; -fx-background-radius: 5; -fx-border-color: #c0392b; -fx-border-radius: 5; -fx-border-width: 2;");
+        nullLabel.setTranslateY(10);
         nullLabel.setTranslateX(5);
 
         listContainer.getChildren().addAll(arrowToNull, nullLabel);
@@ -606,7 +599,7 @@ public class SinglyLinkedListController {
     private void logStep(String stepDescription) {
         javafx.application.Platform.runLater(() -> {
             Label l = new Label("• " + stepDescription);
-            l.setStyle("-fx-text-fill: #34495e; -fx-font-size: 17;");
+            l.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 17;");
             l.setWrapText(true);
             if (stepLogContainer != null) {
                 stepLogContainer.getChildren().add(l);

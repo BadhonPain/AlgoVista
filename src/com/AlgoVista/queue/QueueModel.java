@@ -1,7 +1,7 @@
 package com.AlgoVista.queue;
 
 public class QueueModel {
-    private int[] elements;
+    private Integer[] elements;
     private int capacity;
     private int front;
     private int rear;
@@ -9,7 +9,7 @@ public class QueueModel {
 
     public QueueModel(int capacity) {
         this.capacity = capacity;
-        this.elements = new int[capacity];
+        this.elements = new Integer[capacity];
         this.front = 0;
         this.rear = -1;
         this.size = 0;
@@ -39,8 +39,8 @@ public class QueueModel {
         return rear;
     }
 
-    public int[] getElements() {
-        return elements;
+    public Integer[] getElements() {
+        return elements.clone();
     }
 
     public boolean enqueue(int value) {
@@ -53,8 +53,8 @@ public class QueueModel {
 
     public Integer dequeue() {
         if (isEmpty()) return null;
-        int value = elements[front];
-        elements[front] = 0; // Clear visually
+        Integer value = elements[front];
+        elements[front] = null; // Clear visually
         front = (front + 1) % capacity;
         size--;
         return value;
@@ -66,7 +66,7 @@ public class QueueModel {
     }
 
     public void clear() {
-        this.elements = new int[capacity];
+        this.elements = new Integer[capacity];
         this.front = 0;
         this.rear = -1;
         this.size = 0;
