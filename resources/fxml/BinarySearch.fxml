@@ -97,7 +97,7 @@
             <VBox spacing="8.0" alignment="CENTER_LEFT">
                 <HBox spacing="5" alignment="CENTER_LEFT">
                     <Label text="SPEED:" textFill="#94a3b8" style="-fx-font-weight: bold; -fx-font-size: 10;" />
-                    <Label fx:id="speedLabel" text="1.0x" textFill="#38bdf8" style="-fx-font-weight: bold; -fx-font-size: 10;" />
+                    <Label fx:id="speedLabel" text="1.00x" textFill="#38bdf8" style="-fx-font-weight: bold; -fx-font-size: 10;" />
                 </HBox>
                 <Slider fx:id="speedSlider" min="0.25" max="2.0" value="1.0" prefWidth="120" style="-fx-cursor: hand;" />
             </VBox>

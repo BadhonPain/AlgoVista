@@ -58,7 +58,7 @@
                 <VBox spacing="3">
                     <HBox spacing="10" alignment="CENTER_LEFT">
                         <Label text="SIMULATION" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
-                        <Label fx:id="speedLabel" text="2.00x" textFill="#38bdf8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
+                        <Label fx:id="speedLabel" text="1.00x" textFill="#38bdf8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
                     </HBox>
                     <HBox spacing="6" alignment="CENTER_LEFT">
                         <Button fx:id="playButton" text="▶" onAction="#playTraversal"

@@ -256,19 +256,31 @@ public class DashboardController {
         Circle glowRing = new Circle(113);
         glowRing.setStyle("-fx-fill: transparent; -fx-stroke: " + accentColor + "; -fx-stroke-width: 3; -fx-effect: dropshadow(gaussian, " + accentColor + ", 22, 0.7, 0, 0);");
 
-        StackPane photoPane = new StackPane();
-        
-        // Blank placeholder for future photo integration
-        Circle placeholder = new Circle(105, Color.web("#1e293b"));
-        photoPane.getChildren().add(placeholder);
-        
-        // Add a stroke ring around the blank photo
-        Circle photoStroke = new Circle(105);
-        photoStroke.setFill(Color.TRANSPARENT);
-        photoStroke.setStyle("-fx-stroke: " + accentColor + "; -fx-stroke-width: 2;");
-        photoPane.getChildren().add(photoStroke);
+        Circle photoCircle = new Circle(105);
+        try {
+            Image img = new Image(getClass().getResourceAsStream("/com/AlgoVista/images/joya.jpeg"));
+            if (img.isError()) {
+                throw new Exception("Image load error: joya.jpeg could not be loaded");
+            }
+            double iw = img.getWidth();
+            double ih = img.getHeight();
+            // Zoom in slightly (80% of original view)
+            double cropSize = Math.min(iw, ih) * 0.5;
+            double startX = ((iw - cropSize) / 2.0) + 60.0; // shifted crop frame right => image shifts left
+            double startY = (ih - cropSize) / 2.0 * 1.5; // shifted further up to re-center the face after zooming
+            
+            double px = -startX / cropSize;
+            double py = -startY / cropSize;
+            double pw = iw / cropSize;
+            double ph = ih / cropSize;
+            photoCircle.setFill(new ImagePattern(img, px, py, pw, ph, true));
+        } catch (Exception e) {
+            photoCircle.setFill(Color.web("#1e293b"));
+            System.err.println("Failed to load Joya's profile image: " + e.getMessage());
+        }
+        photoCircle.setStyle("-fx-stroke: " + accentColor + "; -fx-stroke-width: 2;");
 
-        avatarPane.getChildren().addAll(glowRing, photoPane);
+        avatarPane.getChildren().addAll(glowRing, photoCircle);
 
 
         Label nameLbl = new Label("JOYSHREE MUKHARJEE");
@@ -325,91 +337,75 @@ public class DashboardController {
     }
 
     private VBox createSettingsContent() {
-        VBox content = new VBox(25);
+        VBox content = new VBox(30);
         content.setAlignment(Pos.TOP_CENTER);
+        content.setPadding(new Insets(10, 20, 10, 20));
         
         Label title = new Label("SETTINGS");
         title.getStyleClass().add("modal-title");
+        title.setStyle("-fx-font-size: 28px; -fx-letter-spacing: 6px; -fx-text-fill: white; -fx-font-weight: bold;");
 
-        // Section 1: Advisory Banner
-        VBox advisoryBanner = new VBox(8);
-        advisoryBanner.getStyleClass().add("advisory-banner");
-        
-        HBox bannerHeader = new HBox(10);
-        bannerHeader.setAlignment(Pos.CENTER_LEFT);
-        
-        // Simple Monitor Icon using a Region
-        Region monitorIcon = new Region();
-        monitorIcon.getStyleClass().add("monitor-icon-mini");
-        
-        Label bannerTitle = new Label("ENVIRONMENT OPTIMIZATION");
-        bannerTitle.getStyleClass().add("banner-title");
-        bannerHeader.getChildren().addAll(monitorIcon, bannerTitle);
-        
-        Label bannerBody = new Label("For the most fluid animation rendering, please perform a quick Window Reset (Minimize then Maximize) upon initial load.");
-        bannerBody.getStyleClass().add("banner-body");
-        bannerBody.setWrapText(true);
-        bannerBody.setMaxWidth(500);
-        
-        advisoryBanner.getChildren().addAll(bannerHeader, bannerBody);
-
-        // Section 1.5: Global Preferences Layer
-        VBox prefsSection = new VBox(15);
+        // Section 1: Preferences
+        VBox prefsSection = new VBox(20);
+        prefsSection.getStyleClass().add("settings-section");
         prefsSection.setAlignment(Pos.CENTER);
+        
         Label prefsHeader = new Label("GLOBAL PREFERENCES");
         prefsHeader.getStyleClass().add("settings-header");
 
-        // Audio Toggle Row
-        HBox audioRow = new HBox(15);
+        // Audio Row
+        HBox audioRow = new HBox(20);
         audioRow.setAlignment(Pos.CENTER);
         Label audioLbl = new Label("UI Sound Effects");
-        audioLbl.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 13px; -fx-font-weight: bold;");
-        
+        audioLbl.getStyleClass().add("settings-label");
         StackPane toggleSwitch = buildMobileToggle();
         audioRow.getChildren().addAll(audioLbl, toggleSwitch);
 
-        // Speed Slider Row
-        VBox speedRow = new VBox(8);
+        // Speed Row
+        VBox speedRow = new VBox(10);
         speedRow.setAlignment(Pos.CENTER);
-        Label speedLbl = new Label("Global Animation Speed");
-        speedLbl.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 13px; -fx-font-weight: bold;");
+        Label speedLbl = new Label("Animation Speed");
+        speedLbl.getStyleClass().add("settings-label");
         
+        HBox sliderBox = new HBox(15);
+        sliderBox.setAlignment(Pos.CENTER);
         Slider speedSlider = new Slider(0.25, 2.0, com.AlgoVista.utils.SettingsManager.getSpeed());
-        speedSlider.setShowTickMarks(true);
-        speedSlider.setShowTickLabels(true);
-        speedSlider.setMajorTickUnit(1.0);
-        speedSlider.setBlockIncrement(0.25);
-        speedSlider.setPrefWidth(250);
+        speedSlider.setPrefWidth(220);
         
         Label speedValueLbl = new Label(String.format("%.2fx", speedSlider.getValue()));
-        speedValueLbl.setStyle("-fx-text-fill: #38bdf8; -fx-font-weight: bold;");
+        speedValueLbl.getStyleClass().add("value-label");
         
         speedSlider.valueProperty().addListener((obs, oldV, newV) -> {
             com.AlgoVista.utils.SettingsManager.setSpeed(newV.doubleValue());
             speedValueLbl.setText(String.format("%.2fx", newV.doubleValue()));
         });
         
-        speedRow.getChildren().addAll(speedLbl, speedSlider, speedValueLbl);
+        sliderBox.getChildren().addAll(speedSlider, speedValueLbl);
+        speedRow.getChildren().addAll(speedLbl, sliderBox);
+
         prefsSection.getChildren().addAll(prefsHeader, audioRow, speedRow);
 
-        // Section 2: Keyboard Shortcuts Reference
-        VBox shortcutSection = new VBox(15);
-        Label shortcutHeader = new Label("KEYBOARD SHORTCUTS REFERENCE");
+        // Section 2: Shortcuts
+        VBox shortcutSection = new VBox(20);
+        shortcutSection.getStyleClass().add("settings-section");
+        shortcutSection.setAlignment(Pos.CENTER);
+        
+        Label shortcutHeader = new Label("KEYBOARD SHORTCUTS");
         shortcutHeader.getStyleClass().add("settings-header");
 
         GridPane shortcuts = new GridPane();
-        shortcuts.setHgap(0); // Dots will fill the gap
-        shortcuts.setVgap(12);
+        shortcuts.setHgap(0);
+        shortcuts.setVgap(15);
         shortcuts.setAlignment(Pos.CENTER);
         
-        addShortcutRow(shortcuts, 0, "SPACE", "PAUSE/RESUME VISUALIZATION");
+        addShortcutRow(shortcuts, 0, "SPACE", "PAUSE / RESUME");
         addShortcutRow(shortcuts, 1, "R", "RESET ALGORITHM");
-        addShortcutRow(shortcuts, 2, "RIGHT ARROW", "STEP FORWARD");
-        addShortcutRow(shortcuts, 3, "ESC", "BACK TO DASHBOARD");
+        addShortcutRow(shortcuts, 2, "RIGHT", "STEP FORWARD");
+        addShortcutRow(shortcuts, 3, "ESC", "BACK TO HOME");
 
         shortcutSection.getChildren().addAll(shortcutHeader, shortcuts);
 
-        content.getChildren().addAll(title, advisoryBanner, prefsSection, shortcutSection, createCloseButton());
+        content.getChildren().addAll(title, prefsSection, shortcutSection, createCloseButton());
         return content;
     }
 

@@ -51,7 +51,7 @@ public class CallStackController {
             "def bye():",
             "    print(\"ok bye!\")",
             "",
-            "greet(\"maggie\")"
+            "greet(\"Alexa !\")"
     };
 
     // Define simulation steps
@@ -114,50 +114,50 @@ public class CallStackController {
         steps.add(new SimStep(12, Arrays.asList(), ""));
 
         // Step 1: calling greet
-        steps.add(new SimStep(12, Arrays.asList("greet(\"maggie\")"), ""));
+        steps.add(new SimStep(12, Arrays.asList("greet(\"Alexa\")"), ""));
 
         // Step 2: enter greet
-        steps.add(new SimStep(0, Arrays.asList("greet(name=\"maggie\")"), ""));
+        steps.add(new SimStep(0, Arrays.asList("greet(name=\"Alexa\")"), ""));
 
         // Step 3: print 1
-        steps.add(new SimStep(1, Arrays.asList("greet(name=\"maggie\")"), ""));
-        c += "hello, maggie!\n";
-        steps.add(new SimStep(1, Arrays.asList("greet(name=\"maggie\")"), c));
+        steps.add(new SimStep(1, Arrays.asList("greet(name=\"Alexa\")"), ""));
+        c += "hello, Alexa!!\n";
+        steps.add(new SimStep(1, Arrays.asList("greet(name=\"Alexa\")"), c));
 
         // Step 4: call greet2
-        steps.add(new SimStep(2, Arrays.asList("greet(name=\"maggie\")"), c));
-        steps.add(new SimStep(2, Arrays.asList("greet(name=\"maggie\")", "greet2(\"maggie\")"), c));
+        steps.add(new SimStep(2, Arrays.asList("greet(name=\"Alexa\")"), c));
+        steps.add(new SimStep(2, Arrays.asList("greet(name=\"Alexa\")", "greet2(\"Alexa\")"), c));
 
         // Step 5: enter greet2
-        steps.add(new SimStep(6, Arrays.asList("greet(name=\"maggie\")", "greet2(name=\"maggie\")"), c));
+        steps.add(new SimStep(6, Arrays.asList("greet(name=\"Alexa\")", "greet2(name=\"Alexa\")"), c));
 
         // Step 6: print 2
-        steps.add(new SimStep(7, Arrays.asList("greet(name=\"maggie\")", "greet2(name=\"maggie\")"), c));
-        c += "how are you, maggie?\n";
-        steps.add(new SimStep(7, Arrays.asList("greet(name=\"maggie\")", "greet2(name=\"maggie\")"), c));
+        steps.add(new SimStep(7, Arrays.asList("greet(name=\"Alexa\")", "greet2(name=\"Alexa\")"), c));
+        c += "how are you, Alexa!?\n";
+        steps.add(new SimStep(7, Arrays.asList("greet(name=\"Alexa\")", "greet2(name=\"Alexa\")"), c));
 
         // Step 7: return from greet2
-        steps.add(new SimStep(7, Arrays.asList("greet(name=\"maggie\")"), c));
+        steps.add(new SimStep(7, Arrays.asList("greet(name=\"Alexa\")"), c));
 
         // Step 8: print 3
-        steps.add(new SimStep(3, Arrays.asList("greet(name=\"maggie\")"), c));
+        steps.add(new SimStep(3, Arrays.asList("greet(name=\"Alexa!\")"), c));
         c += "getting ready to say bye...\n";
-        steps.add(new SimStep(3, Arrays.asList("greet(name=\"maggie\")"), c));
+        steps.add(new SimStep(3, Arrays.asList("greet(name=\"Alexa\")"), c));
 
         // Step 9: call bye
-        steps.add(new SimStep(4, Arrays.asList("greet(name=\"maggie\")"), c));
-        steps.add(new SimStep(4, Arrays.asList("greet(name=\"maggie\")", "bye()"), c));
+        steps.add(new SimStep(4, Arrays.asList("greet(name=\"Alexa\")"), c));
+        steps.add(new SimStep(4, Arrays.asList("greet(name=\"Alexa\")", "bye()"), c));
 
         // Step 10: enter bye
-        steps.add(new SimStep(9, Arrays.asList("greet(name=\"maggie\")", "bye()"), c));
+        steps.add(new SimStep(9, Arrays.asList("greet(name=\"Alexa\")", "bye()"), c));
 
         // Step 11: print ok bye
-        steps.add(new SimStep(10, Arrays.asList("greet(name=\"maggie\")", "bye()"), c));
+        steps.add(new SimStep(10, Arrays.asList("greet(name=\"Alexa\")", "bye()"), c));
         c += "ok bye!\n";
-        steps.add(new SimStep(10, Arrays.asList("greet(name=\"maggie\")", "bye()"), c));
+        steps.add(new SimStep(10, Arrays.asList("greet(name=\"Alexa\")", "bye()"), c));
 
         // Step 12: return from bye
-        steps.add(new SimStep(10, Arrays.asList("greet(name=\"maggie\")"), c));
+        steps.add(new SimStep(10, Arrays.asList("greet(name=\"Alexa\")"), c));
 
         // Step 13: return from greet
         steps.add(new SimStep(4, Arrays.asList(), c));

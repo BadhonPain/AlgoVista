@@ -39,7 +39,6 @@ public class BSTTraversalController {
         if (speedSlider != null) {
             double initSpeed = com.AlgoVista.utils.SettingsManager.getSpeed();
             speedSlider.setValue(initSpeed);
-            
             if (speedLabel != null) { speedLabel.setText(String.format("%.2fx", initSpeed)); }
         }
         model = new BSTModel();

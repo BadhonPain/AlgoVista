@@ -66,7 +66,7 @@
                 <VBox spacing="3">
                     <HBox alignment="CENTER_LEFT" spacing="5">
                         <Label text="Animation Speed" textFill="#64748b" style="-fx-font-size: 10;"/>
-                        <Label fx:id="speedLabel" text="1.4x" textFill="#0ea5e9" style="-fx-font-weight: bold; -fx-font-size: 10;"/>
+                        <Label fx:id="speedLabel" text="1.00x" textFill="#0ea5e9" style="-fx-font-weight: bold; -fx-font-size: 10;"/>
                     </HBox>
                     <HBox spacing="5" alignment="CENTER">
                         <Label text="Slow" textFill="#475569" style="-fx-font-size: 10;"/>

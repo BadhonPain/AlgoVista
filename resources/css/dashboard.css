@@ -54,40 +54,31 @@
     -fx-padding: 5 0 10 0;
 }
 
-/* Advisory Banner */
-.advisory-banner {
-    -fx-background-color: rgba(56, 189, 248, 0.05);
-    -fx-border-color: rgba(56, 189, 248, 0.2);
+/* Settings Section Panels */
+.settings-section {
+    -fx-background-color: rgba(30, 41, 59, 0.4);
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(255, 255, 255, 0.05);
     -fx-border-width: 1;
-    -fx-background-radius: 10;
-    -fx-border-radius: 10;
-    -fx-padding: 15;
-    -fx-effect: dropshadow(gaussian, rgba(56, 189, 248, 0.1), 15, 0, 0, 0);
-    -fx-max-width: 540;
+    -fx-padding: 20;
+    -fx-max-width: 600;
 }
 
-.banner-title {
-    -fx-font-size: 12px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #38bdf8;
-    -fx-letter-spacing: 1.5px;
+.preference-row {
+    -fx-spacing: 20;
+    -fx-alignment: center;
 }
 
-.banner-body {
-    -fx-font-size: 12.5px;
+.settings-label {
     -fx-text-fill: #94a3b8;
-    -fx-line-spacing: 4px;
-    -fx-text-alignment: left;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
 }
 
-.monitor-icon-mini {
-    -fx-background-color: #38bdf8;
-    -fx-min-width: 14px;
-    -fx-max-width: 14px;
-    -fx-min-height: 10px;
-    -fx-max-height: 10px;
-    -fx-shape: "M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z";
-    -fx-effect: dropshadow(gaussian, #38bdf8, 8, 0, 0, 0);
+.value-label {
+    -fx-text-fill: #38bdf8;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
 }
 
 .about-logo {
@@ -184,19 +175,18 @@
 }
 
 .shortcut-key-pro {
-    -fx-background-color: rgba(30, 41, 59, 0.8);
+    -fx-background-color: linear-gradient(to bottom, #1e293b, #0f172a);
     -fx-background-radius: 6;
-    -fx-border-color: rgba(56, 189, 248, 0.4);
+    -fx-border-color: #38bdf8;
     -fx-border-width: 1;
     -fx-border-radius: 6;
-    -fx-padding: 5 15;
+    -fx-padding: 4 12;
     -fx-text-fill: #38bdf8;
     -fx-font-size: 11px;
     -fx-font-weight: bold;
-    -fx-font-family: "Inter", sans-serif;
-    -fx-min-width: 80px;
+    -fx-min-width: 70px;
     -fx-alignment: center;
-    -fx-effect: innershadow(gaussian, rgba(56, 189, 248, 0.2), 5, 0, 0, 0);
+    -fx-effect: dropshadow(gaussian, rgba(56, 189, 248, 0.15), 10, 0, 0, 0);
 }
 
 .modal-close-btn {
