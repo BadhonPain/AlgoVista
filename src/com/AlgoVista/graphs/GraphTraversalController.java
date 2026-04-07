@@ -47,17 +47,22 @@ public class GraphTraversalController {
     private Map<Integer, Integer> distances;
     private Map<Integer, Integer> parent;
 
-    private static final double NODE_RADIUS = 25;
-    private static final Color UNVISITED_COLOR = Color.LIGHTGRAY;
-    private static final Color VISITING_COLOR = Color.YELLOW;
-    private static final Color VISITED_COLOR = Color.LIGHTGREEN;
-    private static final Color PATH_COLOR = Color.ORANGE;
+    private static final double NODE_RADIUS = 22;
+    private static final Color UNVISITED_COLOR = Color.web("#475569");
+    private static final Color VISITING_COLOR = Color.web("#f59e0b");
+    private static final Color VISITED_COLOR = Color.web("#10b981");
+    private static final Color PATH_COLOR = Color.web("#38bdf8");
 
     @FXML
     public void initialize() {
+        if (speedSlider != null) {
+            double initSpeed = com.AlgoVista.utils.SettingsManager.getSpeed();
+            speedSlider.setValue(initSpeed);
+            if (speedLabel != null) { speedLabel.setText(String.format("%.2fx", initSpeed)); }
+        }
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (speedLabel != null) {
-                speedLabel.setText(String.format("%.1fx", newVal.doubleValue()));
+                speedLabel.setText(String.format("%.2fx", newVal.doubleValue()));
             }
         });
         gc = graphCanvas.getGraphicsContext2D();
@@ -98,10 +103,10 @@ public class GraphTraversalController {
         graphCanvas.sceneProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 ShortcutManager.register(newVal,
-                    this::playTraversal,
-                    null, // Step not implemented explicitly as a method yet?
-                    this::resetTraversal,
-                    this::backToCategory
+                        this::playTraversal,
+                        null, // Step not implemented explicitly as a method yet?
+                        this::resetTraversal,
+                        this::backToCategory
                 );
             }
         });
@@ -178,6 +183,15 @@ public class GraphTraversalController {
         String algorithm = algorithmCombo.getValue();
         int startNode = startNodeSpinner.getValue();
 
+        // Educational Validation
+        if (algorithm.equals("Dijkstra") && graphModel.hasNegativeWeights()) {
+            com.AlgoVista.utils.CustomAlert.showWarning("Algorithm Compatibility", 
+                "Dijkstra's algorithm does not support negative edge weights and may produce incorrect results. " +
+                "Try Bellman-Ford for negative weight support.");
+        } else if (algorithm.equals("Bellman-Ford") && graphModel.hasNegativeWeights()) {
+            traversalOrderLabel.setText("Bellman-Ford confirmed: Handling negative weights...");
+        }
+
         // Reset
         currentStep = 0;
         resetVisualization();
@@ -205,7 +219,7 @@ public class GraphTraversalController {
     }
 
     private void animateTraversal() {
-        double speed = speedSlider.getValue();
+        double speed = com.AlgoVista.utils.SettingsManager.getTimelineRate(speedSlider.getValue());
         Duration duration = Duration.millis(1000 / speed);
 
         animation = new Timeline(new KeyFrame(duration, e -> {
@@ -437,9 +451,9 @@ public class GraphTraversalController {
     }
 
     private void drawGraph() {
-        // Clear canvas
+        // BST-Style Dark Canvas
         gc.clearRect(0, 0, graphCanvas.getWidth(), graphCanvas.getHeight());
-        gc.setFill(Color.WHITE);
+        gc.setFill(Color.web("#0f172a"));
         gc.fillRect(0, 0, graphCanvas.getWidth(), graphCanvas.getHeight());
 
         // Draw edges
@@ -450,8 +464,8 @@ public class GraphTraversalController {
     }
 
     private void drawEdges() {
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(2);
+        gc.setStroke(Color.web("#334155"));
+        gc.setLineWidth(2.5);
 
         for (GraphModel.Edge edge : graphModel.getEdgeList()) {
             if (!graphModel.isDirected() && edge.from > edge.to) continue;
@@ -463,13 +477,13 @@ public class GraphTraversalController {
                 gc.strokeLine(fromPos.getX(), fromPos.getY(), toPos.getX(), toPos.getY());
 
                 // Draw weight if weighted
-                if (graphModel.isWeighted() && edge.weight > 1) {
+                if (graphModel.isWeighted() && edge.weight != 1) {
                     double midX = (fromPos.getX() + toPos.getX()) / 2;
                     double midY = (fromPos.getY() + toPos.getY()) / 2;
 
-                    gc.setFill(Color.RED);
-                    gc.setFont(Font.font(14));
-                    gc.fillText(String.valueOf(edge.weight), midX, midY);
+                    gc.setFill(Color.web("#94a3b8"));
+                    gc.setFont(Font.font("Segoe UI", 13));
+                    gc.fillText(String.valueOf(edge.weight), midX, midY - 5);
                 }
 
                 // Draw arrow for directed graphs
@@ -504,19 +518,19 @@ public class GraphTraversalController {
             if (pos != null) {
                 Color color = nodeColors.getOrDefault(i, UNVISITED_COLOR);
 
-                // Draw circle
-                gc.setFill(color);
+                // BST-Style Matte Node
+                gc.setFill(Color.web("#1e293b"));
                 gc.fillOval(pos.getX() - NODE_RADIUS, pos.getY() - NODE_RADIUS,
                         NODE_RADIUS * 2, NODE_RADIUS * 2);
 
-                gc.setStroke(Color.BLACK);
-                gc.setLineWidth(2);
+                gc.setStroke(color); 
+                gc.setLineWidth(color.equals(UNVISITED_COLOR) ? 2.5 : 4.0);
                 gc.strokeOval(pos.getX() - NODE_RADIUS, pos.getY() - NODE_RADIUS,
                         NODE_RADIUS * 2, NODE_RADIUS * 2);
 
                 // Draw node label
-                gc.setFill(Color.BLACK);
-                gc.setFont(Font.font(16));
+                gc.setFill(Color.WHITE);
+                gc.setFont(Font.font("Segoe UI", 16));
                 gc.setTextAlign(TextAlignment.CENTER);
                 gc.fillText(String.valueOf(i), pos.getX(), pos.getY() + 5);
             }
@@ -535,8 +549,8 @@ public class GraphTraversalController {
             Parent root = loader.load();
 
             Stage stage = (Stage) graphCanvas.getScene().getWindow();
-            double width = stage.getWidth();
-            double height = stage.getHeight();
+            double width = stage.getScene().getWidth();
+            double height = stage.getScene().getHeight();
             double x = stage.getX();
             double y = stage.getY();
 
@@ -573,6 +587,26 @@ public class GraphTraversalController {
         }
 
         algorithmInfoLabel.setText(info);
+    }
+    
+    @FXML private void generateNegativeWeights() {
+        int n = nodesSpinner.getValue(), e = edgesSpinner.getValue();
+        boolean dir = rbDU.isSelected() || rbDW.isSelected();
+        graphModel = new GraphModel(n, dir, true);
+        Random r = new Random();
+        for (int i = 0; i < n; i++) {
+            double angle = 2 * Math.PI * i / n;
+            graphModel.setNodePosition(i, new Point2D(graphCanvas.getWidth()/2 + 180 * Math.cos(angle), graphCanvas.getHeight()/2 + 180 * Math.sin(angle)));
+        }
+        int added = 0;
+        while (added < e) {
+            int u = r.nextInt(n), v = r.nextInt(n);
+            if (u != v && graphModel.getAdjMatrix()[u][v] == 0) {
+                int w = r.nextInt(20) - 8; // Some negatives
+                graphModel.addEdge(u, v, w); added++;
+            }
+        }
+        resetVisualization();
     }
 
     @FXML
@@ -683,19 +717,13 @@ public class GraphTraversalController {
                         TextInputDialog weightDialog = new TextInputDialog("1");
                         weightDialog.setTitle("Edge Weight");
                         weightDialog.setHeaderText("Creating edge: " + selectedNode + " → " + clickedNode);
-                        weightDialog.setContentText("Enter weight:");
+                        weightDialog.setContentText("Enter weight (supports negative for Bellman-Ford):");
 
                         Optional<String> weightResult = weightDialog.showAndWait();
                         if (weightResult.isPresent()) {
                             try {
                                 weight = Integer.parseInt(weightResult.get());
-                                if (weight <= 0) {
-                                    showAlert("Invalid Weight", "Weight must be positive.");
-                                    nodeColors.put(selectedNode, UNVISITED_COLOR);
-                                    selectedNode = null;
-                                    drawGraph();
-                                    return;
-                                }
+                                // Allow negative in custom mode
                             } catch (NumberFormatException e) {
                                 showAlert("Invalid Input", "Please enter a valid number.");
                                 nodeColors.put(selectedNode, UNVISITED_COLOR);
@@ -780,10 +808,10 @@ public class GraphTraversalController {
     }
 
     private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+        if (title != null && (title.toLowerCase().contains("complete") || title.toLowerCase().contains("ready") || title.toLowerCase().contains("custom mode"))) {
+            com.AlgoVista.utils.CustomAlert.showInfo(title, message);
+        } else {
+            com.AlgoVista.utils.CustomAlert.showError(title, message);
+        }
     }
 }

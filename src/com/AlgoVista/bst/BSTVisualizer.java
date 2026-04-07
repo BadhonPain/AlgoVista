@@ -62,10 +62,13 @@ public class BSTVisualizer {
     }
 
     public void drawTree(BSTModel model) {
+        int nodeCount = model.getTotalNodes();
         int depth = model.getMaxDepth();
 
-        double requiredWidth  = Math.max(900, Math.pow(2, Math.max(depth - 1, 1)) * 70);
-        double requiredHeight = Math.max(520, depth * 85 + 80);
+        // Linear width scaling: 100px per node, minimum 900px
+        double requiredWidth  = Math.max(900, nodeCount * 100);
+        // Minimum 580px height, or 85px per level
+        double requiredHeight = Math.max(580, depth * 85 + 100);
 
         canvas.setWidth(requiredWidth);
         canvas.setHeight(requiredHeight);

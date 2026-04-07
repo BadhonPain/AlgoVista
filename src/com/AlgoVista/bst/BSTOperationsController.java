@@ -33,11 +33,16 @@ public class BSTOperationsController {
 
     @FXML
     public void initialize() {
+        if (speedSlider != null) {
+            double initSpeed = com.AlgoVista.utils.SettingsManager.getSpeed();
+            speedSlider.setValue(initSpeed);
+            if (speedLabel != null) { speedLabel.setText(String.format("%.2fx", initSpeed)); }
+        }
         model = new BSTModel();
         visualizer = new BSTVisualizer(bstCanvas);
         
         // Initialize spinners
-        sizeSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 30, 10));
+        sizeSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 60, 15));
         minSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 1));
         maxSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 100));
 
@@ -47,7 +52,7 @@ public class BSTOperationsController {
 
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (speedLabel != null) {
-                speedLabel.setText(String.format("%.1fx", newVal.doubleValue()));
+                speedLabel.setText(String.format("%.2fx", newVal.doubleValue()));
             }
         });
 
@@ -231,7 +236,7 @@ public class BSTOperationsController {
         }
 
         currentStep = 0;
-        double speed = speedSlider.getValue();
+        double speed = com.AlgoVista.utils.SettingsManager.getTimelineRate(speedSlider.getValue());
         Duration duration = Duration.millis(1200 / speed);
 
         animation = new Timeline(new KeyFrame(duration, e -> {
@@ -323,8 +328,8 @@ public class BSTOperationsController {
             Parent root = loader.load();
 
             Stage stage = (Stage) bstCanvas.getScene().getWindow();
-            double width = stage.getWidth();
-            double height = stage.getHeight();
+            double width = stage.getScene().getWidth();
+            double height = stage.getScene().getHeight();
             double x = stage.getX();
             double y = stage.getY();
 
@@ -338,11 +343,11 @@ public class BSTOperationsController {
         }
     }
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+        private void showAlert(String title, String message) {
+        if (title != null && (title.toLowerCase().contains("complete") || title.toLowerCase().contains("ready") || title.toLowerCase().contains("custom mode"))) {
+            com.AlgoVista.utils.CustomAlert.showInfo(title, message);
+        } else {
+            com.AlgoVista.utils.CustomAlert.showError(title, message);
+        }
     }
 }

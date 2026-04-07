@@ -47,15 +47,22 @@
                 <VBox fx:id="codeContainer" spacing="2" style="-fx-font-family: 'Consolas'; -fx-font-size: 14px;" VBox.vgrow="ALWAYS"/>
             </VBox>
 
-            <!-- Right Side: Call Stack Visualization (will overflow visually) -->
+            <!-- Right Side: Call Stack Visualization (Fixed Height to prevent layout shift) -->
             <VBox spacing="10" prefWidth="350" style="-fx-background-color: #1e293b; -fx-padding: 20; -fx-background-radius: 10;">
                 <Label text="Call Stack" textFill="#94a3b8">
                     <font>
                         <Font name="System Bold" size="16.0" />
                     </font>
                 </Label>
-                <!-- Stack container, items align at the bottom to grow upwards -->
-                <VBox fx:id="stackContainer" alignment="BOTTOM_CENTER" spacing="5" VBox.vgrow="ALWAYS" style="-fx-border-color: #334155; -fx-border-width: 0 2 2 2; -fx-padding: 10;"/>
+                <!-- ScrollPane prevents the inner VBox from growing and pushing the footer down -->
+                <javafx.scene.control.ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" 
+                                                  style="-fx-background-color: transparent; -fx-background: transparent; -fx-padding: 0; -fx-border-color: #334155; -fx-border-width: 0 2 2 2; -fx-border-radius: 5;"
+                                                  prefHeight="420" VBox.vgrow="ALWAYS">
+                    <content>
+                        <!-- Stack container, items align at the bottom to grow upwards -->
+                        <VBox fx:id="stackContainer" alignment="BOTTOM_CENTER" spacing="5" style="-fx-padding: 10;"/>
+                    </content>
+                </javafx.scene.control.ScrollPane>
             </VBox>
         </HBox>
 
@@ -74,8 +81,8 @@
                 
                 <HBox spacing="10" alignment="CENTER">
                     <Label text="Speed:" textFill="#94a3b8" />
-                    <Label fx:id="speedLabel" text="1.0x" textFill="#0ea5e9" style="-fx-font-weight: bold;"/>
-                    <Slider fx:id="speedSlider" min="0.1" max="3.0" value="1.0" blockIncrement="0.1" style="-fx-cursor: hand;"
+                    <Label fx:id="speedLabel" text="1.00x" textFill="#0ea5e9" style="-fx-font-weight: bold;"/>
+                    <Slider fx:id="speedSlider" min="0.25" max="2.0" value="1.0" blockIncrement="0.1" style="-fx-cursor: hand;"
                             majorTickUnit="0.5" showTickMarks="true" HBox.hgrow="ALWAYS" />
                 </HBox>
             </VBox>

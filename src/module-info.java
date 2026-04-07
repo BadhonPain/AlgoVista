@@ -2,9 +2,11 @@ module com.AlgoVista {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.graphics;
+    requires javafx.media;
+    requires java.prefs;
 
     // This allows JavaFX to load your screens and controllers
-    opens com.AlgoVista.dashboard;
+    opens com.AlgoVista.dashboard to javafx.fxml;
     exports com.AlgoVista.dashboard;
 
     opens com.AlgoVista.graphs;
@@ -28,6 +30,18 @@ module com.AlgoVista {
     // Explicitly opening and exporting the DP module
     opens com.AlgoVista.dp;
     exports com.AlgoVista.dp;
+
+    // newly added modules from joya's branch
+    opens com.AlgoVista.array to javafx.fxml;
+    exports com.AlgoVista.array;
+    opens com.AlgoVista.linkedlist to javafx.fxml;
+    exports com.AlgoVista.linkedlist;
+    opens com.AlgoVista.stack to javafx.fxml;
+    exports com.AlgoVista.stack;
+    opens com.AlgoVista.queue to javafx.fxml;
+    exports com.AlgoVista.queue;
+    opens com.AlgoVista.sorting to javafx.fxml;
+    exports com.AlgoVista.sorting;
 
     // Resources and Utilities
     opens com.AlgoVista.images;

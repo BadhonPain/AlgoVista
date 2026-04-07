@@ -17,6 +17,9 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.util.Duration;
+import javafx.application.Platform;
+import javafx.stage.Stage;
+import javafx.animation.KeyFrame;
 
 import java.io.IOException;
 import java.util.*;
@@ -34,6 +37,8 @@ public class DashboardController {
     @FXML private TextField searchField;
     @FXML private StackPane overlayPane;
     @FXML private VBox modalContent;
+    @FXML private ScrollPane mainScrollPane;
+    @FXML private VBox scrollContent;
 
     private final List<String> algorithms = Arrays.asList(
             "Array", "Linked List", "Stack", "Queue", "Sorting", "Graph",
@@ -43,9 +48,34 @@ public class DashboardController {
     public void initialize() {
         loadCards(""); // Load all cards initially
         
-        // Ensure overlay is hidden but interactive setup
+        // Setup overlay interaction
         overlayPane.setOnMouseClicked(e -> closeModal());
-        modalContent.setOnMouseClicked(e -> e.consume()); // Prevent closing when clicking inside modal
+        modalContent.setOnMouseClicked(e -> e.consume()); 
+
+        // Robust automatic layout fix for ScrollPane & TilePane calculation bugs
+        Platform.runLater(() -> {
+            if (mainScrollPane != null && scrollContent != null) {
+                mainScrollPane.viewportBoundsProperty().addListener((obs, oldV, newV) -> {
+                    scrollContent.setPrefWidth(newV.getWidth());
+                    scrollContent.requestLayout();
+                });
+            }
+            
+            if (rootPane.getScene() != null && rootPane.getScene().getWindow() instanceof Stage) {
+                Stage stage = (Stage) rootPane.getScene().getWindow();
+                
+                // Add listener to maximized property to force a layout recalculation
+                stage.maximizedProperty().addListener((obs, oldVal, newVal) -> {
+                    Timeline timeline = new Timeline(
+                        new KeyFrame(Duration.millis(150), evt -> {
+                            rootPane.requestLayout();
+                            rootPane.applyCss();
+                        })
+                    );
+                    timeline.play();
+                });
+            }
+        });
     }
 
     @FXML
@@ -68,7 +98,7 @@ public class DashboardController {
         modalContent.getChildren().add(content);
         
         overlayPane.setMouseTransparent(false);
-        FadeTransition ft = new FadeTransition(Duration.millis(300), overlayPane);
+        FadeTransition ft = new FadeTransition(Duration.millis(300 * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()), overlayPane);
         ft.setFromValue(overlayPane.getOpacity());
         ft.setToValue(1.0);
         ft.play();
@@ -226,19 +256,31 @@ public class DashboardController {
         Circle glowRing = new Circle(113);
         glowRing.setStyle("-fx-fill: transparent; -fx-stroke: " + accentColor + "; -fx-stroke-width: 3; -fx-effect: dropshadow(gaussian, " + accentColor + ", 22, 0.7, 0, 0);");
 
-        StackPane photoPane = new StackPane();
-        
-        // Blank placeholder for future photo integration
-        Circle placeholder = new Circle(105, Color.web("#1e293b"));
-        photoPane.getChildren().add(placeholder);
-        
-        // Add a stroke ring around the blank photo
-        Circle photoStroke = new Circle(105);
-        photoStroke.setFill(Color.TRANSPARENT);
-        photoStroke.setStyle("-fx-stroke: " + accentColor + "; -fx-stroke-width: 2;");
-        photoPane.getChildren().add(photoStroke);
+        Circle photoCircle = new Circle(105);
+        try {
+            Image img = new Image(getClass().getResourceAsStream("/com/AlgoVista/images/joya.jpeg"));
+            if (img.isError()) {
+                throw new Exception("Image load error: joya.jpeg could not be loaded");
+            }
+            double iw = img.getWidth();
+            double ih = img.getHeight();
+            // Zoom in slightly (80% of original view)
+            double cropSize = Math.min(iw, ih) * 0.5;
+            double startX = ((iw - cropSize) / 2.0) + 60.0; // shifted crop frame right => image shifts left
+            double startY = (ih - cropSize) / 2.0 * 1.5; // shifted further up to re-center the face after zooming
+            
+            double px = -startX / cropSize;
+            double py = -startY / cropSize;
+            double pw = iw / cropSize;
+            double ph = ih / cropSize;
+            photoCircle.setFill(new ImagePattern(img, px, py, pw, ph, true));
+        } catch (Exception e) {
+            photoCircle.setFill(Color.web("#1e293b"));
+            System.err.println("Failed to load Joya's profile image: " + e.getMessage());
+        }
+        photoCircle.setStyle("-fx-stroke: " + accentColor + "; -fx-stroke-width: 2;");
 
-        avatarPane.getChildren().addAll(glowRing, photoPane);
+        avatarPane.getChildren().addAll(glowRing, photoCircle);
 
 
         Label nameLbl = new Label("JOYSHREE MUKHARJEE");
@@ -295,53 +337,111 @@ public class DashboardController {
     }
 
     private VBox createSettingsContent() {
-        VBox content = new VBox(25);
+        VBox content = new VBox(30);
         content.setAlignment(Pos.TOP_CENTER);
+        content.setPadding(new Insets(10, 20, 10, 20));
         
         Label title = new Label("SETTINGS");
         title.getStyleClass().add("modal-title");
+        title.setStyle("-fx-font-size: 28px; -fx-letter-spacing: 6px; -fx-text-fill: white; -fx-font-weight: bold;");
 
-        // Section 1: Advisory Banner
-        VBox advisoryBanner = new VBox(8);
-        advisoryBanner.getStyleClass().add("advisory-banner");
+        // Section 1: Preferences
+        VBox prefsSection = new VBox(20);
+        prefsSection.getStyleClass().add("settings-section");
+        prefsSection.setAlignment(Pos.CENTER);
         
-        HBox bannerHeader = new HBox(10);
-        bannerHeader.setAlignment(Pos.CENTER_LEFT);
-        
-        // Simple Monitor Icon using a Region
-        Region monitorIcon = new Region();
-        monitorIcon.getStyleClass().add("monitor-icon-mini");
-        
-        Label bannerTitle = new Label("ENVIRONMENT OPTIMIZATION");
-        bannerTitle.getStyleClass().add("banner-title");
-        bannerHeader.getChildren().addAll(monitorIcon, bannerTitle);
-        
-        Label bannerBody = new Label("For the most fluid animation rendering, please perform a quick Window Reset (Minimize then Maximize) upon initial load.");
-        bannerBody.getStyleClass().add("banner-body");
-        bannerBody.setWrapText(true);
-        bannerBody.setMaxWidth(500);
-        
-        advisoryBanner.getChildren().addAll(bannerHeader, bannerBody);
+        Label prefsHeader = new Label("GLOBAL PREFERENCES");
+        prefsHeader.getStyleClass().add("settings-header");
 
-        // Section 2: Keyboard Shortcuts Reference
-        VBox shortcutSection = new VBox(15);
-        Label shortcutHeader = new Label("KEYBOARD SHORTCUTS REFERENCE");
+        // Audio Row
+        HBox audioRow = new HBox(20);
+        audioRow.setAlignment(Pos.CENTER);
+        Label audioLbl = new Label("UI Sound Effects");
+        audioLbl.getStyleClass().add("settings-label");
+        StackPane toggleSwitch = buildMobileToggle();
+        audioRow.getChildren().addAll(audioLbl, toggleSwitch);
+
+        // Speed Row
+        VBox speedRow = new VBox(10);
+        speedRow.setAlignment(Pos.CENTER);
+        Label speedLbl = new Label("Animation Speed");
+        speedLbl.getStyleClass().add("settings-label");
+        
+        HBox sliderBox = new HBox(15);
+        sliderBox.setAlignment(Pos.CENTER);
+        Slider speedSlider = new Slider(0.25, 2.0, com.AlgoVista.utils.SettingsManager.getSpeed());
+        speedSlider.setPrefWidth(220);
+        
+        Label speedValueLbl = new Label(String.format("%.2fx", speedSlider.getValue()));
+        speedValueLbl.getStyleClass().add("value-label");
+        
+        speedSlider.valueProperty().addListener((obs, oldV, newV) -> {
+            com.AlgoVista.utils.SettingsManager.setSpeed(newV.doubleValue());
+            speedValueLbl.setText(String.format("%.2fx", newV.doubleValue()));
+        });
+        
+        sliderBox.getChildren().addAll(speedSlider, speedValueLbl);
+        speedRow.getChildren().addAll(speedLbl, sliderBox);
+
+        prefsSection.getChildren().addAll(prefsHeader, audioRow, speedRow);
+
+        // Section 2: Shortcuts
+        VBox shortcutSection = new VBox(20);
+        shortcutSection.getStyleClass().add("settings-section");
+        shortcutSection.setAlignment(Pos.CENTER);
+        
+        Label shortcutHeader = new Label("KEYBOARD SHORTCUTS");
         shortcutHeader.getStyleClass().add("settings-header");
 
         GridPane shortcuts = new GridPane();
-        shortcuts.setHgap(0); // Dots will fill the gap
-        shortcuts.setVgap(12);
+        shortcuts.setHgap(0);
+        shortcuts.setVgap(15);
         shortcuts.setAlignment(Pos.CENTER);
         
-        addShortcutRow(shortcuts, 0, "SPACE", "PAUSE/RESUME VISUALIZATION");
+        addShortcutRow(shortcuts, 0, "SPACE", "PAUSE / RESUME");
         addShortcutRow(shortcuts, 1, "R", "RESET ALGORITHM");
-        addShortcutRow(shortcuts, 2, "RIGHT ARROW", "STEP FORWARD");
-        addShortcutRow(shortcuts, 3, "ESC", "BACK TO DASHBOARD");
+        addShortcutRow(shortcuts, 2, "RIGHT", "STEP FORWARD");
+        addShortcutRow(shortcuts, 3, "ESC", "BACK TO HOME");
 
         shortcutSection.getChildren().addAll(shortcutHeader, shortcuts);
 
-        content.getChildren().addAll(title, advisoryBanner, shortcutSection, createCloseButton());
+        content.getChildren().addAll(title, prefsSection, shortcutSection, createCloseButton());
         return content;
+    }
+
+    private StackPane buildMobileToggle() {
+        StackPane toggle = new StackPane();
+        toggle.setPrefSize(42, 22);
+        toggle.setMaxSize(42, 22);
+        
+        javafx.scene.shape.Rectangle bg = new javafx.scene.shape.Rectangle(42, 22);
+        bg.setArcWidth(22);
+        bg.setArcHeight(22);
+        
+        double thumbRadius = 8;
+        javafx.scene.shape.Circle thumb = new javafx.scene.shape.Circle(thumbRadius);
+        thumb.setFill(javafx.scene.paint.Color.WHITE);
+        thumb.setEffect(new javafx.scene.effect.DropShadow(2, javafx.scene.paint.Color.rgb(0,0,0,0.4)));
+        
+        // Initial state
+        boolean isEnabled = com.AlgoVista.utils.SettingsManager.isAudioEnabled();
+        bg.setFill(isEnabled ? javafx.scene.paint.Color.web("#38bdf8") : javafx.scene.paint.Color.web("#475569"));
+        toggle.setAlignment(isEnabled ? Pos.CENTER_RIGHT : Pos.CENTER_LEFT);
+        StackPane.setMargin(thumb, new Insets(0, 3, 0, 3));
+        
+        toggle.getChildren().addAll(bg, thumb);
+        toggle.setCursor(javafx.scene.Cursor.HAND);
+        
+        toggle.setOnMouseClicked(e -> {
+            boolean newState = !com.AlgoVista.utils.SettingsManager.isAudioEnabled();
+            com.AlgoVista.utils.SettingsManager.setAudioEnabled(newState);
+            
+            // Animate transition natively
+            bg.setFill(newState ? javafx.scene.paint.Color.web("#38bdf8") : javafx.scene.paint.Color.web("#475569"));
+            toggle.setAlignment(newState ? Pos.CENTER_RIGHT : Pos.CENTER_LEFT);
+        });
+        
+        return toggle;
     }
 
     private void addShortcutRow(GridPane grid, int row, String key, String action) {

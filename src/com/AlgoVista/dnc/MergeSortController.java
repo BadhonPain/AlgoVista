@@ -42,6 +42,11 @@ public class MergeSortController {
     @FXML private javafx.scene.control.Slider speedSlider;
     @FXML private Label speedLabel;
 
+    // Complexity Boxes
+    @FXML private VBox bestCaseBox;
+    @FXML private VBox worstCaseBox;
+    @FXML private VBox spaceCaseBox;
+
     private double animationSpeed = 1.0;
 
     private List<Integer> initialData;
@@ -50,6 +55,13 @@ public class MergeSortController {
 
     @FXML
     public void initialize() {
+        if (speedSlider != null) {
+            double initSpeed = com.AlgoVista.utils.SettingsManager.getSpeed();
+            speedSlider.setValue(initSpeed);
+            animationSpeed = com.AlgoVista.utils.SettingsManager.getTimelineRate(initSpeed);
+            animationSpeed = com.AlgoVista.utils.SettingsManager.getTimelineRate(initSpeed);
+            if (speedLabel != null) { speedLabel.setText(String.format("%.2fx", initSpeed)); }
+        }
         // Auto-scroll to bottom when new layers are added
         treeContainer.heightProperty().addListener((obs, oldVal, newVal) -> {
             scrollPane.setVvalue(1.0);
@@ -57,9 +69,9 @@ public class MergeSortController {
 
         if (speedSlider != null) {
             speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-                animationSpeed = newVal.doubleValue();
+                animationSpeed = com.AlgoVista.utils.SettingsManager.getTimelineRate(newVal.doubleValue());
                 if (speedLabel != null) {
-                    speedLabel.setText(String.format("%.1fx", animationSpeed));
+                    speedLabel.setText(String.format("%.2fx", newVal.doubleValue()));
                 }
             });
         }
@@ -70,12 +82,29 @@ public class MergeSortController {
             if (newVal != null) {
                 ShortcutManager.register(newVal,
                     this::playPauseToggle,
-                    null, // Step forward not fully implemented for this complex tree recursive split
+                    null,
                     this::generateNewArray,
                     this::backToCategory
                 );
             }
         });
+    }
+
+    private void highlightComplexity(VBox activeBox) {
+        if (activeBox != null) {
+            activeBox.setStyle("-fx-background-color: rgba(245, 158, 11, 0.15); " +
+                             "-fx-border-color: #f59e0b; " +
+                             "-fx-border-width: 1.5; " +
+                             "-fx-border-radius: 5; " +
+                             "-fx-background-radius: 5;");
+        }
+    }
+
+    private void clearComplexityHighlights() {
+        String baseStyle = "-fx-padding: 2 5; -fx-background-radius: 5;";
+        if (bestCaseBox != null) bestCaseBox.setStyle(baseStyle);
+        if (worstCaseBox != null) worstCaseBox.setStyle(baseStyle);
+        if (spaceCaseBox != null) spaceCaseBox.setStyle(baseStyle);
     }
 
     private void playPauseToggle() {
@@ -94,6 +123,7 @@ public class MergeSortController {
     private void generateNewArray() {
         if (sorting) return;
         treeContainer.getChildren().clear();
+        clearComplexityHighlights();
         initialData = new ArrayList<>();
         Random rand = new Random();
         for (int i = 0; i < 8; i++) {
@@ -165,6 +195,11 @@ public class MergeSortController {
     private void startSort() {
         if (sorting) return;
         sorting = true;
+        
+        // Merge sort is always O(n log n), highlight both Time boxes
+        highlightComplexity(bestCaseBox);
+        highlightComplexity(worstCaseBox);
+        
         treeContainer.getChildren().clear();
         animateMergeSort(new ArrayList<>(initialData));
     }

@@ -86,9 +86,16 @@ public class FibonacciController {
 
     @FXML
     public void initialize() {
+        if (speedSlider != null) {
+            double initSpeed = com.AlgoVista.utils.SettingsManager.getSpeed();
+            speedSlider.setValue(initSpeed);
+            animationSpeed = com.AlgoVista.utils.SettingsManager.getTimelineRate(initSpeed);
+            animationSpeed = com.AlgoVista.utils.SettingsManager.getTimelineRate(initSpeed);
+            if (speedLabel != null) { speedLabel.setText(String.format("%.2fx", initSpeed)); }
+        }
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-            animationSpeed = newVal.doubleValue();
-            speedLabel.setText(String.format("%.1fx", animationSpeed));
+            animationSpeed = com.AlgoVista.utils.SettingsManager.getTimelineRate(newVal.doubleValue());
+            speedLabel.setText(String.format("%.2fx", newVal.doubleValue()));
         });
         setupPseudoCode();
         resetVisualization();
@@ -243,8 +250,8 @@ public class FibonacciController {
         rect.setStroke(Color.web("#fbbf24")); // Gold border
         rect.setStrokeWidth(4);
         
-        FillTransition ft = new FillTransition(Duration.millis(500), rect, Color.web("#1e293b"), Color.web("#064e3b"));
-        ScaleTransition st = new ScaleTransition(Duration.millis(500), cell);
+        FillTransition ft = new FillTransition(Duration.millis(500 / animationSpeed), rect, Color.web("#1e293b"), Color.web("#064e3b"));
+        ScaleTransition st = new ScaleTransition(Duration.millis(500 / animationSpeed), cell);
         st.setToX(1.3); st.setToY(1.3);
         
         ParallelTransition pt = new ParallelTransition(ft, st);
@@ -403,7 +410,7 @@ public class FibonacciController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DP_Category.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) rootPane.getScene().getWindow();
-            stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
+            stage.setScene(new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight()));
         } catch (IOException e) {
             e.printStackTrace();
         }

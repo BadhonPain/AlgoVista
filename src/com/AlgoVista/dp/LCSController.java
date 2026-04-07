@@ -53,9 +53,15 @@ public class LCSController {
 
     @FXML
     public void initialize() {
+        if (speedSlider != null) {
+            double initSpeed = com.AlgoVista.utils.SettingsManager.getSpeed();
+            speedSlider.setValue(initSpeed);
+            animationSpeed = com.AlgoVista.utils.SettingsManager.getTimelineRate(initSpeed);
+            if (speedLabel != null) { speedLabel.setText(String.format("%.2fx", initSpeed)); }
+        }
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-            animationSpeed = newVal.doubleValue();
-            speedLabel.setText(String.format("%.1fx", animationSpeed));
+            animationSpeed = com.AlgoVista.utils.SettingsManager.getTimelineRate(newVal.doubleValue());
+            speedLabel.setText(String.format("%.2fx", newVal.doubleValue()));
         });
         setupPseudoCode();
 
@@ -310,7 +316,7 @@ public class LCSController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DP_Category.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) rootPane.getScene().getWindow();
-            stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
+            stage.setScene(new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight()));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.AlgoVista.queue.QueueController"
+            stylesheets="@dashboard.css"
+            style="-fx-background-color: #f5f5f5;"
+            prefHeight="800" prefWidth="1200">
+
+    <!-- Top Bar -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="15"
+              style="-fx-background-color: #2c3e50; -fx-padding: 12;">
+            <Button text="← Back" onAction="#backToMenu"
+                    style="-fx-background-color: #34495e; -fx-text-fill: white;
+                           -fx-background-radius: 5; -fx-padding: 8 15; -fx-cursor: hand;
+                           -fx-font-weight: bold;"/>
+
+            <VBox alignment="CENTER_LEFT">
+                <Label text="QUEUE VISUALIZER" textFill="white">
+                    <font><Font name="Arial Bold" size="24" /></font>
+                </Label>
+                <Label text="Explore queue operations through interactive simulation (FIFO)" textFill="#bdc3c7">
+                    <font><Font name="Arial" size="12" /></font>
+                </Label>
+            </VBox>
+        </HBox>
+    </top>
+
+    <!-- Main Content -->
+    <center>
+        <HBox>
+            <!-- Left Operations Panel -->
+            <ScrollPane fitToWidth="true" prefWidth="250"
+                        style="-fx-background: #34495e; -fx-background-color: #34495e;">
+                <VBox spacing="0" style="-fx-background-color: #34495e;">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+
+                    <!-- Initialization -->
+                    <VBox spacing="6" style="-fx-padding: 10; -fx-border-color: #2c3e50; -fx-border-width: 0 0 2 0;">
+                        <Label text="Initialization" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: white;"/>
+                        <HBox spacing="5" alignment="CENTER_LEFT">
+                            <Label text="Capacity:" style="-fx-font-size: 12; -fx-text-fill: #bdc3c7;"/>
+                            <Spinner fx:id="capacitySpinner" prefWidth="70" editable="true"/>
+                        </HBox>
+                        <Button text="Create Empty Queue" onAction="#createQueue" maxWidth="Infinity"
+                                style="-fx-background-color: #2c3e50; -fx-text-fill: white;
+                                       -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12;
+                                       -fx-padding: 8; -fx-background-radius: 5;"/>
+                        <Button text="Generate Random" onAction="#generateRandom" maxWidth="Infinity"
+                                style="-fx-background-color: #27ae60; -fx-text-fill: white;
+                                       -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12;
+                                       -fx-padding: 8; -fx-background-radius: 5;"/>
+                    </VBox>
+
+                    <!-- Core Operations -->
+                    <VBox spacing="6" style="-fx-padding: 10; -fx-border-color: #2c3e50; -fx-border-width: 0 0 2 0;">
+                        <Label text="Core Operations" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: white;"/>
+                        <TextField fx:id="valueInput" promptText="Enter Value" style="-fx-font-size: 12;"/>
+                        
+                        <Button text="Enqueue (Add)" onAction="#enqueue" maxWidth="Infinity"
+                                style="-fx-background-color: #3498db; -fx-text-fill: white;
+                                       -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12;
+                                       -fx-padding: 8; -fx-background-radius: 5;"/>
+                        <Button text="Dequeue (Remove)" onAction="#dequeue" maxWidth="Infinity"
+                                style="-fx-background-color: #e74c3c; -fx-text-fill: white;
+                                       -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12;
+                                       -fx-padding: 8; -fx-background-radius: 5;"/>
+                        <Button text="Peek (Front)" onAction="#peek" maxWidth="Infinity"
+                                style="-fx-background-color: #9b59b6; -fx-text-fill: white;
+                                       -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12;
+                                       -fx-padding: 8; -fx-background-radius: 5;"/>        
+                    </VBox>
+
+                    <!-- Info/Checks -->
+                    <VBox spacing="6" style="-fx-padding: 10; -fx-border-color: #2c3e50; -fx-border-width: 0 0 2 0;">
+                        <Label text="Checks &amp; Info" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: white;"/>
+                        <Button text="Is Empty?" onAction="#checkEmpty" maxWidth="Infinity"
+                                style="-fx-background-color: #8e44ad; -fx-text-fill: white;
+                                       -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12;
+                                       -fx-padding: 8; -fx-background-radius: 5;"/>
+                        <Button text="Is Full?" onAction="#checkFull" maxWidth="Infinity"
+                                style="-fx-background-color: #c0392b; -fx-text-fill: white;
+                                       -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12;
+                                       -fx-padding: 8; -fx-background-radius: 5;"/>
+                        <Button text="Get Size" onAction="#getSize" maxWidth="Infinity"
+                                style="-fx-background-color: #16a085; -fx-text-fill: white;
+                                       -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12;
+                                       -fx-padding: 8; -fx-background-radius: 5;"/>
+                    </VBox>
+
+                    <!-- Advanced -->
+                    <VBox spacing="6" style="-fx-padding: 10;">
+                        <Label text="Advanced" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: white;"/>
+                        <Button text="Search Value" onAction="#search" maxWidth="Infinity"
+                                style="-fx-background-color: #f39c12; -fx-text-fill: white;
+                                       -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12;
+                                       -fx-padding: 8; -fx-background-radius: 5;"/>
+                        <Button text="Traverse Queue" onAction="#traverse" maxWidth="Infinity"
+                                style="-fx-background-color: #d35400; -fx-text-fill: white;
+                                       -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12;
+                                       -fx-padding: 8; -fx-background-radius: 5;"/>      
+                        <Button text="Clear Queue" onAction="#clear" maxWidth="Infinity"
+                                style="-fx-background-color: #7f8c8d; -fx-text-fill: white;
+                                       -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12;
+                                       -fx-padding: 8; -fx-background-radius: 5;"/>
+                    </VBox>
+                </VBox>
+            </ScrollPane>
+
+            <!-- Right Side - Main Workspace -->
+            <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: white;">
+                
+                <HBox VBox.vgrow="ALWAYS">
+                    <!-- Visualization Area -->
+                    <ScrollPane fitToHeight="true" fitToWidth="true" HBox.hgrow="ALWAYS" 
+                                style="-fx-background: white; -fx-background-color: transparent;">
+                        <HBox alignment="CENTER" style="-fx-padding: 40;">
+                            <VBox alignment="CENTER" spacing="10">
+                                <Label text="QUEUE Base (Front → Rear)" style="-fx-font-weight: bold; -fx-text-fill: #7f8c8d;"/>
+                                <!-- FlowPane naturally wraps left to right in case of overflow -->
+                                <FlowPane fx:id="queueContainer" hgap="10" vgap="20" alignment="CENTER" prefWrapLength="800">
+                                    <!-- Cells go here -->
+                                </FlowPane>
+                            </VBox>
+                        </HBox>
+                    </ScrollPane>
+
+                    <!-- Step-by-Step Simulation Log Panel -->
+                    <VBox prefWidth="300" minWidth="300" style="-fx-background-color: #f8f9fa; -fx-border-color: #ecf0f1; -fx-border-width: 0 0 0 1;">
+                        <Label text="Simulation Steps" style="-fx-font-weight: bold; -fx-font-size: 15; -fx-text-fill: #2c3e50; -fx-padding: 15; -fx-background-color: #ecf0f1;"/>
+                        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background: transparent; -fx-background-color: transparent;">
+                            <VBox fx:id="stepLogContainer" spacing="10" style="-fx-padding: 15;">
+                                <!-- Step messages go here -->
+                            </VBox>
+                        </ScrollPane>
+                    </VBox>
+                </HBox>
+
+                <!-- Bottom Area: Message Output & Complexities -->
+                <HBox spacing="15" style="-fx-background-color: #ecf0f1; -fx-padding: 15; -fx-border-color: #bdc3c7; -fx-border-width: 1 0 0 0;" prefHeight="250" minHeight="250">
+                    <!-- Result / Final Message Output -->
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <Label text="System Result Output:" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: #2c3e50;"/>
+                        <ScrollPane fitToWidth="true" style="-fx-background: white; -fx-border-color: #95a5a6; -fx-border-radius: 3; -fx-background-radius: 3;" VBox.vgrow="ALWAYS">
+                            <Label fx:id="outputLabel" text="Queue Visualizer initialized. Waiting for operations." wrapText="true" 
+                                   style="-fx-font-family: 'Consolas'; -fx-font-size: 14; -fx-padding: 10; -fx-text-fill: #34495e;"/>
+                        </ScrollPane>
+                    </VBox>
+
+                    <!-- Operations & Complexities -->
+                    <VBox styleClass="complexity-card" prefWidth="400" minWidth="400">
+                         <Label text="Operations &amp; Complexities" styleClass="complexity-title"/>
+                         <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background: #1a252f; -fx-background-color: #1a252f; -fx-padding: 0;" VBox.vgrow="ALWAYS">
+                             <VBox fx:id="complexitiesContainer" spacing="0"/>
+                         </ScrollPane>
+                    </VBox>
+                </HBox>
+
+            </VBox>
+        </HBox>
+    </center>
+
+</BorderPane>

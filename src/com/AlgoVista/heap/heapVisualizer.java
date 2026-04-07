@@ -89,58 +89,72 @@ public class heapVisualizer {
 
     private void calculatePositions(heapModel model) {
         nodePositions.clear();
+        int totalNodes = model.size();
+        if (totalNodes == 0) return;
 
-        int height = model.getHeight();
+        int totalHeight = model.getHeight();
         double canvasWidth = canvas.getWidth();
         double canvasHeight = canvas.getHeight();
 
-        // Better spacing calculation
-        int maxNodesInLastLevel = (int) Math.pow(2, height - 1);
-        double minSpacing = 65;
+        // Standardized padding and spacing
+        double startY = 50;
+        double verticalSpacing = Math.min(90, (canvasHeight - 120) / Math.max(1, totalHeight - 1));
 
-        double startY = 45;
-        double verticalSpacing = Math.min(80, (canvasHeight - 120) / Math.max(1, height - 1));
+        for (int i = 0; i < totalNodes; i++) {
+            // Find level and index in level
+            int level = (int) (Math.log(i + 1) / Math.log(2));
+            int indexInLevel = i - ((int) Math.pow(2, level) - 1);
+            int nodesInThisLevel = (int) Math.pow(2, level);
 
-        int nodeIndex = 0;
-        for (int level = 0; level < height && nodeIndex < model.size(); level++) {
-            int nodesInLevel = (int) Math.pow(2, level);
-            int actualNodesInLevel = Math.min(nodesInLevel, model.size() - nodeIndex);
+            // Partition the width of the canvas into 2^level equal slots
+            double slotWidth = canvasWidth / nodesInThisLevel;
+            double x = (indexInLevel * slotWidth) + (slotWidth / 2.0);
+            double y = startY + (level * verticalSpacing);
 
-            // Dynamic spacing based on level
-            double levelSpacing = minSpacing * Math.pow(2, height - level - 1);
-            double levelWidth = (actualNodesInLevel - 1) * levelSpacing;
-            double startX = (canvasWidth - levelWidth) / 2;
-            double y = startY + level * verticalSpacing;
-
-            for (int i = 0; i < actualNodesInLevel && nodeIndex < model.size(); i++) {
-                double x = startX + i * levelSpacing;
-                nodePositions.put(nodeIndex, new NodePosition(x, y));
-                nodeIndex++;
-            }
+            nodePositions.put(i, new NodePosition(x, y));
         }
     }
 
     private void drawEdges(heapModel model) {
         gc.setStroke(Color.web("#cbd5e1")); // slate-300
-        gc.setLineWidth(3.0);
+        gc.setLineWidth(2.5);
+
+        // Dynamically get the radius used in drawNodes
+        double currentRadius = model.getHeight() > 4 ? 22 : 30;
 
         for (int i = 0; i < model.size(); i++) {
             NodePosition parentPos = nodePositions.get(i);
 
             if (model.hasLeftChild(i)) {
                 int leftChild = model.getLeftChildIndex(i);
-                NodePosition leftPos = nodePositions.get(leftChild);
-                gc.strokeLine(parentPos.x, parentPos.y + NODE_RADIUS,
-                        leftPos.x, leftPos.y - NODE_RADIUS);
+                if (leftChild < model.size()) {
+                    NodePosition leftPos = nodePositions.get(leftChild);
+                    drawClippedLine(parentPos, leftPos, currentRadius);
+                }
             }
 
             if (model.hasRightChild(i)) {
                 int rightChild = model.getRightChildIndex(i);
-                NodePosition rightPos = nodePositions.get(rightChild);
-                gc.strokeLine(parentPos.x, parentPos.y + NODE_RADIUS,
-                        rightPos.x, rightPos.y - NODE_RADIUS);
+                if (rightChild < model.size()) {
+                    NodePosition rightPos = nodePositions.get(rightChild);
+                    drawClippedLine(parentPos, rightPos, currentRadius);
+                }
             }
         }
+    }
+
+    private void drawClippedLine(NodePosition p1, NodePosition p2, double radius) {
+        double angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
+        
+        // Start from the edge of the parent node
+        double startX = p1.x + Math.cos(angle) * radius;
+        double startY = p1.y + Math.sin(angle) * radius;
+        
+        // End at the edge of the child node
+        double endX = p2.x - Math.cos(angle) * radius;
+        double endY = p2.y - Math.sin(angle) * radius;
+        
+        gc.strokeLine(startX, startY, endX, endY);
     }
 
     private void drawNodes(heapModel model) {

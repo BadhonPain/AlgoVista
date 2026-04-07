@@ -12,6 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import com.AlgoVista.utils.ShortcutManager;
+import javafx.scene.layout.Region;
 
 import java.io.IOException;
 import java.util.List;
@@ -35,11 +36,16 @@ public class BSTTraversalController {
 
     @FXML
     public void initialize() {
+        if (speedSlider != null) {
+            double initSpeed = com.AlgoVista.utils.SettingsManager.getSpeed();
+            speedSlider.setValue(initSpeed);
+            if (speedLabel != null) { speedLabel.setText(String.format("%.2fx", initSpeed)); }
+        }
         model = new BSTModel();
         visualizer = new BSTVisualizer(bstCanvas);
         
         // Initialize spinners
-        sizeSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 30, 10));
+        sizeSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 60, 15));
 
         // Ensure canvas redraws correctly
         bstCanvas.widthProperty().addListener(evt -> updateVisualization());
@@ -47,7 +53,7 @@ public class BSTTraversalController {
 
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (speedLabel != null) {
-                speedLabel.setText(String.format("%.1fx", newVal.doubleValue()));
+                speedLabel.setText(String.format("%.2fx", newVal.doubleValue()));
             }
         });
 
@@ -205,7 +211,7 @@ public class BSTTraversalController {
         queueBox.getChildren().clear();
 
         currentStep = 0;
-        double speed = speedSlider.getValue();
+        double speed = com.AlgoVista.utils.SettingsManager.getTimelineRate(speedSlider.getValue());
         Duration duration = Duration.millis(1200 / speed);
 
         animation = new Timeline(new KeyFrame(duration, e -> {
@@ -262,10 +268,13 @@ public class BSTTraversalController {
                     "-fx-border-radius: 8;" +
                     "-fx-min-width: 42;" +
                     "-fx-min-height: 42;" +
+                    "-fx-pref-width: 42;" +
+                    "-fx-pref-height: 42;" +
                     "-fx-alignment: center;" +
-                    "-fx-font-size: 15;" +
+                    "-fx-font-size: 14;" +
                     "-fx-font-weight: bold;"
             );
+            qLabel.setMinWidth(Region.USE_PREF_SIZE);
             queueBox.getChildren().add(qLabel);
             if (i < queueState.size() - 1) {
                 Label arrow = new Label("›");
@@ -293,10 +302,13 @@ public class BSTTraversalController {
                 "-fx-border-radius: 8;" +
                 "-fx-min-width: 40;" +
                 "-fx-min-height: 40;" +
+                "-fx-pref-width: 40;" +
+                "-fx-pref-height: 40;" +
                 "-fx-alignment: center;" +
-                "-fx-font-size: 15;" +
+                "-fx-font-size: 14;" +
                 "-fx-font-weight: bold;"
         );
+        chip.setMinWidth(Region.USE_PREF_SIZE);
         traversalBox.getChildren().add(chip);
     }
 
@@ -348,8 +360,8 @@ public class BSTTraversalController {
             Parent root = loader.load();
 
             Stage stage = (Stage) bstCanvas.getScene().getWindow();
-            double width = stage.getWidth();
-            double height = stage.getHeight();
+            double width = stage.getScene().getWidth();
+            double height = stage.getScene().getHeight();
             double x = stage.getX();
             double y = stage.getY();
 
@@ -363,11 +375,11 @@ public class BSTTraversalController {
         }
     }
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+        private void showAlert(String title, String message) {
+        if (title != null && (title.toLowerCase().contains("complete") || title.toLowerCase().contains("ready") || title.toLowerCase().contains("custom mode"))) {
+            com.AlgoVista.utils.CustomAlert.showInfo(title, message);
+        } else {
+            com.AlgoVista.utils.CustomAlert.showError(title, message);
+        }
     }
 }

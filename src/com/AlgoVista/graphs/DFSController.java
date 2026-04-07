@@ -78,6 +78,11 @@ public class DFSController {
 
     @FXML
     public void initialize() {
+        if (speedSlider != null) {
+            double initSpeed = com.AlgoVista.utils.SettingsManager.getSpeed();
+            speedSlider.setValue(initSpeed);
+            if (speedLabel != null) { speedLabel.setText(String.format("%.2fx", initSpeed)); }
+        }
         // Setup spinners
         startNodeSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 99, 0));
         nodesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(3, 12, 7));
@@ -85,10 +90,10 @@ public class DFSController {
 
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (speedLabel != null) {
-                speedLabel.setText(String.format("%.1fx", newVal.doubleValue()));
+                speedLabel.setText(String.format("%.2fx", newVal.doubleValue()));
             }
             if (autoTimeline != null) {
-                autoTimeline.setRate(newVal.doubleValue());
+                autoTimeline.setRate(com.AlgoVista.utils.SettingsManager.getTimelineRate(newVal.doubleValue()));
             }
         });
 
@@ -337,7 +342,7 @@ public class DFSController {
     private void startAutoPlay() {
         autoTimeline = new Timeline();
         autoTimeline.setCycleCount(Timeline.INDEFINITE);
-        autoTimeline.getKeyFrames().add(new KeyFrame(Duration.millis(800), e -> {
+        autoTimeline.getKeyFrames().add(new KeyFrame(Duration.millis(800 * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()), e -> {
             if (currentStep < steps.size()) {
                 applyStep(currentStep);
                 currentStep++;
@@ -346,7 +351,7 @@ public class DFSController {
                 isRunning = false;
             }
         }));
-        autoTimeline.setRate(speedSlider.getValue());
+        autoTimeline.setRate(com.AlgoVista.utils.SettingsManager.getTimelineRate(speedSlider.getValue()));
         autoTimeline.play();
     }
 
@@ -567,7 +572,7 @@ public class DFSController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/GraphAlgorithmsCategory.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) graphCanvas.getScene().getWindow();
-            double w = stage.getWidth(), h = stage.getHeight(), x = stage.getX(), y = stage.getY();
+            double w = stage.getScene().getWidth(), h = stage.getScene().getHeight(), x = stage.getX(), y = stage.getY();
             stage.setScene(new Scene(root, w, h));
             stage.setX(x); stage.setY(y);
         } catch (IOException e) {

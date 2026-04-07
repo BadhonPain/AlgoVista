@@ -296,8 +296,8 @@ public class GraphStructureController {
             Parent root = loader.load();
 
             Stage stage = (Stage) graphCanvas.getScene().getWindow();
-            double width = stage.getWidth();
-            double height = stage.getHeight();
+            double width = stage.getScene().getWidth();
+            double height = stage.getScene().getHeight();
             double x = stage.getX();
             double y = stage.getY();
 
@@ -445,11 +445,11 @@ public class GraphStructureController {
         showAlert("Custom Graph Complete", "Your custom graph has been created!");
     }
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+        private void showAlert(String title, String message) {
+        if (title != null && (title.toLowerCase().contains("complete") || title.toLowerCase().contains("ready") || title.toLowerCase().contains("custom mode"))) {
+            com.AlgoVista.utils.CustomAlert.showInfo(title, message);
+        } else {
+            com.AlgoVista.utils.CustomAlert.showError(title, message);
+        }
     }
 }
