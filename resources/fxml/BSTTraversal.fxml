@@ -101,7 +101,7 @@
 
                 <!-- Canvas card -->
                 <StackPane style="-fx-background-color: #1e293b; -fx-background-radius: 14;                                   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 20, 0, 0, 6); -fx-padding: 2;" VBox.vgrow="ALWAYS">
-                    <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" style="-fx-background-color: transparent; -fx-background: transparent;                                        -fx-border-color: transparent;">
+                    <ScrollPane pannable="true" style="-fx-background-color: transparent; -fx-background: transparent;                                        -fx-border-color: transparent;">
                         <StackPane style="-fx-background-color: #1e293b;">
                             <Canvas fx:id="bstCanvas" height="400" width="800" />
                         </StackPane>

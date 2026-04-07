@@ -271,27 +271,51 @@ public class BSTModel {
         }
     }
     
-    // --- POSITIONING ---
+    // --- POSITIONING (In-Order Traversal Strategy) ---
     public void updatePositions(double canvasWidth, double canvasHeight) {
         BSTNode effectiveRoot = getEffectiveRoot();
-        if (effectiveRoot != null) {
-            int maxDepth = getMaxDepthOf(effectiveRoot);
-            double initialXOffset = canvasWidth / 4;
-            positionRec(effectiveRoot, canvasWidth / 2, 60, initialXOffset, 70);
+        if (effectiveRoot == null) return;
+
+        List<BSTNode> inOrderList = new ArrayList<>();
+        populateInOrderList(effectiveRoot, inOrderList);
+
+        int totalNodes = inOrderList.size();
+        // Dynamic horizontal spacing based on node count
+        double hSpacing = Math.max(80, canvasWidth / (totalNodes + 1));
+        
+        // If the tree is very wide, we use the hSpacing to set X, 
+        // but we ensure it's at least enough to not overlap.
+        for (int i = 0; i < totalNodes; i++) {
+            BSTNode node = inOrderList.get(i);
+            node.x = (i + 1) * hSpacing;
+            node.y = getDepthOfNode(effectiveRoot, node.value) * 85 + 60;
         }
     }
-    
-    // ...
 
-    private void positionRec(BSTNode node, double x, double y, double xOffset, double yStep) {
-        if (node != null) {
-            node.x = x;
-            node.y = y;
-            // Prevent overlapping by ensuring min xOffset
-            double nextXOffset = Math.max(xOffset / 1.8, 30);
-            positionRec(node.left, x - xOffset, y + yStep, nextXOffset, yStep);
-            positionRec(node.right, x + xOffset, y + yStep, nextXOffset, yStep);
+    private void populateInOrderList(BSTNode node, List<BSTNode> list) {
+        if (node == null) return;
+        populateInOrderList(node.left, list);
+        list.add(node);
+        populateInOrderList(node.right, list);
+    }
+
+    private int getDepthOfNode(BSTNode node, int value) {
+        int depth = 0;
+        while (node != null && node.value != value) {
+            depth++;
+            if (value < node.value) node = node.left;
+            else node = node.right;
         }
+        return depth;
+    }
+
+    public int getTotalNodes() {
+        return countNodes(getEffectiveRoot());
+    }
+
+    private int countNodes(BSTNode node) {
+        if (node == null) return 0;
+        return 1 + countNodes(node.left) + countNodes(node.right);
     }
 
     public int getMaxDepth() {

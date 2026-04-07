@@ -163,7 +163,7 @@
                 <StackPane VBox.vgrow="ALWAYS"
                            style="-fx-background-color: #1e293b; -fx-background-radius: 14;
                                   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 20, 0, 0, 6); -fx-padding: 4;">
-                    <ScrollPane pannable="true" fitToHeight="true" fitToWidth="true"
+                    <ScrollPane pannable="true" 
                                 style="-fx-background-color: transparent; -fx-background: transparent;
                                        -fx-border-color: transparent;">
                         <StackPane style="-fx-background-color: #0f172a; -fx-background-radius: 12;">
