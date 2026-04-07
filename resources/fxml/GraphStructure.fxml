@@ -63,7 +63,7 @@
     <!-- Center Canvas -->
     <center>
         <VBox alignment="CENTER" spacing="10" style="-fx-padding: 20;">
-            <StackPane fx:id="canvasContainer" style="-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);">
+            <StackPane fx:id="canvasContainer" style="-fx-background-color: #0f172a; -fx-background-radius: 12; -fx-border-color: #334155; -fx-border-radius: 12; -fx-border-width: 2; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 15, 0, 0, 4);">
                 <Canvas fx:id="graphCanvas" height="480" width="750" />
             </StackPane>
         </VBox>

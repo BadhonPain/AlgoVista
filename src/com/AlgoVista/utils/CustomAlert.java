@@ -48,7 +48,7 @@ public class CustomAlert {
             }
         }
         
-        displayAlert(title, msg, true);
+        displayAlert(title, msg, "error");
     }
     
     public static void showInfo(String title, String msg) {
@@ -56,18 +56,46 @@ public class CustomAlert {
             Platform.runLater(() -> showInfo(title, msg));
             return;
         }
-        displayAlert(title, msg, false);
+        displayAlert(title, msg, "info");
     }
 
-    private static void displayAlert(String title, String msg, boolean isError) {
+    public static void showWarning(String title, String msg) {
+        if (!Platform.isFxApplicationThread()) {
+            Platform.runLater(() -> showWarning(title, msg));
+            return;
+        }
+
+        if (com.AlgoVista.utils.SettingsManager.isAudioEnabled() && errorSound != null) {
+            try { errorSound.play(); } catch(Exception e) {}
+        }
+
+        displayAlert(title, msg, "warning");
+    }
+
+    private static void displayAlert(String title, String msg, String type) {
         Stage stage = new Stage(StageStyle.TRANSPARENT);
         stage.initModality(Modality.APPLICATION_MODAL);
         
         VBox root = new VBox(20);
         root.setAlignment(Pos.CENTER);
         
-        String borderColor = isError ? "#e74c3c" : "#38bdf8"; // Red for Error, Cyan for Info
-        String glowColor = isError ? "rgba(231, 76, 60, 0.4)" : "rgba(56, 189, 248, 0.4)";
+        String borderColor;
+        String glowColor;
+
+        switch (type) {
+            case "error":
+                borderColor = "#e74c3c"; // Red
+                glowColor = "rgba(231, 76, 60, 0.4)";
+                break;
+            case "warning":
+                borderColor = "#e74c3c"; // Now using Red for warnings as requested
+                glowColor = "rgba(231, 76, 60, 0.4)";
+                break;
+            default:
+                borderColor = "#38bdf8"; // Cyan
+                glowColor = "rgba(56, 189, 248, 0.4)";
+                break;
+        }
 
         root.setStyle(
             "-fx-background-color: rgba(30, 41, 59, 0.95);" +

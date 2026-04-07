@@ -98,6 +98,13 @@ public class GraphModel {
         return isWeighted;
     }
 
+    public boolean hasNegativeWeights() {
+        for (Edge edge : edgeList) {
+            if (edge.weight < 0) return true;
+        }
+        return false;
+    }
+
     public void clear() {
         adjMatrix = new int[numNodes][numNodes];
         adjList.clear();
