@@ -11,10 +11,10 @@
             fx:controller="com.AlgoVista.graphs.GraphTraversalController"
             style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #1e293b);">
 
-    <!-- Top Bar -->
+    
     <top>
         <VBox style="-fx-background-color: #1e293b;">
-            <!-- Header -->
+            
             <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-padding: 12;">
                 <Button text="← Back" onAction="#backToCategory"
                         style="-fx-background-color: #334155; -fx-text-fill: white;
@@ -25,17 +25,17 @@
                 </Label>
             </HBox>
 
-            <!-- Controls Bar -->
+            
             <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-padding: 10 15; -fx-background-color: #0f172a;">
 
-                <!-- select algo-->
+                
                 <VBox spacing="3">
                     <Label text="Algorithm" textFill="#94a3b8" style="-fx-font-size: 11;"/>
                     <ComboBox fx:id="algorithmCombo" prefWidth="140"
                               style="-fx-background-color: white; -fx-font-size: 12;"/>
                 </VBox>
 
-                <!-- GRAPH CONFIGURATION -->
+                
                 <VBox spacing="3">
                     <Label text="GRAPH CONFIGURATION" textFill="#38bdf8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
                     <HBox spacing="10" alignment="CENTER_LEFT">
@@ -48,13 +48,13 @@
 
                 <Separator orientation="VERTICAL" style="-fx-background-color: #475569;"/>
 
-                <!-- START NODE -->
+                
                 <VBox spacing="3">
                     <Label text="START NODE" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
                     <Spinner fx:id="startNodeSpinner" prefWidth="70" editable="true"/>
                 </VBox>
 
-                <!-- SIMULATION -->
+                
                 <VBox spacing="3">
                     <HBox spacing="10" alignment="CENTER_LEFT">
                         <Label text="SIMULATION" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
@@ -85,7 +85,7 @@
 
                 <Separator orientation="VERTICAL" style="-fx-background-color: #475569;"/>
 
-                <!-- LAB GENERATION -->
+                
                 <VBox spacing="3">
                     <Label text="LAB GENERATION" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
                     <HBox spacing="6" alignment="CENTER_LEFT">
@@ -106,16 +106,16 @@
                     </HBox>
                 </VBox>
 
-                <!-- Custom Mode Finish Button (hidden initially) -->
+                
                 <Button fx:id="finishCustomButton" text="✓ Finish" onAction="#finishCustomMode" visible="false"
                         style="-fx-background-color: #10b981; -fx-text-fill: white;
                -fx-background-radius: 5; -fx-padding: 6 12; -fx-cursor: hand;
                -fx-font-size: 11; -fx-font-weight: bold;"/>
 
-                <!-- Spacer -->
+                
                 <Region HBox.hgrow="ALWAYS"/>
 
-                <!-- Complexity Display -->
+                
                 <HBox spacing="20" alignment="CENTER"
                       style="-fx-background-color: rgba(15, 23, 42, 0.8); -fx-padding: 6 18; -fx-background-radius: 12; -fx-border-color: #334155; -fx-border-radius: 12; -fx-border-width: 1;">
                     <VBox alignment="CENTER" spacing="2">
@@ -133,20 +133,20 @@
         </VBox>
     </top>
 
-    <!-- Center - Canvas and Info Side by Side -->
+    
     <center>
         <HBox spacing="15" style="-fx-padding: 15;">
 
-            <!-- Main Canvas Area -->
+            
             <VBox spacing="10" HBox.hgrow="ALWAYS">
-                <!-- Canvas -->
+                
                 <StackPane VBox.vgrow="ALWAYS" style="-fx-background-color: #0f172a; -fx-background-radius: 12;
                           -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 15, 0, 0, 4);
                           -fx-border-color: #334155; -fx-border-radius: 12; -fx-border-width: 1;">
                     <Canvas fx:id="graphCanvas" width="750" height="480"/>
                 </StackPane>
 
-                <!-- Color Legend -->
+                
                 <HBox spacing="25" alignment="CENTER"
                       style="-fx-background-color: #1e293b; -fx-padding: 8; -fx-background-radius: 6;">
                     <HBox spacing="6" alignment="CENTER">
@@ -167,11 +167,11 @@
                 </HBox>
             </VBox>
 
-            <!-- Right Panel - Info Display -->
+            
             <VBox spacing="12" prefWidth="320" style="-fx-background-color: #1e293b; -fx-padding: 15;
                                                       -fx-background-radius: 8;">
 
-                <!-- Traversal Order -->
+                
                 <VBox spacing="5">
                     <Label text="Traversal Order" textFill="#38bdf8"
                            style="-fx-font-weight: bold; -fx-font-size: 13;"/>
@@ -185,7 +185,7 @@
 
                 <Separator style="-fx-background-color: #475569;"/>
 
-                <!-- Distance Table -->
+                
                 <VBox spacing="5" VBox.vgrow="ALWAYS">
                     <Label text="Shortest Path Details" textFill="#38bdf8"
                            style="-fx-font-weight: bold; -fx-font-size: 13;"/>
@@ -199,7 +199,7 @@
 
                 <Separator style="-fx-background-color: #475569;"/>
 
-                <!-- Algorithm Info -->
+                
                 <VBox spacing="5" style="-fx-background-color: rgba(56, 189, 248, 0.05); -fx-padding: 10; -fx-background-radius: 8;">
                     <Label text="Algorithm Info" textFill="#38bdf8"
                            style="-fx-font-weight: bold; -fx-font-size: 13;"/>
@@ -214,3 +214,4 @@
     </center>
 
 </BorderPane>
+

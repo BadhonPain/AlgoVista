@@ -1,5 +1,7 @@
 package com.AlgoVista.sorting;
 
+import com.AlgoVista.utils.ShortcutManager;
+
 import com.AlgoVista.sorting.algorithms.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -57,6 +59,18 @@ public class SortingVisualizerController {
                 }
             });
         }
+
+        // Register keyboard shortcuts when scene is available
+        statusLabel.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                ShortcutManager.register(newScene, 
+                    () -> playPause(null), 
+                    () -> stepForward(null), 
+                    () -> reset(null), 
+                    () -> backToMenu(null)
+                );
+            }
+        });
     }
 
     public void initAlgorithm(String algoType) {
@@ -163,7 +177,14 @@ public class SortingVisualizerController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SortingCategory.fxml"));
             Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            
+            Stage stage;
+            if (event != null && event.getSource() instanceof Node) {
+                stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            } else {
+                stage = (Stage) statusLabel.getScene().getWindow();
+            }
+            
             stage.setScene(new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight()));
         } catch (IOException e) { e.printStackTrace(); }
     }

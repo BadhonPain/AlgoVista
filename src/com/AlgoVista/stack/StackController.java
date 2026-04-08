@@ -1,5 +1,6 @@
 package com.AlgoVista.stack;
 
+import com.AlgoVista.utils.ShortcutManager;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -50,6 +51,18 @@ public class StackController {
 
         updateVisualization();
         logMessage("Stack Visualizer initialized. Ready for simulation.");
+
+        // Register keyboard shortcuts when scene is available
+        stackContainer.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                ShortcutManager.register(newScene, 
+                    () -> togglePlayPause(), 
+                    () -> stepForward(), 
+                    () -> resetAnimation(), 
+                    () -> backToMenu()
+                );
+            }
+        });
     }
 
     private void setComplexity(String comp) {
@@ -319,15 +332,7 @@ public class StackController {
                     final int stepToRender = currentStep;
                     Platform.runLater(() -> renderSnapshot(snapshots.get(stepToRender)));
 
-                    double currentSpeed = speedSlider != null ? speedSlider.getValue() : com.AlgoVista.utils.SettingsManager.getSpeed();
-                    if (speedSlider == null) {
-                        currentSpeed = com.AlgoVista.utils.SettingsManager.getSpeed();
-                    } else {
-                        // Keep slider linked to settings if it exists
-                        com.AlgoVista.utils.SettingsManager.setSpeed(currentSpeed);
-                    }
-                    long sleepTime = (long) (1000 / currentSpeed);
-                    Thread.sleep(sleepTime);
+                    responsiveSleep();
 
                     synchronized (playLock) {
                         if (isPlaying) {
@@ -340,7 +345,7 @@ public class StackController {
                     isPlaying = false;
                     playPauseBtn.setText("Play");
                     if (currentStep >= snapshots.size()) {
-                        updateVisualization(); // Final render state at end
+                        updateVisualization();
                     }
                 });
             } catch (InterruptedException e) {
@@ -349,6 +354,26 @@ public class StackController {
         });
         animationThread.setDaemon(true);
         animationThread.start();
+    }
+
+    /** Reads local slider (or global if no local slider). Does NOT write to SettingsManager. */
+    private long getDelay() {
+        double sliderVal = (speedSlider != null) ? speedSlider.getValue()
+                                                 : com.AlgoVista.utils.SettingsManager.getSpeed();
+        double rate = com.AlgoVista.utils.SettingsManager.getTimelineRate(sliderVal);
+        return (long)(1000.0 / Math.max(rate, 0.01));
+    }
+
+    /** Sleeps in 50ms chunks, re-reading the delay on each chunk for live responsiveness. */
+    private void responsiveSleep() throws InterruptedException {
+        long target = getDelay();
+        long elapsed = 0;
+        final long chunk = 50;
+        while (elapsed < target && isPlaying) {
+            Thread.sleep(Math.min(chunk, target - elapsed));
+            elapsed += chunk;
+            target = getDelay(); // re-read slider each chunk
+        }
     }
 
     @FXML

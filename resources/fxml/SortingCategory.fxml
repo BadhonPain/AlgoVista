@@ -1,86 +1,101 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-
-<BorderPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.AlgoVista.sorting.SortingCategoryController" stylesheets="@dashboard.css" prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #1e293b;">
-    <top>
-        <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: #0f172a; -fx-padding: 15;">
-            <Button onAction="#BackToDashBoard" styleClass="btn-primary" text="← Back" />
-            <VBox>
-                <Label style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: white;" text="Sorting Algorithms" />
-                <Label style="-fx-text-fill: #94a3b8;" text="Select an algorithm to visualize" />
-            </VBox>
-        </HBox>
-    </top>
-    <center>
-        <FlowPane alignment="CENTER" hgap="25" vgap="25" style="-fx-padding: 30;">
-            <!-- Bubble Sort -->
-            <VBox fx:id="bubbleCard" onMouseClicked="#openVisualizer" styleClass="ds-card" style="-fx-background-color: #334155; -fx-background-radius: 10; -fx-cursor: hand;" prefWidth="250" prefHeight="250">
-                <style>
-                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
-                </style>
-                <VBox style="-fx-background-color: linear-gradient(to bottom right, #3498db, #2ecc71); -fx-background-radius: 10 10 0 0;" prefHeight="200" prefWidth="250"/>
-                <VBox alignment="CENTER" prefHeight="50" style="-fx-padding: 10;">
-                    <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;" text="Bubble Sort"/>
-                </VBox>
-            </VBox>
-            <!-- Selection Sort -->
-            <VBox fx:id="selectionCard" onMouseClicked="#openVisualizer" styleClass="ds-card" style="-fx-background-color: #334155; -fx-background-radius: 10; -fx-cursor: hand;" prefWidth="250" prefHeight="250">
-                <style>
-                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
-                </style>
-                <VBox style="-fx-background-color: linear-gradient(to bottom right, #e74c3c, #f1c40f); -fx-background-radius: 10 10 0 0;" prefHeight="200" prefWidth="250"/>
-                <VBox alignment="CENTER" prefHeight="50" style="-fx-padding: 10;">
-                    <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;" text="Selection Sort"/>
-                </VBox>
-            </VBox>
-            <!-- Insertion Sort -->
-            <VBox fx:id="insertionCard" onMouseClicked="#openVisualizer" styleClass="ds-card" style="-fx-background-color: #334155; -fx-background-radius: 10; -fx-cursor: hand;" prefWidth="250" prefHeight="250">
-                <style>
-                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
-                </style>
-                <VBox style="-fx-background-color: linear-gradient(to bottom right, #9b59b6, #3498db); -fx-background-radius: 10 10 0 0;" prefHeight="200" prefWidth="250"/>
-                <VBox alignment="CENTER" prefHeight="50" style="-fx-padding: 10;">
-                    <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;" text="Insertion Sort"/>
-                </VBox>
-            </VBox>
-            <!-- Counting Sort -->
-            <VBox fx:id="countingCard" onMouseClicked="#openVisualizer" styleClass="ds-card" style="-fx-background-color: #334155; -fx-background-radius: 10; -fx-cursor: hand;" prefWidth="250" prefHeight="250">
-                <style>
-                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
-                </style>
-                <VBox style="-fx-background-color: linear-gradient(to bottom right, #1abc9c, #16a085); -fx-background-radius: 10 10 0 0;" prefHeight="200" prefWidth="250"/>
-                <VBox alignment="CENTER" prefHeight="50" style="-fx-padding: 10;">
-                    <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;" text="Counting Sort"/>
-                </VBox>
-            </VBox>
-            <!-- Radix Sort -->
-            <VBox fx:id="radixCard" onMouseClicked="#openVisualizer" styleClass="ds-card" style="-fx-background-color: #334155; -fx-background-radius: 10; -fx-cursor: hand;" prefWidth="250" prefHeight="250">
-                <style>
-                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
-                </style>
-                <VBox style="-fx-background-color: linear-gradient(to bottom right, #e67e22, #d35400); -fx-background-radius: 10 10 0 0;" prefHeight="200" prefWidth="250"/>
-                <VBox alignment="CENTER" prefHeight="50" style="-fx-padding: 10;">
-                    <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;" text="Radix Sort"/>
-                </VBox>
-            </VBox>
-            <!-- Bucket Sort -->
-            <VBox fx:id="bucketCard" onMouseClicked="#openVisualizer" styleClass="ds-card" style="-fx-background-color: #334155; -fx-background-radius: 10; -fx-cursor: hand;" prefWidth="250" prefHeight="250">
-                <style>
-                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
-                </style>
-                <VBox style="-fx-background-color: linear-gradient(to bottom right, #34495e, #2c3e50); -fx-background-radius: 10 10 0 0;" prefHeight="200" prefWidth="250"/>
-                <VBox alignment="CENTER" prefHeight="50" style="-fx-padding: 10;">
-                    <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;" text="Bucket Sort"/>
-                </VBox>
-            </VBox>
-        </FlowPane>
-    </center>
-</BorderPane>
-
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+
+<BorderPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.AlgoVista.sorting.SortingCategoryController" stylesheets="@dashboard.css" prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #1e293b;">
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: #0f172a; -fx-padding: 15;">
+            <Button onAction="#BackToDashBoard" styleClass="btn-primary" text="← Back" />
+            <VBox>
+                <Label style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: white;" text="Sorting Algorithms" />
+                <Label style="-fx-text-fill: #94a3b8;" text="Select an algorithm to visualize" />
+            </VBox>
+        </HBox>
+    </top>
+    <center>
+        <FlowPane alignment="CENTER" hgap="25" vgap="25" style="-fx-padding: 30;">
+            
+            <VBox fx:id="bubbleCard" onMouseClicked="#openVisualizer" styleClass="ds-card" style="-fx-background-color: #334155; -fx-background-radius: 10; -fx-cursor: hand;" prefWidth="250" prefHeight="250">
+                <style>
+                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
+                </style>
+                <ImageView fitWidth="250" fitHeight="200" preserveRatio="false">
+                    <image><Image url="@../com/AlgoVista/images/bubble_sort.png" /></image>
+                </ImageView>
+                <VBox alignment="CENTER" prefHeight="50" style="-fx-padding: 10;">
+                    <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;" text="Bubble Sort"/>
+                </VBox>
+            </VBox>
+            
+            <VBox fx:id="selectionCard" onMouseClicked="#openVisualizer" styleClass="ds-card" style="-fx-background-color: #334155; -fx-background-radius: 10; -fx-cursor: hand;" prefWidth="250" prefHeight="250">
+                <style>
+                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
+                </style>
+                <ImageView fitWidth="250" fitHeight="200" preserveRatio="false">
+                    <image><Image url="@../com/AlgoVista/images/selection_sort.png" /></image>
+                </ImageView>
+                <VBox alignment="CENTER" prefHeight="50" style="-fx-padding: 10;">
+                    <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;" text="Selection Sort"/>
+                </VBox>
+            </VBox>
+            
+            <VBox fx:id="insertionCard" onMouseClicked="#openVisualizer" styleClass="ds-card" style="-fx-background-color: #334155; -fx-background-radius: 10; -fx-cursor: hand;" prefWidth="250" prefHeight="250">
+                <style>
+                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
+                </style>
+                <ImageView fitWidth="250" fitHeight="200" preserveRatio="false">
+                    <image><Image url="@../com/AlgoVista/images/insertion_sort.png" /></image>
+                </ImageView>
+                <VBox alignment="CENTER" prefHeight="50" style="-fx-padding: 10;">
+                    <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;" text="Insertion Sort"/>
+                </VBox>
+            </VBox>
+            
+            <VBox fx:id="countingCard" onMouseClicked="#openVisualizer" styleClass="ds-card" style="-fx-background-color: #334155; -fx-background-radius: 10; -fx-cursor: hand;" prefWidth="250" prefHeight="250">
+                <style>
+                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
+                </style>
+                <ImageView fitWidth="250" fitHeight="200" preserveRatio="false">
+                    <image><Image url="@../com/AlgoVista/images/counting_sort.png" /></image>
+                </ImageView>
+                <VBox alignment="CENTER" prefHeight="50" style="-fx-padding: 10;">
+                    <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;" text="Counting Sort"/>
+                </VBox>
+            </VBox>
+            
+            <VBox fx:id="radixCard" onMouseClicked="#openVisualizer" styleClass="ds-card" style="-fx-background-color: #334155; -fx-background-radius: 10; -fx-cursor: hand;" prefWidth="250" prefHeight="250">
+                <style>
+                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
+                </style>
+                <ImageView fitWidth="250" fitHeight="200" preserveRatio="false">
+                    <image><Image url="@../com/AlgoVista/images/radix_sort.png" /></image>
+                </ImageView>
+                <VBox alignment="CENTER" prefHeight="50" style="-fx-padding: 10;">
+                    <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;" text="Radix Sort"/>
+                </VBox>
+            </VBox>
+            
+            <VBox fx:id="bucketCard" onMouseClicked="#openVisualizer" styleClass="ds-card" style="-fx-background-color: #334155; -fx-background-radius: 10; -fx-cursor: hand;" prefWidth="250" prefHeight="250">
+                <style>
+                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
+                </style>
+                <ImageView fitWidth="250" fitHeight="200" preserveRatio="false">
+                    <image><Image url="@../com/AlgoVista/images/bucket_sort.png" /></image>
+                </ImageView>
+                <VBox alignment="CENTER" prefHeight="50" style="-fx-padding: 10;">
+                    <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;" text="Bucket Sort"/>
+                </VBox>
+            </VBox>
+        </FlowPane>
+    </center>
+</BorderPane>
+
+

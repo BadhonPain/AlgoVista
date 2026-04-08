@@ -1,215 +1,216 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
-
-<BorderPane xmlns="http://javafx.com/javafx/17"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.AlgoVista.graphs.DFSController"
-            style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #1e293b);">
-
-    <!-- ═══ TOP BAR ═══ -->
-    <top>
-        <VBox style="-fx-background-color: #1e293b;">
-
-            <!-- Header -->
-            <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-padding: 10 16;">
-                <Button text="&#8592; Back" onAction="#backToCategory"
-                        style="-fx-background-color: rgba(244, 63, 94, 0.12);
-                               -fx-text-fill: #f43f5e; -fx-font-size: 13; -fx-font-weight: bold;
-                               -fx-padding: 7 18; -fx-background-radius: 20; -fx-border-radius: 20;
-                               -fx-border-color: rgba(244, 63, 94, 0.45); -fx-border-width: 1.5;
-                               -fx-cursor: hand;"/>
-                <Label text="Depth-First Search (DFS)" textFill="#f43f5e">
-                    <font><Font name="System Bold" size="21"/></font>
-                </Label>
-                <Region HBox.hgrow="ALWAYS"/>
-                <HBox spacing="20" alignment="CENTER"
-                      style="-fx-background-color: rgba(15, 23, 42, 0.8); -fx-padding: 6 18; -fx-background-radius: 12; -fx-border-color: #334155; -fx-border-radius: 12; -fx-border-width: 1;">
-                    <VBox alignment="CENTER" spacing="2">
-                        <Label text="Best Time" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
-                        <Label text="O(V + E)" textFill="#22c55e" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
-                    </VBox>
-                    <Separator orientation="VERTICAL" style="-fx-opacity: 0.2;"/>
-                    <VBox alignment="CENTER" spacing="2">
-                        <Label text="Worst Time" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
-                        <Label text="O(V + E)" textFill="#ef4444" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
-                    </VBox>
-                    <Separator orientation="VERTICAL" style="-fx-opacity: 0.2;"/>
-                    <VBox alignment="CENTER" spacing="2">
-                        <Label text="Space Limits" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
-                        <Label text="O(V)" textFill="#f59e0b" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
-                    </VBox>
-                </HBox>
-            </HBox>
-
-            <!-- Controls -->
-            <HBox spacing="14" alignment="CENTER_LEFT"
-                  style="-fx-padding: 8 16; -fx-background-color: #0f172a; -fx-border-color: #1e293b; -fx-border-width: 1 0 0 0;">
-
-                <!-- Start Node -->
-                <VBox spacing="3">
-                    <Label text="Start Node" textFill="#64748b" style="-fx-font-size: 10;"/>
-                    <Spinner fx:id="startNodeSpinner" prefWidth="65" editable="true"/>
-                </VBox>
-
-                <!-- Speed -->
-                <VBox spacing="3">
-                    <HBox alignment="CENTER_LEFT" spacing="5">
-                        <Label text="Animation Speed" textFill="#64748b" style="-fx-font-size: 10;"/>
-                        <Label fx:id="speedLabel" text="1.0x" textFill="#0ea5e9" style="-fx-font-weight: bold; -fx-font-size: 10;"/>
-                    </HBox>
-                    <HBox spacing="5" alignment="CENTER">
-                        <Label text="Slow" textFill="#475569" style="-fx-font-size: 10;"/>
-                        <Slider fx:id="speedSlider" min="0.25" max="2.0" value="1.0" prefWidth="100"/>
-                        <Label text="Fast" textFill="#475569" style="-fx-font-size: 10;"/>
-                    </HBox>
-                </VBox>
-
-                <Separator orientation="VERTICAL" style="-fx-background-color: #334155;"/>
-
-                <!-- Playback Buttons -->
-                <HBox spacing="6">
-                    <Button fx:id="playButton" text="&#9654;  Run" onAction="#runDFS"
-                            style="-fx-background-color: #22c55e; -fx-text-fill: white; -fx-background-radius: 8;
-                                   -fx-padding: 7 16; -fx-cursor: hand; -fx-font-weight: bold; -fx-font-size: 12;"/>
-                    <Button fx:id="stepButton" text="Step  &#10095;" onAction="#stepForward"
-                            style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-background-radius: 8;
-                                   -fx-padding: 7 16; -fx-cursor: hand; -fx-font-weight: bold; -fx-font-size: 12;"/>
-                    <Button fx:id="resetButton" text="&#8635;  Reset" onAction="#resetDFS"
-                            style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-background-radius: 8;
-                                   -fx-padding: 7 16; -fx-cursor: hand; -fx-font-weight: bold; -fx-font-size: 12;"/>
-                </HBox>
-
-                <Separator orientation="VERTICAL" style="-fx-background-color: #334155;"/>
-
-                <!-- Graph Generation -->
-                <VBox spacing="3">
-                    <Label text="Generate Graph" textFill="#64748b" style="-fx-font-size: 10;"/>
-                    <HBox spacing="6" alignment="CENTER_LEFT">
-                        <Label text="Nodes:" textFill="#94a3b8" style="-fx-font-size: 11;"/>
-                        <Spinner fx:id="nodesSpinner" prefWidth="55" editable="true"/>
-                        <Label text="Edges:" textFill="#94a3b8" style="-fx-font-size: 11;"/>
-                        <Spinner fx:id="edgesSpinner" prefWidth="55" editable="true"/>
-                        <Button text="&#8635; Random" onAction="#generateRandomGraph"
-                                style="-fx-background-color: #8b5cf6; -fx-text-fill: white; -fx-background-radius: 8;
-                                       -fx-padding: 6 12; -fx-cursor: hand; -fx-font-size: 11;"/>
-                    </HBox>
-                </VBox>
-
-            </HBox>
-        </VBox>
-    </top>
-
-    <!-- ═══ CENTER BODY ═══ -->
-    <center>
-        <HBox spacing="12" style="-fx-padding: 12 12 12 2;" VBox.vgrow="ALWAYS">
-
-            <!-- LEFT: Graph Canvas -->
-            <VBox spacing="8" HBox.hgrow="ALWAYS">
-                <Label text="&#127760;  Graph Visualization" textFill="#94a3b8"
-                       style="-fx-font-size: 12; -fx-font-weight: bold;"/>
-
-                <!-- Canvas container grows to fill -->
-                <StackPane VBox.vgrow="ALWAYS"
-                           style="-fx-background-color: #0a0f1e; -fx-background-radius: 12;
-                                  -fx-border-color: #1e3a5f; -fx-border-width: 1.5; -fx-border-radius: 12;
-                                  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 14, 0, 0, 3);">
-                    <Canvas fx:id="graphCanvas" width="580" height="450"/>
-                </StackPane>
-
-                <!-- Legend -->
-                <HBox spacing="20" alignment="CENTER"
-                      style="-fx-background-color: #1e293b; -fx-padding: 8 20; -fx-background-radius: 8;">
-                    <HBox spacing="6" alignment="CENTER">
-                        <Region style="-fx-background-color: #475569; -fx-pref-width: 14; -fx-pref-height: 14; -fx-background-radius: 7;"/>
-                        <Label text="Unvisited" textFill="#94a3b8" style="-fx-font-size: 11;"/>
-                    </HBox>
-                    <HBox spacing="6" alignment="CENTER">
-                        <Region style="-fx-background-color: #fbbf24; -fx-pref-width: 14; -fx-pref-height: 14; -fx-background-radius: 7;"/>
-                        <Label text="In Stack" textFill="#94a3b8" style="-fx-font-size: 11;"/>
-                    </HBox>
-                    <HBox spacing="6" alignment="CENTER">
-                        <Region style="-fx-background-color: #f43f5e; -fx-pref-width: 14; -fx-pref-height: 14; -fx-background-radius: 7;"/>
-                        <Label text="Visiting" textFill="#94a3b8" style="-fx-font-size: 11;"/>
-                    </HBox>
-                    <HBox spacing="6" alignment="CENTER">
-                        <Region style="-fx-background-color: #22c55e; -fx-pref-width: 14; -fx-pref-height: 14; -fx-background-radius: 7;"/>
-                        <Label text="Visited" textFill="#94a3b8" style="-fx-font-size: 11;"/>
-                    </HBox>
-                </HBox>
-            </VBox>
-
-            <!-- RIGHT: Stack → Code → Output (vertical stack) -->
-            <VBox spacing="10" prefWidth="370" VBox.vgrow="ALWAYS">
-
-                <!-- ① DFS Stack Panel -->
-                <VBox spacing="6"
-                      style="-fx-background-color: #1e293b; -fx-padding: 12; -fx-background-radius: 10;
-                             -fx-border-color: #1e3a5f; -fx-border-width: 1; -fx-border-radius: 10;"
-                      prefHeight="270">
-                    <HBox alignment="CENTER_LEFT" spacing="8">
-                        <Label text="&#9677;" textFill="#fbbf24" style="-fx-font-size: 13;"/>
-                        <Label text="DFS Stack" textFill="#fbbf24"
-                               style="-fx-font-weight: bold; -fx-font-size: 13;"/>
-                        <Region HBox.hgrow="ALWAYS"/>
-                        <Label fx:id="stackSizeLabel" text="Size: 0" textFill="#475569"
-                               style="-fx-font-size: 10; -fx-background-color: #0f172a;
-                                      -fx-padding: 2 8; -fx-background-radius: 10;"/>
-                    </HBox>
-                    <Separator style="-fx-background-color: #334155;"/>
-                    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
-                                style="-fx-background: transparent; -fx-background-color: transparent;
-                                       -fx-border-color: transparent;">
-                        <VBox fx:id="stackContainer" spacing="5" alignment="TOP_CENTER"
-                              style="-fx-padding: 4;"/>
-                    </ScrollPane>
-                </VBox>
-
-                <!-- ② Python Code Panel -->
-                <VBox spacing="6" prefHeight="165"
-                      style="-fx-background-color: #1e293b; -fx-padding: 12; -fx-background-radius: 10;
-                             -fx-border-color: #1e3a5f; -fx-border-width: 1; -fx-border-radius: 10;">
-                    <HBox alignment="CENTER_LEFT" spacing="8">
-                        <Label text="&#128196;" style="-fx-font-size: 13;"/>
-                        <Label text="Python Code" textFill="#38bdf8"
-                               style="-fx-font-weight: bold; -fx-font-size: 13;"/>
-                        <Region HBox.hgrow="ALWAYS"/>
-                        <Label text="DFS Implementation" textFill="#475569" style="-fx-font-size: 10;"/>
-                    </HBox>
-                    <Separator style="-fx-background-color: #334155;"/>
-                    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
-                                style="-fx-background: transparent; -fx-background-color: transparent;
-                                       -fx-border-color: transparent;">
-                        <VBox fx:id="codeContainer" spacing="0"
-                              style="-fx-background-color: #0a0f1e; -fx-padding: 10; -fx-background-radius: 8;"/>
-                    </ScrollPane>
-                </VBox>
-
-                <!-- ③ Console Output Panel -->
-                <VBox spacing="6" prefHeight="155"
-                      style="-fx-background-color: #1e293b; -fx-padding: 12; -fx-background-radius: 10;
-                             -fx-border-color: #1e3a5f; -fx-border-width: 1; -fx-border-radius: 10;">
-                    <HBox alignment="CENTER_LEFT" spacing="8">
-                        <Label text="&#9654;" textFill="#22c55e" style="-fx-font-size: 12;"/>
-                        <Label text="DFS Output" textFill="#22c55e"
-                               style="-fx-font-weight: bold; -fx-font-size: 13;"/>
-                    </HBox>
-                    <Separator style="-fx-background-color: #334155;"/>
-                    <TextArea fx:id="consoleArea" editable="false" wrapText="true" VBox.vgrow="ALWAYS"
-                              style="-fx-control-inner-background: #0a0f1e;
-                                     -fx-text-fill: #22c55e;
-                                     -fx-font-family: 'Consolas';
-                                     -fx-font-size: 12px;
-                                     -fx-background-radius: 8;
-                                     -fx-focus-color: transparent;
-                                     -fx-faint-focus-color: transparent;"/>
-                </VBox>
-
-            </VBox>
-        </HBox>
-    </center>
-
-</BorderPane>
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.AlgoVista.graphs.DFSController"
+            style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #1e293b);">
+
+    
+    <top>
+        <VBox style="-fx-background-color: #1e293b;">
+
+            
+            <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-padding: 10 16;">
+                <Button text="&#8592; Back" onAction="#backToCategory"
+                        style="-fx-background-color: rgba(244, 63, 94, 0.12);
+                               -fx-text-fill: #f43f5e; -fx-font-size: 13; -fx-font-weight: bold;
+                               -fx-padding: 7 18; -fx-background-radius: 20; -fx-border-radius: 20;
+                               -fx-border-color: rgba(244, 63, 94, 0.45); -fx-border-width: 1.5;
+                               -fx-cursor: hand;"/>
+                <Label text="Depth-First Search (DFS)" textFill="#f43f5e">
+                    <font><Font name="System Bold" size="21"/></font>
+                </Label>
+                <Region HBox.hgrow="ALWAYS"/>
+                <HBox spacing="20" alignment="CENTER"
+                      style="-fx-background-color: rgba(15, 23, 42, 0.8); -fx-padding: 6 18; -fx-background-radius: 12; -fx-border-color: #334155; -fx-border-radius: 12; -fx-border-width: 1;">
+                    <VBox alignment="CENTER" spacing="2">
+                        <Label text="Best Time" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
+                        <Label text="O(V + E)" textFill="#22c55e" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                    </VBox>
+                    <Separator orientation="VERTICAL" style="-fx-opacity: 0.2;"/>
+                    <VBox alignment="CENTER" spacing="2">
+                        <Label text="Worst Time" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
+                        <Label text="O(V + E)" textFill="#ef4444" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                    </VBox>
+                    <Separator orientation="VERTICAL" style="-fx-opacity: 0.2;"/>
+                    <VBox alignment="CENTER" spacing="2">
+                        <Label text="Space Limits" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
+                        <Label text="O(V)" textFill="#f59e0b" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                    </VBox>
+                </HBox>
+            </HBox>
+
+            
+            <HBox spacing="14" alignment="CENTER_LEFT"
+                  style="-fx-padding: 8 16; -fx-background-color: #0f172a; -fx-border-color: #1e293b; -fx-border-width: 1 0 0 0;">
+
+                
+                <VBox spacing="3">
+                    <Label text="Start Node" textFill="#64748b" style="-fx-font-size: 10;"/>
+                    <Spinner fx:id="startNodeSpinner" prefWidth="65" editable="true"/>
+                </VBox>
+
+                
+                <VBox spacing="3">
+                    <HBox alignment="CENTER_LEFT" spacing="5">
+                        <Label text="Animation Speed" textFill="#64748b" style="-fx-font-size: 10;"/>
+                        <Label fx:id="speedLabel" text="1.0x" textFill="#0ea5e9" style="-fx-font-weight: bold; -fx-font-size: 10;"/>
+                    </HBox>
+                    <HBox spacing="5" alignment="CENTER">
+                        <Label text="Slow" textFill="#475569" style="-fx-font-size: 10;"/>
+                        <Slider fx:id="speedSlider" min="0.25" max="2.0" value="1.0" prefWidth="100"/>
+                        <Label text="Fast" textFill="#475569" style="-fx-font-size: 10;"/>
+                    </HBox>
+                </VBox>
+
+                <Separator orientation="VERTICAL" style="-fx-background-color: #334155;"/>
+
+                
+                <HBox spacing="6">
+                    <Button fx:id="playButton" text="&#9654;  Run" onAction="#runDFS"
+                            style="-fx-background-color: #22c55e; -fx-text-fill: white; -fx-background-radius: 8;
+                                   -fx-padding: 7 16; -fx-cursor: hand; -fx-font-weight: bold; -fx-font-size: 12;"/>
+                    <Button fx:id="stepButton" text="Step  &#10095;" onAction="#stepForward"
+                            style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-background-radius: 8;
+                                   -fx-padding: 7 16; -fx-cursor: hand; -fx-font-weight: bold; -fx-font-size: 12;"/>
+                    <Button fx:id="resetButton" text="&#8635;  Reset" onAction="#resetDFS"
+                            style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-background-radius: 8;
+                                   -fx-padding: 7 16; -fx-cursor: hand; -fx-font-weight: bold; -fx-font-size: 12;"/>
+                </HBox>
+
+                <Separator orientation="VERTICAL" style="-fx-background-color: #334155;"/>
+
+                
+                <VBox spacing="3">
+                    <Label text="Generate Graph" textFill="#64748b" style="-fx-font-size: 10;"/>
+                    <HBox spacing="6" alignment="CENTER_LEFT">
+                        <Label text="Nodes:" textFill="#94a3b8" style="-fx-font-size: 11;"/>
+                        <Spinner fx:id="nodesSpinner" prefWidth="55" editable="true"/>
+                        <Label text="Edges:" textFill="#94a3b8" style="-fx-font-size: 11;"/>
+                        <Spinner fx:id="edgesSpinner" prefWidth="55" editable="true"/>
+                        <Button text="&#8635; Random" onAction="#generateRandomGraph"
+                                style="-fx-background-color: #8b5cf6; -fx-text-fill: white; -fx-background-radius: 8;
+                                       -fx-padding: 6 12; -fx-cursor: hand; -fx-font-size: 11;"/>
+                    </HBox>
+                </VBox>
+
+            </HBox>
+        </VBox>
+    </top>
+
+    
+    <center>
+        <HBox spacing="12" style="-fx-padding: 12 12 12 2;" VBox.vgrow="ALWAYS">
+
+            
+            <VBox spacing="8" HBox.hgrow="ALWAYS">
+                <Label text="&#127760;  Graph Visualization" textFill="#94a3b8"
+                       style="-fx-font-size: 12; -fx-font-weight: bold;"/>
+
+                
+                <StackPane VBox.vgrow="ALWAYS"
+                           style="-fx-background-color: #0a0f1e; -fx-background-radius: 12;
+                                  -fx-border-color: #1e3a5f; -fx-border-width: 1.5; -fx-border-radius: 12;
+                                  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 14, 0, 0, 3);">
+                    <Canvas fx:id="graphCanvas" width="580" height="450"/>
+                </StackPane>
+
+                
+                <HBox spacing="20" alignment="CENTER"
+                      style="-fx-background-color: #1e293b; -fx-padding: 8 20; -fx-background-radius: 8;">
+                    <HBox spacing="6" alignment="CENTER">
+                        <Region style="-fx-background-color: #475569; -fx-pref-width: 14; -fx-pref-height: 14; -fx-background-radius: 7;"/>
+                        <Label text="Unvisited" textFill="#94a3b8" style="-fx-font-size: 11;"/>
+                    </HBox>
+                    <HBox spacing="6" alignment="CENTER">
+                        <Region style="-fx-background-color: #fbbf24; -fx-pref-width: 14; -fx-pref-height: 14; -fx-background-radius: 7;"/>
+                        <Label text="In Stack" textFill="#94a3b8" style="-fx-font-size: 11;"/>
+                    </HBox>
+                    <HBox spacing="6" alignment="CENTER">
+                        <Region style="-fx-background-color: #f43f5e; -fx-pref-width: 14; -fx-pref-height: 14; -fx-background-radius: 7;"/>
+                        <Label text="Visiting" textFill="#94a3b8" style="-fx-font-size: 11;"/>
+                    </HBox>
+                    <HBox spacing="6" alignment="CENTER">
+                        <Region style="-fx-background-color: #22c55e; -fx-pref-width: 14; -fx-pref-height: 14; -fx-background-radius: 7;"/>
+                        <Label text="Visited" textFill="#94a3b8" style="-fx-font-size: 11;"/>
+                    </HBox>
+                </HBox>
+            </VBox>
+
+            
+            <VBox spacing="10" prefWidth="370" VBox.vgrow="ALWAYS">
+
+                
+                <VBox spacing="6"
+                      style="-fx-background-color: #1e293b; -fx-padding: 12; -fx-background-radius: 10;
+                             -fx-border-color: #1e3a5f; -fx-border-width: 1; -fx-border-radius: 10;"
+                      prefHeight="270">
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Label text="&#9677;" textFill="#fbbf24" style="-fx-font-size: 13;"/>
+                        <Label text="DFS Stack" textFill="#fbbf24"
+                               style="-fx-font-weight: bold; -fx-font-size: 13;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="stackSizeLabel" text="Size: 0" textFill="#475569"
+                               style="-fx-font-size: 10; -fx-background-color: #0f172a;
+                                      -fx-padding: 2 8; -fx-background-radius: 10;"/>
+                    </HBox>
+                    <Separator style="-fx-background-color: #334155;"/>
+                    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                                style="-fx-background: transparent; -fx-background-color: transparent;
+                                       -fx-border-color: transparent;">
+                        <VBox fx:id="stackContainer" spacing="5" alignment="TOP_CENTER"
+                              style="-fx-padding: 4;"/>
+                    </ScrollPane>
+                </VBox>
+
+                
+                <VBox spacing="6" prefHeight="165"
+                      style="-fx-background-color: #1e293b; -fx-padding: 12; -fx-background-radius: 10;
+                             -fx-border-color: #1e3a5f; -fx-border-width: 1; -fx-border-radius: 10;">
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Label text="&#128196;" style="-fx-font-size: 13;"/>
+                        <Label text="Python Code" textFill="#38bdf8"
+                               style="-fx-font-weight: bold; -fx-font-size: 13;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="DFS Implementation" textFill="#475569" style="-fx-font-size: 10;"/>
+                    </HBox>
+                    <Separator style="-fx-background-color: #334155;"/>
+                    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                                style="-fx-background: transparent; -fx-background-color: transparent;
+                                       -fx-border-color: transparent;">
+                        <VBox fx:id="codeContainer" spacing="0"
+                              style="-fx-background-color: #0a0f1e; -fx-padding: 10; -fx-background-radius: 8;"/>
+                    </ScrollPane>
+                </VBox>
+
+                
+                <VBox spacing="6" prefHeight="155"
+                      style="-fx-background-color: #1e293b; -fx-padding: 12; -fx-background-radius: 10;
+                             -fx-border-color: #1e3a5f; -fx-border-width: 1; -fx-border-radius: 10;">
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Label text="&#9654;" textFill="#22c55e" style="-fx-font-size: 12;"/>
+                        <Label text="DFS Output" textFill="#22c55e"
+                               style="-fx-font-weight: bold; -fx-font-size: 13;"/>
+                    </HBox>
+                    <Separator style="-fx-background-color: #334155;"/>
+                    <TextArea fx:id="consoleArea" editable="false" wrapText="true" VBox.vgrow="ALWAYS"
+                              style="-fx-control-inner-background: #0a0f1e;
+                                     -fx-text-fill: #22c55e;
+                                     -fx-font-family: 'Consolas';
+                                     -fx-font-size: 12px;
+                                     -fx-background-radius: 8;
+                                     -fx-focus-color: transparent;
+                                     -fx-faint-focus-color: transparent;"/>
+                </VBox>
+
+            </VBox>
+        </HBox>
+    </center>
+
+</BorderPane>
+

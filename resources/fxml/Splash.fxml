@@ -18,19 +18,19 @@
         <URL value="@../css/splash.css" />
     </stylesheets>
 
-    <!-- Layer 1: Parallax Grid Background -->
+    
     <Pane fx:id="gridPane" mouseTransparent="true" />
 
-    <!-- Layer 2: Particle Layer -->
+    
     <Pane fx:id="particlePane" mouseTransparent="true" />
 
     <VBox alignment="CENTER" spacing="50.0">
-        <!-- Logo Area Container -->
+        
         <StackPane fx:id="logoContainer">
-            <!-- Binary Rain Mask Layer -->
+            
             <Canvas fx:id="binaryCanvas" width="150" height="150" opacity="0.15" />
             
-            <!-- Hexagon Frame Segments -->
+            
             <Group fx:id="hexagonFrame">
                 <Line fx:id="seg1" startX="0" startY="-65" endX="56.3" endY="-32.5" styleClass="hex-seg" opacity="0" />
                 <Line fx:id="seg2" startX="56.3" startY="-32.5" endX="56.3" endY="32.5" styleClass="hex-seg" opacity="0" />
@@ -40,7 +40,7 @@
                 <Line fx:id="seg6" startX="-56.3" startY="-32.5" endX="0" endY="-65" styleClass="hex-seg" opacity="0" />
             </Group>
 
-            <!-- Connecting 'A' Graph Structure -->
+            
             <Group fx:id="logoGraph" opacity="0">
                 <Path fill="TRANSPARENT" stroke="WHITE" strokeWidth="3.5" strokeLineCap="ROUND">
                     <elements>
@@ -59,26 +59,26 @@
                 <Circle centerX="0" centerY="-30" radius="5" fill="#818cf8" />
             </Group>
 
-            <!-- Final Bloom Overlay (Pulsing) -->
+            
             <Circle fx:id="bloomCircle" radius="80" fill="radial-gradient(center 50% 50%, radius 50%, rgba(56, 189, 248, 0.15), transparent)" opacity="0" />
         </StackPane>
         
-        <!-- Text Area -->
+        
         <VBox alignment="CENTER" spacing="12.0">
             <Label fx:id="titleLabel" text="AlgoVista" styleClass="title-label" opacity="0" />
             <Label fx:id="taglineLabel" text="• PREDICTING THE FUTURE OF LOGIC •" styleClass="tagline-label" opacity="0" />
         </VBox>
         
-        <!-- Glass Tube Loader -->
+        
         <VBox fx:id="progressArea" alignment="CENTER" maxWidth="400.0" spacing="15.0" opacity="0">
             <StackPane alignment="CENTER_LEFT" prefHeight="10.0" prefWidth="400.0" styleClass="glass-tube">
-                <!-- Track -->
+                
                 <Rectangle arcHeight="10.0" arcWidth="10.0" height="8.0" width="400.0" styleClass="progress-track" />
                 
-                <!-- Progress Fill -->
+                
                 <Rectangle fx:id="progressFill" arcHeight="10.0" arcWidth="10.0" height="8.0" width="0.0" styleClass="progress-fill" />
                 
-                <!-- Data Pulse Particle -->
+                
                 <Circle fx:id="dataPulse" radius="4" fill="#38bdf8" opacity="0">
                     <effect>
                         <javafx.scene.effect.Glow level="0.9"/>
@@ -91,3 +91,4 @@
     </VBox>
     
 </StackPane>
+

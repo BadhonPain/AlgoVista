@@ -1,124 +1,125 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
-<?import javafx.geometry.Insets?>
-
-<BorderPane xmlns="http://javafx.com/javafx/25"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.AlgoVista.linkedlist.singly.SinglyLinkedListController"
-            stylesheets="@dashboard.css"
-            styleClass="window-navy"
-            prefHeight="800" prefWidth="1200">
-
-    <!-- Top Bar -->
-    <top>
-        <HBox alignment="CENTER_LEFT" spacing="15"
-              style="-fx-background-color: #2c3e50; -fx-padding: 12;">
-            <Button text="← Back" onAction="#backToMenu" styleClass="btn-primary"/>
-
-            <Label text="SINGLY LINKED LIST" textFill="white">
-                <font><Font name="Arial" size="28" /></font>
-            </Label>
-            
-            <Region HBox.hgrow="ALWAYS" />
-            <VBox alignment="CENTER" style="-fx-background-color: #34495e; -fx-padding: 5 15; -fx-background-radius: 5;">
-                <Label text="Time Complexity" textFill="#95a5a6" style="-fx-font-size: 12;" />
-                <Label fx:id="dynamicComplexityLabel" text="O(1)" textFill="#f1c40f" style="-fx-font-size: 18; -fx-font-weight: bold;" />
-            </VBox>
-        </HBox>
-    </top>
-
-    <!-- Main Content -->
-    <center>
-        <HBox>
-            <!-- Left Operations Panel -->
-            <ScrollPane fitToWidth="true" prefWidth="250" styleClass="window-navy">
-                <VBox spacing="0" styleClass="window-navy">
-                    <padding>
-                        <Insets top="10" right="10" bottom="10" left="10"/>
-                    </padding>
-
-                    <!-- Generate List -->
-                    <VBox spacing="6" style="-fx-padding: 10; -fx-border-color: #2c3e50; -fx-border-width: 0 0 2 0;">
-                        <Label text="Generate List" style="-fx-font-weight: bold; -fx-font-size: 16; -fx-text-fill: white;"/>
-                        <HBox spacing="5" alignment="CENTER_LEFT">
-                            <Label text="Size:" style="-fx-font-size: 13; -fx-text-fill: #bdc3c7;"/>
-                            <Spinner fx:id="sizeSpinner" prefWidth="60" editable="true"/>
-                        </HBox>
-                        <Button text="Generate Random" onAction="#generateList" maxWidth="Infinity" styleClass="btn-action"/>
-                    </VBox>
-
-                    <!-- Insertion Operations -->
-                    <VBox spacing="6" style="-fx-padding: 10; -fx-border-color: #2c3e50; -fx-border-width: 0 0 2 0;">
-                        <Label text="Insertion" style="-fx-font-weight: bold; -fx-font-size: 16; -fx-text-fill: white;"/>
-                        <TextField fx:id="valueInput" promptText="Enter Value" style="-fx-font-size: 14;"/>
-                        <TextField fx:id="indexInput" promptText="Enter Index (for Insert At)" style="-fx-font-size: 14;"/>
-                        
-                        <Button text="Prepend" onAction="#prepend" maxWidth="Infinity" styleClass="btn-action"/>
-                        <Button text="Append" onAction="#append" maxWidth="Infinity" styleClass="btn-action"/>
-                        <Button text="Insert At Position" onAction="#insertAt" maxWidth="Infinity" styleClass="btn-action"/>
-                    </VBox>
-
-                    <!-- Deletion Operations -->
-                    <VBox spacing="6" style="-fx-padding: 10; -fx-border-color: #2c3e50; -fx-border-width: 0 0 2 0;">
-                        <Label text="Deletion" style="-fx-font-weight: bold; -fx-font-size: 16; -fx-text-fill: white;"/>
-                        <Button text="Delete by Value" onAction="#deleteByValue" maxWidth="Infinity" styleClass="btn-action"/>
-                        <Button text="Delete at Position" onAction="#deleteAt" maxWidth="Infinity" styleClass="btn-action"/>
-                    </VBox>
-
-                    <!-- Other Operations -->
-                    <VBox spacing="6" style="-fx-padding: 10;">
-                        <Label text="Operations" style="-fx-font-weight: bold; -fx-font-size: 16; -fx-text-fill: white;"/>
-                        <Button text="Search Value" onAction="#search" maxWidth="Infinity" styleClass="btn-action"/>
-                        <Button text="Traverse" onAction="#traverse" maxWidth="Infinity" styleClass="btn-action"/>
-                        <Button text="Reverse" onAction="#reverse" maxWidth="Infinity" styleClass="btn-action"/>
-                        <Button text="Clear List" onAction="#clear" maxWidth="Infinity" styleClass="btn-action"/>
-                    </VBox>
-
-                </VBox>
-            </ScrollPane>
-
-            <!-- Right Side - Visualization Area -->
-            <VBox HBox.hgrow="ALWAYS" styleClass="canvas-navy">
-                
-                <HBox VBox.vgrow="ALWAYS">
-                    <!-- Visualization Output -->
-                    <ScrollPane fitToHeight="true" fitToWidth="true" HBox.hgrow="ALWAYS" style="-fx-background: #0f172a; -fx-background-color: transparent;">
-                        <HBox alignment="CENTER" style="-fx-padding: 40; -fx-background-color: transparent;">
-                            <FlowPane fx:id="listContainer" hgap="10" vgap="20" alignment="CENTER" prefWrapLength="800">
-                                <!-- Nodes will be added here dynamically -->
-                            </FlowPane>
-                        </HBox>
-                    </ScrollPane>
-
-                    <!-- Step-by-Step Simulation Log Panel -->
-                    <VBox prefWidth="320" minWidth="320" style="-fx-background-color: #1e293b; -fx-border-color: #334155; -fx-border-width: 0 0 0 2;">
-                        <Label text="Simulation Steps" style="-fx-font-weight: bold; -fx-font-size: 19; -fx-text-fill: white; -fx-padding: 15; -fx-background-color: #0f172a;"/>
-                        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background: transparent; -fx-background-color: transparent;">
-                            <VBox fx:id="stepLogContainer" spacing="12" style="-fx-padding: 15;">
-                                <!-- Step messages go here -->
-                            </VBox>
-                        </ScrollPane>
-                    </VBox>
-                </HBox>
-                
-                <!-- Bottom Area: Message Output & Complexities -->
-                <HBox spacing="15" style="-fx-background-color: #0f172a; -fx-padding: 15; -fx-border-color: #334155; -fx-border-width: 2 0 0 0;" prefHeight="250" minHeight="250">
-                    <!-- Result / Message Output -->
-                    <VBox spacing="5" HBox.hgrow="ALWAYS">
-                        <Label text="System Output:" style="-fx-font-weight: bold; -fx-font-size: 16; -fx-text-fill: white;"/>
-                        <ScrollPane fitToWidth="true" style="-fx-background: #1e293b; -fx-border-color: #334155; -fx-border-radius: 3; -fx-background-radius: 3;" VBox.vgrow="ALWAYS">
-                            <Label fx:id="outputLabel" text="Ready." wrapText="true" 
-                                   style="-fx-font-family: 'Consolas'; -fx-font-size: 15; -fx-padding: 10; -fx-text-fill: white; -fx-font-weight: bold;"/>
-                        </ScrollPane>
-                    </VBox>
-
-                </HBox>
-
-            </VBox>
-        </HBox>
-    </center>
-
-</BorderPane>
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.AlgoVista.linkedlist.singly.SinglyLinkedListController"
+            stylesheets="@dashboard.css"
+            styleClass="window-navy"
+            prefHeight="800" prefWidth="1200">
+
+    
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="15"
+              style="-fx-background-color: #2c3e50; -fx-padding: 12;">
+            <Button text="← Back" onAction="#backToMenu" styleClass="btn-primary"/>
+
+            <Label text="SINGLY LINKED LIST" textFill="white">
+                <font><Font name="Arial" size="28" /></font>
+            </Label>
+            
+            <Region HBox.hgrow="ALWAYS" />
+            <VBox alignment="CENTER" style="-fx-background-color: #34495e; -fx-padding: 5 15; -fx-background-radius: 5;">
+                <Label text="Time Complexity" textFill="#95a5a6" style="-fx-font-size: 12;" />
+                <Label fx:id="dynamicComplexityLabel" text="O(1)" textFill="#f1c40f" style="-fx-font-size: 18; -fx-font-weight: bold;" />
+            </VBox>
+        </HBox>
+    </top>
+
+    
+    <center>
+        <HBox>
+            
+            <ScrollPane fitToWidth="true" prefWidth="250" styleClass="window-navy">
+                <VBox spacing="0" styleClass="window-navy">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+
+                    
+                    <VBox spacing="6" style="-fx-padding: 10; -fx-border-color: #2c3e50; -fx-border-width: 0 0 2 0;">
+                        <Label text="Generate List" style="-fx-font-weight: bold; -fx-font-size: 16; -fx-text-fill: white;"/>
+                        <HBox spacing="5" alignment="CENTER_LEFT">
+                            <Label text="Size:" style="-fx-font-size: 13; -fx-text-fill: #bdc3c7;"/>
+                            <Spinner fx:id="sizeSpinner" prefWidth="60" editable="true"/>
+                        </HBox>
+                        <Button text="Generate Random" onAction="#generateList" maxWidth="Infinity" styleClass="btn-action"/>
+                    </VBox>
+
+                    
+                    <VBox spacing="6" style="-fx-padding: 10; -fx-border-color: #2c3e50; -fx-border-width: 0 0 2 0;">
+                        <Label text="Insertion" style="-fx-font-weight: bold; -fx-font-size: 16; -fx-text-fill: white;"/>
+                        <TextField fx:id="valueInput" promptText="Enter Value" style="-fx-font-size: 14;"/>
+                        <TextField fx:id="indexInput" promptText="Enter Index (for Insert At)" style="-fx-font-size: 14;"/>
+                        
+                        <Button text="Prepend" onAction="#prepend" maxWidth="Infinity" styleClass="btn-action"/>
+                        <Button text="Append" onAction="#append" maxWidth="Infinity" styleClass="btn-action"/>
+                        <Button text="Insert At Position" onAction="#insertAt" maxWidth="Infinity" styleClass="btn-action"/>
+                    </VBox>
+
+                    
+                    <VBox spacing="6" style="-fx-padding: 10; -fx-border-color: #2c3e50; -fx-border-width: 0 0 2 0;">
+                        <Label text="Deletion" style="-fx-font-weight: bold; -fx-font-size: 16; -fx-text-fill: white;"/>
+                        <Button text="Delete by Value" onAction="#deleteByValue" maxWidth="Infinity" styleClass="btn-action"/>
+                        <Button text="Delete at Position" onAction="#deleteAt" maxWidth="Infinity" styleClass="btn-action"/>
+                    </VBox>
+
+                    
+                    <VBox spacing="6" style="-fx-padding: 10;">
+                        <Label text="Operations" style="-fx-font-weight: bold; -fx-font-size: 16; -fx-text-fill: white;"/>
+                        <Button text="Search Value" onAction="#search" maxWidth="Infinity" styleClass="btn-action"/>
+                        <Button text="Traverse" onAction="#traverse" maxWidth="Infinity" styleClass="btn-action"/>
+                        <Button text="Reverse" onAction="#reverse" maxWidth="Infinity" styleClass="btn-action"/>
+                        <Button text="Clear List" onAction="#clear" maxWidth="Infinity" styleClass="btn-action"/>
+                    </VBox>
+
+                </VBox>
+            </ScrollPane>
+
+            
+            <VBox HBox.hgrow="ALWAYS" styleClass="canvas-navy">
+                
+                <HBox VBox.vgrow="ALWAYS">
+                    
+                    <ScrollPane fitToHeight="true" fitToWidth="true" HBox.hgrow="ALWAYS" style="-fx-background: #0f172a; -fx-background-color: transparent;">
+                        <HBox alignment="CENTER" style="-fx-padding: 40; -fx-background-color: transparent;">
+                            <FlowPane fx:id="listContainer" hgap="10" vgap="20" alignment="CENTER" prefWrapLength="800">
+                                
+                            </FlowPane>
+                        </HBox>
+                    </ScrollPane>
+
+                    
+                    <VBox prefWidth="320" minWidth="320" style="-fx-background-color: #1e293b; -fx-border-color: #334155; -fx-border-width: 0 0 0 2;">
+                        <Label text="Simulation Steps" style="-fx-font-weight: bold; -fx-font-size: 19; -fx-text-fill: white; -fx-padding: 15; -fx-background-color: #0f172a;"/>
+                        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background: transparent; -fx-background-color: transparent;">
+                            <VBox fx:id="stepLogContainer" spacing="12" style="-fx-padding: 15;">
+                                
+                            </VBox>
+                        </ScrollPane>
+                    </VBox>
+                </HBox>
+                
+                
+                <HBox spacing="15" style="-fx-background-color: #0f172a; -fx-padding: 15; -fx-border-color: #334155; -fx-border-width: 2 0 0 0;" prefHeight="250" minHeight="250">
+                    
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <Label text="System Output:" style="-fx-font-weight: bold; -fx-font-size: 16; -fx-text-fill: white;"/>
+                        <ScrollPane fitToWidth="true" style="-fx-background: #1e293b; -fx-border-color: #334155; -fx-border-radius: 3; -fx-background-radius: 3;" VBox.vgrow="ALWAYS">
+                            <Label fx:id="outputLabel" text="Ready." wrapText="true" 
+                                   style="-fx-font-family: 'Consolas'; -fx-font-size: 15; -fx-padding: 10; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                        </ScrollPane>
+                    </VBox>
+
+                </HBox>
+
+            </VBox>
+        </HBox>
+    </center>
+
+</BorderPane>
+

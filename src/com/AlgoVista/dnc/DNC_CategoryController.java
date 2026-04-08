@@ -12,7 +12,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class DNC_CategoryController {
-    @FXML private FlowPane cardContainer;
+    @FXML
+    private FlowPane cardContainer;
 
     @FXML
     public void initialize() {
@@ -34,31 +35,31 @@ public class DNC_CategoryController {
 
             String selectedBg;
             switch (name) {
-                case "Binary Search": 
-                    selectedBg = "/com/AlgoVista/images/binary_search.png"; 
+                case "Binary Search":
+                    selectedBg = "/com/AlgoVista/images/binary_search.png";
                     break;
-                case "Merge Sort": 
+                case "Merge Sort":
                     selectedBg = "/com/AlgoVista/images/merge_sort.png";
                     break;
-                case "Quick Sort": 
+                case "Quick Sort":
                     selectedBg = "/com/AlgoVista/images/quick_sort.png";
                     break;
-                default: 
+                default:
                     selectedBg = "/com/AlgoVista/images/divide_conquer.png";
             }
 
-            String imageUrl = getClass().getResource(selectedBg) != null ? 
-                             getClass().getResource(selectedBg).toExternalForm() : "";
-            
+            String imageUrl = getClass().getResource(selectedBg) != null
+                    ? getClass().getResource(selectedBg).toExternalForm()
+                    : "";
+
             String size = "cover";
             String pos = "center";
-            
+
             if (name.equals("Binary Search")) {
                 size = "100% 100%"; // Stretching to fit perfectly if cover was leaving gaps or cropping wrong
             }
 
-            String normalStyle =
-                    "-fx-background-image: url('" + imageUrl + "');" +
+            String normalStyle = "-fx-background-image: url('" + imageUrl + "');" +
                     "-fx-background-size: " + size + ";" +
                     "-fx-background-position: " + pos + ";" +
                     "-fx-background-radius: 15;" +
@@ -67,14 +68,16 @@ public class DNC_CategoryController {
                     "-fx-border-radius: 15;" +
                     "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 15, 0, 0, 5);";
 
-            String hoverStyle = normalStyle + "-fx-scale-x: 1.05; -fx-scale-y: 1.05; -fx-effect: dropshadow(gaussian, #38bdf8, 20, 0, 0, 0);";
+            String hoverStyle = normalStyle
+                    + "-fx-scale-x: 1.05; -fx-scale-y: 1.05; -fx-effect: dropshadow(gaussian, #38bdf8, 20, 0, 0, 0);";
 
             card.setStyle(normalStyle);
-            
+
             // Adjust title label style for better visibility on images
             controller.setData(name);
-            // Assuming card structure allows targeting the label if we want more custom styling
-            
+            // Assuming card structure allows targeting the label if we want more custom
+            // styling
+
             card.setOnMouseEntered(e -> card.setStyle(hoverStyle));
             card.setOnMouseExited(e -> card.setStyle(normalStyle));
             card.setOnMouseClicked(e -> onClick.run());

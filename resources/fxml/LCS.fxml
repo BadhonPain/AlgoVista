@@ -1,110 +1,222 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+
+
 <?import javafx.scene.control.*?>
+
 <?import javafx.scene.layout.*?>
+
 <?import javafx.scene.text.Font?>
+
 <?import javafx.scene.text.TextFlow?>
 
+
+
 <HBox fx:id="rootPane" prefHeight="750.0" prefWidth="1100.0" style="-fx-background-color: #0f172a;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.AlgoVista.dp.LCSController">
+
     <children>
-        <!-- Main Visualization Area -->
+
+        
+
         <VBox HBox.hgrow="ALWAYS" spacing="20" style="-fx-padding: 20;">
+
             <children>
+
                 <BorderPane>
+
                     <left>
+
                         <Button text="← Back" onAction="#backToCategory" 
+
                                 style="-fx-background-color: rgba(56, 189, 248, 0.1); -fx-text-fill: #38bdf8; -fx-cursor: hand; -fx-background-radius: 20; -fx-border-radius: 20; -fx-border-color: #38bdf8;"/>
+
                     </left>
+
                     <center>
+
                         <Label text="LCS: Matrix Path Discovery" textFill="#10b981">
+
                             <font>
+
                                 <Font name="System Bold" size="28.0" />
+
                             </font>
+
                         </Label>
+
                     </center>
+
                     <right>
+
                         <HBox spacing="20" alignment="CENTER"
+
                               style="-fx-background-color: rgba(15, 23, 42, 0.8); -fx-padding: 6 18; -fx-background-radius: 12; -fx-border-color: #334155; -fx-border-radius: 12; -fx-border-width: 1;">
+
                             <VBox alignment="CENTER" spacing="2">
+
                                 <Label text="Time Complexity" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
+
                                 <Label text="O(M × N)" textFill="#22c55e" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+
                             </VBox>
+
                             <Separator orientation="VERTICAL" style="-fx-opacity: 0.2;"/>
+
                             <VBox alignment="CENTER" spacing="2">
+
                                 <Label text="Space Complexity" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
+
                                 <Label text="O(M × N)" textFill="#ef4444" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+
                             </VBox>
+
                             <Separator orientation="VERTICAL" style="-fx-opacity: 0.2;"/>
+
                             <VBox alignment="CENTER" spacing="2">
+
                                 <Label text="Optimized Space" textFill="#94a3b8" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
+
                                 <Label text="O(min(M, N))" textFill="#f59e0b" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+
                             </VBox>
+
                         </HBox>
+
                     </right>
+
                 </BorderPane>
 
+
+
                 <StackPane VBox.vgrow="ALWAYS" style="-fx-background-color: rgba(30, 41, 59, 0.5); -fx-background-radius: 15;">
+
                     <children>
+
                         <ScrollPane fitToHeight="true" fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent;">
+
                             <content>
+
                                 <StackPane fx:id="matrixStack" style="-fx-padding: 20;">
+
                                     <children>
+
                                         <GridPane fx:id="matrixGrid" alignment="CENTER" hgap="2" vgap="2" />
+
                                         <Pane fx:id="pathOverlay" mouseTransparent="true" />
+
                                     </children>
+
                                 </StackPane>
+
                             </content>
+
                         </ScrollPane>
+
                     </children>
+
                 </StackPane>
+
                 
-                <!-- Result Area -->
+
+                
+
                 <HBox alignment="CENTER" spacing="20" style="-fx-background-color: rgba(16, 185, 129, 0.1); -fx-padding: 15; -fx-background-radius: 10; -fx-border-color: rgba(16, 185, 129, 0.3); -fx-border-radius: 10;">
+
                     <children>
+
                         <Label text="LCS Result:" textFill="#10b981" style="-fx-font-weight: bold; -fx-font-size: 18;"/>
+
                         <Label fx:id="resultLabel" text="-" textFill="white" style="-fx-font-size: 20; -fx-font-family: 'Monospaced';"/>
+
                     </children>
+
                 </HBox>
+
             </children>
+
         </VBox>
 
-        <!-- Sidebar -->
+
+
+        
+
         <VBox prefWidth="380.0" spacing="20" style="-fx-background-color: #1e293b; -fx-padding: 20; -fx-border-color: #334155; -fx-border-width: 0 0 0 1;">
+
             <children>
+
                 <Label text="CONTROLS" textFill="#94a3b8" style="-fx-font-weight: bold; -fx-font-size: 12;"/>
+
                 
+
                 <VBox spacing="10">
+
                     <Label text="String A:" textFill="#cbd5e1"/>
+
                     <TextField fx:id="inputA" promptText="e.g. ABCBDAB" style="-fx-background-color: #0f172a; -fx-text-fill: white; -fx-border-color: #334155; -fx-border-radius: 5; -fx-padding: 10;"/>
+
                     <Label text="String B:" textFill="#cbd5e1"/>
+
                     <TextField fx:id="inputB" promptText="e.g. BDCABA" style="-fx-background-color: #0f172a; -fx-text-fill: white; -fx-border-color: #334155; -fx-border-radius: 5; -fx-padding: 10;"/>
+
                     
+
                     <HBox spacing="10" style="-fx-padding: 10 0 0 0;">
+
                         <Button text="Start" onAction="#startVisualization" maxWidth="Infinity" HBox.hgrow="ALWAYS" style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 10;"/>
+
                         <Button text="Step" onAction="#stepVisualization" maxWidth="Infinity" HBox.hgrow="ALWAYS" style="-fx-background-color: #38bdf8; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 10;"/>
+
                         <Button text="Reset" onAction="#resetVisualization" maxWidth="Infinity" HBox.hgrow="ALWAYS" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 10;"/>
+
                     </HBox>
+
                 </VBox>
 
+
+
                 <Separator style="-fx-opacity: 0.1;"/>
+
+
 
                 <VBox spacing="10">
+
                     <HBox alignment="CENTER_LEFT" spacing="10">
+
                          <Label text="Animation Speed:" textFill="#cbd5e1" HBox.hgrow="ALWAYS"/>
+
                          <Label fx:id="speedLabel" text="1.0x" textFill="#10b981"/>
+
                     </HBox>
+
                     <Slider fx:id="speedSlider" min="0.25" max="2.0" value="1.0" style="-fx-cursor: hand;"/>
+
                 </VBox>
 
+
+
                 <Separator style="-fx-opacity: 0.1;"/>
+
+
 
                 <Label text="PSEUDO-CODE" textFill="#94a3b8" style="-fx-font-weight: bold; -fx-font-size: 12;"/>
+
                 <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background: #0f172a; -fx-background-color: #0f172a; -fx-border-color: #334155;">
+
                     <content>
+
                         <TextFlow fx:id="pseudoCodeFlow" style="-fx-padding: 15; -fx-background-color: #0f172a;" />
+
                     </content>
+
                 </ScrollPane>
+
             </children>
+
         </VBox>
+
     </children>
+
 </HBox>
+
+
+

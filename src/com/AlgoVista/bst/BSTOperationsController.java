@@ -54,6 +54,10 @@ public class BSTOperationsController {
             if (speedLabel != null) {
                 speedLabel.setText(String.format("%.2fx", newVal.doubleValue()));
             }
+            // Immediately update running animation speed
+            if (animation != null && animation.getStatus() == Timeline.Status.RUNNING) {
+                animation.setRate(com.AlgoVista.utils.SettingsManager.getTimelineRate(newVal.doubleValue()));
+            }
         });
 
         updateVisualization();

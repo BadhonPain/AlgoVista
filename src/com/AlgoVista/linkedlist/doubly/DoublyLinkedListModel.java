@@ -40,7 +40,8 @@ public class DoublyLinkedListModel {
     }
 
     public boolean insertAt(int index, int value) {
-        if (index < 0) return false;
+        if (index < 0)
+            return false;
         if (index == 0) {
             prepend(value);
             return true;
@@ -98,7 +99,8 @@ public class DoublyLinkedListModel {
     }
 
     public boolean deleteAt(int index) {
-        if (head == null || index < 0) return false;
+        if (head == null || index < 0)
+            return false;
 
         DoublyNode current = head;
         int currentIndex = 0;
@@ -108,16 +110,19 @@ public class DoublyLinkedListModel {
             currentIndex++;
         }
 
-        if (current == null) return false; // Index out of bounds
+        if (current == null)
+            return false; // Index out of bounds
 
         if (current == head && current == tail) {
             head = tail = null;
         } else if (current == head) {
             head = current.getNext();
-            if (head != null) head.setPrev(null);
+            if (head != null)
+                head.setPrev(null);
         } else if (current == tail) {
             tail = current.getPrev();
-            if (tail != null) tail.setNext(null);
+            if (tail != null)
+                tail.setNext(null);
         } else {
             current.getPrev().setNext(current.getNext());
             current.getNext().setPrev(current.getPrev());

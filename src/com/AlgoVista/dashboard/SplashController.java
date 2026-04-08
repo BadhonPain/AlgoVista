@@ -69,7 +69,7 @@ public class SplashController {
                 mediaPlayer.setOnError(() -> {
                     System.out.println("CRITICAL AUDIO ERROR: " + mediaPlayer.getError());
                 });
-                mediaPlayer.setVolume(1.0); // Full volume for cinematic effect
+                mediaPlayer.setVolume(1.0);  // setting full volume
                 mediaPlayer.play();
             } else {
                 System.out.println("Audio file not found at: /com/AlgoVista/sounds/helicopter.mp3");
@@ -115,7 +115,7 @@ public class SplashController {
     }
 
     private void playCinematicSequence() {
-        // 1. Hexagon Construction
+        // hexagone logo creation
         ParallelTransition hexAssembly = new ParallelTransition();
         Line[] segs = {seg1, seg2, seg3, seg4, seg5, seg6};
         double[][] offsets = {{0, -100}, {100, -50}, {100, 50}, {0, 100}, {-100, 50}, {-100, -50}};
@@ -135,10 +135,10 @@ public class SplashController {
             hexAssembly.getChildren().addAll(tt, ft);
         }
 
-        // 2. Binary Rain Setup
+        // the rain like effect with binary numbers
         startBinaryRain();
 
-        // 3. Central Graph & Bloom Reveal
+        // graph like bloom in logo
         FadeTransition graphFade = new FadeTransition(Duration.seconds(1), logoGraph);
         graphFade.setDelay(Duration.seconds(1));
         graphFade.setToValue(1.0);
@@ -149,9 +149,9 @@ public class SplashController {
         bloomFade.setToValue(0.4);
         bloomFade.setAutoReverse(true);
         bloomFade.setCycleCount(Timeline.INDEFINITE);
-        bloomFade.play(); // Start bloom independently so it doesn't block onFinished
+        bloomFade.play();
 
-        // 4. Labels & Loader Reveal
+        // labels and loaders
         FadeTransition titleFade = new FadeTransition(Duration.seconds(1), titleLabel);
         titleFade.setDelay(Duration.seconds(1.5));
         titleFade.setToValue(1.0);
@@ -209,7 +209,7 @@ public class SplashController {
     private void transitionToDashboard() {
         binaryRainTimer.stop();
         
-        // Gracefully fade out audio matching the graphical fade
+        //  fade out audio matching the graphical fade
         if (mediaPlayer != null) {
             Timeline fadeAudio = new Timeline(
                 new KeyFrame(Duration.millis(1000), new KeyValue(mediaPlayer.volumeProperty(), 0.0))

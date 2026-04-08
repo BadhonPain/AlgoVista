@@ -242,13 +242,9 @@ public class TailRecursionController {
             new Thread(() -> {
                 while (isPlaying && currentStepIndex < steps.size() - 1) {
                     try {
-                        long delay = 800;
-                        if (speedSlider != null) {
-                            delay = (long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier());
-                        }
-                        Thread.sleep(delay);
+                        responsiveSleep();
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        break;
                     }
                     if (isPlaying) {
                         Platform.runLater(() -> {
@@ -260,6 +256,25 @@ public class TailRecursionController {
             }).start();
         } else {
             autoPlayBtn.setText("Auto Play");
+        }
+    }
+
+    /** Reads local slider first; falls back to global. Does NOT write to SettingsManager. */
+    private long getDelay() {
+        double speed = (speedSlider != null) ? speedSlider.getValue()
+                                             : com.AlgoVista.utils.SettingsManager.getSpeed();
+        return (long)(800.0 / Math.max(speed, 0.01));
+    }
+
+    /** Sleeps in 50ms chunks, re-reading delay each chunk for live responsiveness. */
+    private void responsiveSleep() throws InterruptedException {
+        long target = getDelay();
+        long elapsed = 0;
+        final long chunk = 50;
+        while (elapsed < target && isPlaying) {
+            Thread.sleep(Math.min(chunk, target - elapsed));
+            elapsed += chunk;
+            target = getDelay();
         }
     }
 

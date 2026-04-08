@@ -352,3 +352,16 @@
     -fx-background-color: #059669;
     -fx-effect: dropshadow(gaussian, rgba(16, 185, 129, 0.6), 15, 0, 0, 0);
 }
+.sll-bg {
+    -fx-background-image: url('/com/AlgoVista/images/sll.png');
+    -fx-background-size: cover;
+    -fx-background-position: center;
+    -fx-background-radius: 15 15 0 0;
+}
+
+.dll-bg {
+    -fx-background-image: url('/com/AlgoVista/images/dll.png');
+    -fx-background-size: cover;
+    -fx-background-position: center;
+    -fx-background-radius: 15 15 0 0;
+}

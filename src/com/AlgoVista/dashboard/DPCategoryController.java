@@ -12,7 +12,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class DPCategoryController {
-    @FXML private FlowPane cardContainer;
+    @FXML
+    private FlowPane cardContainer;
 
     @FXML
     public void initialize() {
@@ -32,11 +33,10 @@ public class DPCategoryController {
             GraphSubCardController controller = loader.getController();
             controller.setData(name);
 
-            String imageUrl = getClass().getResource(bgPath) != null ? 
-                             getClass().getResource(bgPath).toExternalForm() : "";
-            
-            String normalStyle =
-                    "-fx-background-image: url('" + imageUrl + "');" +
+            String imageUrl = getClass().getResource(bgPath) != null ? getClass().getResource(bgPath).toExternalForm()
+                    : "";
+
+            String normalStyle = "-fx-background-image: url('" + imageUrl + "');" +
                     "-fx-background-size: cover;" +
                     "-fx-background-position: center;" +
                     "-fx-background-radius: 15;" +
@@ -45,10 +45,11 @@ public class DPCategoryController {
                     "-fx-border-radius: 15;" +
                     "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 15, 0, 0, 5);";
 
-            String hoverStyle = normalStyle + "-fx-scale-x: 1.05; -fx-scale-y: 1.05; -fx-effect: dropshadow(gaussian, " + accentColor + ", 20, 0, 0, 0);";
+            String hoverStyle = normalStyle + "-fx-scale-x: 1.05; -fx-scale-y: 1.05; -fx-effect: dropshadow(gaussian, "
+                    + accentColor + ", 20, 0, 0, 0);";
 
             card.setStyle(normalStyle);
-            
+
             card.setOnMouseEntered(e -> card.setStyle(hoverStyle));
             card.setOnMouseExited(e -> card.setStyle(normalStyle));
             card.setOnMouseClicked(e -> onClick.run());

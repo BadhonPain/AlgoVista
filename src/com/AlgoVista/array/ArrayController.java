@@ -1,5 +1,6 @@
 package com.AlgoVista.array;
 
+import com.AlgoVista.utils.ShortcutManager;
 import javafx.application.Platform;
 import javafx.animation.ScaleTransition;
 import javafx.fxml.FXML;
@@ -51,6 +52,18 @@ public class ArrayController {
         
         arrayContainer.getChildren().clear(); // Keep the canvas explicitly blank at the beginning
         logMessage("Array initialized. Operations are ready.");
+
+        // Register shortcuts when scene is available
+        arrayContainer.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                ShortcutManager.register(newScene, 
+                    () -> togglePlayPause(), 
+                    () -> stepForward(), 
+                    () -> resetAnimation(), 
+                    () -> backToMenu()
+                );
+            }
+        });
     }
 
     private void setComplexity(String comp) {
@@ -418,7 +431,7 @@ public class ArrayController {
                     final int step = currentStep;
                     Platform.runLater(() -> renderSnapshot(snapshots.get(step)));
                     
-                    Thread.sleep(getDelay());
+                    responsiveSleep();
                     currentStep++;
                 }
             } catch (InterruptedException e) {
@@ -615,13 +628,24 @@ public class ArrayController {
         }
     }
     
+    /** Reads local slider first; falls back to global. Does NOT write to SettingsManager. */
     private long getDelay() {
-        double speed = com.AlgoVista.utils.SettingsManager.getSpeed();
-        if (speedSlider != null) {
-            speed = speedSlider.getValue();
-            com.AlgoVista.utils.SettingsManager.setSpeed(speed);
+        double sliderVal = (speedSlider != null) ? speedSlider.getValue()
+                                                 : com.AlgoVista.utils.SettingsManager.getSpeed();
+        double rate = com.AlgoVista.utils.SettingsManager.getTimelineRate(sliderVal);
+        return (long)(1000.0 / Math.max(rate, 0.01));
+    }
+
+    /** Sleeps in 50ms chunks, re-reading the delay each chunk for live responsiveness. */
+    private void responsiveSleep() throws InterruptedException {
+        long target = getDelay();
+        long elapsed = 0;
+        final long chunk = 50;
+        while (elapsed < target && isPlaying) {
+            Thread.sleep(Math.min(chunk, target - elapsed));
+            elapsed += chunk;
+            target = getDelay();
         }
-        return (long) (1000 / speed);
     }
 
     @FXML

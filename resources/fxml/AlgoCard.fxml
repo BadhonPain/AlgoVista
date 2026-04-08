@@ -1,45 +1,45 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.scene.Cursor?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-<?import javafx.geometry.Insets?>
-
-<StackPane styleClass="algo-card-container"
-          onMouseClicked="#handleCardClick"
-          xmlns="http://javafx.com/javafx/25"
-          xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="com.AlgoVista.dashboard.CardController">
-    <children>
-        <!-- Background Glow Layer (CSS handles the effect) -->
-        <Region styleClass="algo-card-glow" />
-        
-        <!-- Glass Surface Layer -->
-        <Region styleClass="algo-card-glass" />
-        
-        <!-- Content Layer -->
-        <VBox alignment="CENTER" spacing="15" prefHeight="170.0" prefWidth="155.0" styleClass="algo-card-content">
-            <padding>
-                <Insets top="20" bottom="20" left="15" right="15" />
-            </padding>
-            <children>
-                <ImageView fx:id="algoIcon" fitHeight="65.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true" 
-                           styleClass="algo-card-icon">
-                    <!-- Set in Controller -->
-                </ImageView>
-                <Label fx:id="algoName" text="Algorithm" textAlignment="CENTER" styleClass="algo-card-title">
-                    <font>
-                        <Font name="System Bold" size="15.0" />
-                    </font>
-                </Label>
-            </children>
-        </VBox>
-    </children>
-    <cursor>
-        <Cursor fx:constant="HAND" />
-    </cursor>
-</StackPane>
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.geometry.Insets?>
+
+<StackPane styleClass="algo-card-container"
+          onMouseClicked="#handleCardClick"
+          xmlns="http://javafx.com/javafx/25"
+          xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="com.AlgoVista.dashboard.CardController">
+    <children>
+        
+        <Region styleClass="algo-card-glow" />
+        
+        
+        <Region styleClass="algo-card-glass" />
+        
+        
+        <VBox alignment="CENTER" spacing="15" prefHeight="170.0" prefWidth="155.0" styleClass="algo-card-content">
+            <padding>
+                <Insets top="20" bottom="20" left="15" right="15" />
+            </padding>
+            <children>
+                <ImageView fx:id="algoIcon" fitHeight="65.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true" 
+                           styleClass="algo-card-icon">
+                    
+                </ImageView>
+                <Label fx:id="algoName" text="Algorithm" textAlignment="CENTER" styleClass="algo-card-title">
+                    <font>
+                        <Font name="System Bold" size="15.0" />
+                    </font>
+                </Label>
+            </children>
+        </VBox>
+    </children>
+    <cursor>
+        <Cursor fx:constant="HAND" />
+    </cursor>
+</StackPane>

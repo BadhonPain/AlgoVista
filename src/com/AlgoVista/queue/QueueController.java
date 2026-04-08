@@ -1,5 +1,6 @@
 package com.AlgoVista.queue;
 
+import com.AlgoVista.utils.ShortcutManager;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -50,6 +51,18 @@ public class QueueController {
 
         updateVisualization();
         logMessage("Queue Visualizer initialized. Ready for simulation.");
+
+        // Register keyboard shortcuts when scene is available
+        queueContainer.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                ShortcutManager.register(newScene, 
+                    () -> togglePlayPause(), 
+                    () -> stepForward(), 
+                    () -> resetAnimation(), 
+                    () -> backToMenu()
+                );
+            }
+        });
     }
 
     private void setComplexity(String comp) {
@@ -326,14 +339,7 @@ public class QueueController {
                     final int stepToRender = currentStep;
                     Platform.runLater(() -> renderSnapshot(snapshots.get(stepToRender)));
 
-                    double currentSpeed = speedSlider != null ? speedSlider.getValue() : com.AlgoVista.utils.SettingsManager.getSpeed();
-                    if (speedSlider == null) {
-                        currentSpeed = com.AlgoVista.utils.SettingsManager.getSpeed();
-                    } else {
-                        com.AlgoVista.utils.SettingsManager.setSpeed(currentSpeed);
-                    }
-                    long sleepTime = (long) (1000 / currentSpeed);
-                    Thread.sleep(sleepTime);
+                    responsiveSleep();
 
                     synchronized (playLock) {
                         if (isPlaying) {
@@ -346,7 +352,7 @@ public class QueueController {
                     isPlaying = false;
                     playPauseBtn.setText("Play");
                     if (currentStep >= snapshots.size()) {
-                        updateVisualization(); // Final render state at end
+                        updateVisualization();
                     }
                 });
             } catch (InterruptedException e) {
@@ -355,6 +361,26 @@ public class QueueController {
         });
         animationThread.setDaemon(true);
         animationThread.start();
+    }
+
+    /** Reads local slider (or global if no local slider). Does NOT write to SettingsManager. */
+    private long getDelay() {
+        double sliderVal = (speedSlider != null) ? speedSlider.getValue()
+                                                 : com.AlgoVista.utils.SettingsManager.getSpeed();
+        double rate = com.AlgoVista.utils.SettingsManager.getTimelineRate(sliderVal);
+        return (long)(1000.0 / Math.max(rate, 0.01));
+    }
+
+    /** Sleeps in 50ms chunks, re-reading the delay on each chunk for live responsiveness. */
+    private void responsiveSleep() throws InterruptedException {
+        long target = getDelay();
+        long elapsed = 0;
+        final long chunk = 50;
+        while (elapsed < target && isPlaying) {
+            Thread.sleep(Math.min(chunk, target - elapsed));
+            elapsed += chunk;
+            target = getDelay();
+        }
     }
 
     @FXML

@@ -1,5 +1,6 @@
 package com.AlgoVista.linkedlist;
 
+import com.AlgoVista.utils.ShortcutManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -21,6 +22,13 @@ public class LinkedListMenuController {
         // Add hover effects dynamically
         setupHoverEffect(singlyCard);
         setupHoverEffect(doublyCard);
+
+        // Register back shortcut when scene is available
+        singlyCard.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                ShortcutManager.register(newScene, null, null, null, () -> backToDashboard());
+            }
+        });
     }
 
     private void setupHoverEffect(VBox card) {
