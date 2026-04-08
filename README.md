@@ -33,16 +33,13 @@ Whether you are a student mastering the basics or a developer revisiting core co
 > Use the following placeholders to showcase your app's stunning UI on GitHub.
 
 ### 1. The Dashboard
-*The central hub where all modules are organized elegantly.*
-![Dashboard Screenshot](path/to/dashboard_screenshot.png)
+![Dashboard Screenshot](resources/com/AlgoVista/images/dashboard_ss.png)
 
-### 2. Sorting in Action
-*Watch the bars dance as they organize themselves efficiently.*
-![Sorting Screenshot](path/to/sorting_screenshot.png)
+### 2. Settings
+![Setting Screenshot](resources/com/AlgoVista/images/settings_ss.png)
 
-### 3. Graph Traversals
-*Visualizing nodes and edges with real-time pathfinding.*
-![Graph Screenshot](path/to/graph_screenshot.png)
+### 3. Development Team
+![About Screenshot](resources/com/AlgoVista/images/about_ss.png)
 
 ### 4. Tree Manipulations
 *Dynamic building and balancing of a Binary Search Tree (BST).*
