@@ -266,7 +266,9 @@ Optimizing solutions through tabulation and memoization.
 
 ### 🛠️ Installation Guideline (ZIP Workflow)
 
-1. **Open in Your IDE:**
+1. **Extract the Project:**
+   Unzip the `AlgoVista.zip` file to a local directory on your machine.
+2. **Open in Your IDE:**
    * **IntelliJ IDEA:** File > Open > Select the `Java_Fx` folder.
    * **Eclipse/NetBeans:** Import as an existing project.
 2. **Configure JavaFX Libraries:**
