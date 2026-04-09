@@ -12,7 +12,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class BSTCategoryController {
-    @FXML private FlowPane cardContainer;
+    @FXML
+    private FlowPane cardContainer;
 
     @FXML
     public void initialize() {
@@ -27,25 +28,26 @@ public class BSTCategoryController {
             GraphSubCardController controller1 = loader1.getController();
             controller1.setData("Operations");
 
-            String opsNormalStyle =
-                    "-fx-background-color: #1A1A1A;" +
-                            "-fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/bst_operations_bg.png');" +
-                            "-fx-background-size: 95%;" +
-                            "-fx-background-position: center 25%;" +
-                            "-fx-background-repeat: no-repeat;" +
-                            "-fx-background-radius: 10;" +
-                            "-fx-border-color: #FFFFFF;" +
-                            "-fx-border-width: 2;" +
-                            "-fx-border-radius: 10;" +
-                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);";
+            String opsNormalStyle = "-fx-background-color: #1A1A1A;" +
+                    "-fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/bst_operations_bg.png');"
+                    +
+                    "-fx-background-size: 95%;" +
+                    "-fx-background-position: center 25%;" +
+                    "-fx-background-repeat: no-repeat;" +
+                    "-fx-background-radius: 10;" +
+                    "-fx-border-color: #FFFFFF;" +
+                    "-fx-border-width: 2;" +
+                    "-fx-border-radius: 10;" +
+                    "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);";
 
-            String opsHoverStyle = opsNormalStyle + "-fx-scale-x: 1.05; -fx-scale-y: 1.05; -fx-effect: dropshadow(gaussian, rgba(243, 156, 18, 0.8), 15, 0, 0, 3);";
+            String opsHoverStyle = opsNormalStyle
+                    + "-fx-scale-x: 1.05; -fx-scale-y: 1.05; -fx-effect: dropshadow(gaussian, rgba(243, 156, 18, 0.8), 15, 0, 0, 3);";
 
             opsCard.setStyle(opsNormalStyle);
             opsCard.setOnMouseEntered(e -> opsCard.setStyle(opsHoverStyle));
             opsCard.setOnMouseExited(e -> opsCard.setStyle(opsNormalStyle));
             opsCard.setOnMouseClicked(e -> openOperationsView());
-            
+
             cardContainer.getChildren().add(opsCard);
         } catch (IOException e) {
             e.printStackTrace();
@@ -58,19 +60,20 @@ public class BSTCategoryController {
             GraphSubCardController controller2 = loader2.getController();
             controller2.setData("Traversals");
 
-            String traversalNormalStyle =
-                    "-fx-background-color: #1A1A1A;" +
-                            "-fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/bst_traversals_bg.png');" +
-                            "-fx-background-size: 95%;" +
-                            "-fx-background-position: center 25%;" +
-                            "-fx-background-repeat: no-repeat;" +
-                            "-fx-background-radius: 10;" +
-                            "-fx-border-color: #FFFFFF;" +
-                            "-fx-border-width: 2;" +
-                            "-fx-border-radius: 10;" +
-                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);";
+            String traversalNormalStyle = "-fx-background-color: #1A1A1A;" +
+                    "-fx-background-image: url('file:///E:/JavaFx%20Project/Java_Fx/resources/com/AlgoVista/images/bst_traversals_bg.png');"
+                    +
+                    "-fx-background-size: 95%;" +
+                    "-fx-background-position: center 25%;" +
+                    "-fx-background-repeat: no-repeat;" +
+                    "-fx-background-radius: 10;" +
+                    "-fx-border-color: #FFFFFF;" +
+                    "-fx-border-width: 2;" +
+                    "-fx-border-radius: 10;" +
+                    "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);";
 
-            String traversalHoverStyle = traversalNormalStyle + "-fx-scale-x: 1.05; -fx-scale-y: 1.05; -fx-effect: dropshadow(gaussian, rgba(155, 89, 182, 0.8), 15, 0, 0, 3);";
+            String traversalHoverStyle = traversalNormalStyle
+                    + "-fx-scale-x: 1.05; -fx-scale-y: 1.05; -fx-effect: dropshadow(gaussian, rgba(155, 89, 182, 0.8), 15, 0, 0, 3);";
 
             traversalCard.setStyle(traversalNormalStyle);
             traversalCard.setOnMouseEntered(e -> traversalCard.setStyle(traversalHoverStyle));

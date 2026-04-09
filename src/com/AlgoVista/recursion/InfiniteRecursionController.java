@@ -115,8 +115,8 @@ public class InfiniteRecursionController {
         StringBuilder c = new StringBuilder();
         List<String> currentStack = new ArrayList<>();
 
-        // Define max stack depth before we simulate an overflow
-        int maxDepth = 12;
+        // Define max depth before we simulate an overflow (overflow triggers on n + 1)
+        int maxDepth = 14;
 
         // Step 0: start
         steps.add(new SimStep(4, currentStack, c.toString(), false));
@@ -242,10 +242,9 @@ public class InfiniteRecursionController {
             new Thread(() -> {
                 while (isPlaying && currentStepIndex < steps.size() - 1) {
                     try {
-                        long delay = (long)((400) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier());
-                        Thread.sleep(delay);
+                        responsiveSleep();
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        break;
                     }
                     if (isPlaying) {
                         Platform.runLater(() -> {
@@ -257,6 +256,25 @@ public class InfiniteRecursionController {
             }).start();
         } else {
             autoPlayBtn.setText("Auto Play");
+        }
+    }
+
+    /** Reads local slider first; falls back to global. Does NOT write to SettingsManager. */
+    private long getDelay() {
+        double speed = (speedSlider != null) ? speedSlider.getValue()
+                                             : com.AlgoVista.utils.SettingsManager.getSpeed();
+        return (long)(400.0 / Math.max(speed, 0.01));
+    }
+
+    /** Sleeps in 50ms chunks, re-reading delay each chunk for live responsiveness. */
+    private void responsiveSleep() throws InterruptedException {
+        long target = getDelay();
+        long elapsed = 0;
+        final long chunk = 50;
+        while (elapsed < target && isPlaying) {
+            Thread.sleep(Math.min(chunk, target - elapsed));
+            elapsed += chunk;
+            target = getDelay();
         }
     }
 

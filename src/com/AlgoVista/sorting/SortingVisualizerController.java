@@ -1,5 +1,7 @@
 package com.AlgoVista.sorting;
 
+import com.AlgoVista.utils.ShortcutManager;
+
 import com.AlgoVista.sorting.algorithms.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -32,7 +34,6 @@ public class SortingVisualizerController {
     @FXML private Button playPauseBtn;
     @FXML private HBox arrayContainer;
     @FXML private VBox codeContainer;
-    @FXML private VBox variablesContainer;
     @FXML private Label statusLabel;
     @FXML private TextField customArrayInput;
     @FXML private Slider speedSlider;
@@ -43,7 +44,6 @@ public class SortingVisualizerController {
     private int currentFrame = 0;
     private Timeline timeline;
     private boolean isPlaying = false;
-    private String currentLanguage = "C++";
 
     @FXML
     public void initialize() {
@@ -59,6 +59,18 @@ public class SortingVisualizerController {
                 }
             });
         }
+
+        // Register keyboard shortcuts when scene is available
+        statusLabel.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                ShortcutManager.register(newScene, 
+                    () -> playPause(null), 
+                    () -> stepForward(null), 
+                    () -> reset(null), 
+                    () -> backToMenu(null)
+                );
+            }
+        });
     }
 
     public void initAlgorithm(String algoType) {
@@ -68,9 +80,9 @@ public class SortingVisualizerController {
         switch (algoType) {
             case "Selection Sort": algorithm = new SelectionSortAlgorithm(); break;
             case "Insertion Sort": algorithm = new InsertionSortAlgorithm(); break;
-            case "Merge Sort": algorithm = new MergeSortAlgorithm(); break;
-            case "Quick Sort": algorithm = new QuickSortAlgorithm(); break;
-            case "Heap Sort": algorithm = new HeapSortAlgorithm(); break;
+            case "Counting Sort": algorithm = new CountingSortAlgorithm(); break;
+            case "Radix Sort": algorithm = new RadixSortAlgorithm(); break;
+            case "Bucket Sort": algorithm = new BucketSortAlgorithm(); break;
             case "Bubble Sort":
             default: algorithm = new BubbleSortAlgorithm(); break;
         }
@@ -165,29 +177,16 @@ public class SortingVisualizerController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SortingCategory.fxml"));
             Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            
+            Stage stage;
+            if (event != null && event.getSource() instanceof Node) {
+                stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            } else {
+                stage = (Stage) statusLabel.getScene().getWindow();
+            }
+            
             stage.setScene(new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight()));
         } catch (IOException e) { e.printStackTrace(); }
-    }
-
-    @FXML
-    private void setLanguageCpp(MouseEvent event) {
-        currentLanguage = "C++";
-        updateLanguageLabels((Node)event.getSource());
-        renderFrame();
-    }
-
-    @FXML
-    private void setLanguageJava(MouseEvent event) {
-        currentLanguage = "Java";
-        updateLanguageLabels((Node)event.getSource());
-        renderFrame();
-    }
-
-    private void updateLanguageLabels(Node activeNode) {
-        HBox parent = (HBox) activeNode.getParent();
-        for (Node child : parent.getChildren()) child.getStyleClass().remove("active");
-        activeNode.getStyleClass().add("active");
     }
 
     private void renderFrame() {
@@ -195,7 +194,6 @@ public class SortingVisualizerController {
         StateSnapshot snapshot = snapshots.get(currentFrame);
         renderArray(snapshot);
         renderCode(snapshot);
-        renderVariables(snapshot);
         statusLabel.setText(snapshot.getStatusMessage());
     }
 
@@ -206,40 +204,54 @@ public class SortingVisualizerController {
         int[] sorted = snapshot.getSortedIndices();
 
         int maxVal = 100;
+        for (int maxSearch : arr) {
+            if (maxSearch > maxVal) maxVal = maxSearch;
+        }
+
         for (int i = 0; i < arr.length; i++) {
             VBox barWrapper = new VBox(5);
             barWrapper.setAlignment(Pos.BOTTOM_CENTER);
+
+            javafx.scene.layout.StackPane barStack = new javafx.scene.layout.StackPane();
+            barStack.setAlignment(Pos.BOTTOM_CENTER);
 
             VBox bar = new VBox();
             bar.getStyleClass().add("array-bar");
             bar.setPrefWidth(40);
             
-            double height = Math.max(20, ((double) arr[i] / maxVal) * 200);
+            double height = Math.max(25, ((double) arr[i] / maxVal) * 200);
             bar.setPrefHeight(height);
-
-            Label valLabel = new Label(String.valueOf(arr[i]));
-            valLabel.getStyleClass().add("array-bar-value");
-            bar.getChildren().add(valLabel);
+            bar.setStyle("-fx-background-color: #3498db; -fx-background-radius: 4 4 0 0;"); // Default Color
 
             boolean isActive = false;
             for(int a : active) if(a == i) isActive = true;
             boolean isSorted = false;
             for(int s : sorted) if(s == i) isSorted = true;
 
-            if (isActive) bar.getStyleClass().add("active");
-            else if (isSorted) bar.getStyleClass().add("sorted");
+            if (isActive) {
+                bar.setStyle("-fx-background-color: #e74c3c; -fx-background-radius: 4 4 0 0;");
+            } else if (isSorted) {
+                bar.setStyle("-fx-background-color: #2ecc71; -fx-background-radius: 4 4 0 0;");
+            }
+
+            Label valLabel = new Label(String.valueOf(arr[i]));
+            valLabel.getStyleClass().add("array-bar-value");
+            valLabel.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5;");
+            
+            barStack.getChildren().addAll(bar, valLabel);
 
             Label indexLabel = new Label(String.valueOf(i));
             indexLabel.getStyleClass().add("array-bar-index");
+            indexLabel.setStyle("-fx-text-fill: #94a3b8;");
 
-            barWrapper.getChildren().addAll(bar, indexLabel);
+            barWrapper.getChildren().addAll(barStack, indexLabel);
             arrayContainer.getChildren().add(barWrapper);
         }
     }
 
     private void renderCode(StateSnapshot snapshot) {
         codeContainer.getChildren().clear();
-        String[] codeLines = algorithm.getCodeSnippet(currentLanguage);
+        String[] codeLines = algorithm.getCodeSnippet("C++"); // Force single generic pseudo code snippet
         int activeLine = snapshot.getActiveCodeLine();
 
         for (int i = 0; i < codeLines.length; i++) {
@@ -258,25 +270,4 @@ public class SortingVisualizerController {
         }
     }
 
-    private void renderVariables(StateSnapshot snapshot) {
-        variablesContainer.getChildren().clear();
-        Map<String, String> vars = snapshot.getVariables();
-
-        for (Map.Entry<String, String> entry : vars.entrySet()) {
-            HBox row = new HBox();
-            row.getStyleClass().add("variable-row");
-            
-            Label nameLabel = new Label(entry.getKey());
-            nameLabel.getStyleClass().add("variable-name");
-            
-            Label valueLabel = new Label(entry.getValue());
-            valueLabel.getStyleClass().add("variable-value");
-
-            HBox spacer = new HBox();
-            HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
-
-            row.getChildren().addAll(nameLabel, spacer, valueLabel);
-            variablesContainer.getChildren().add(row);
-        }
-    }
 }

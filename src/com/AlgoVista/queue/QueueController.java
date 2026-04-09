@@ -1,6 +1,6 @@
 package com.AlgoVista.queue;
 
-import javafx.animation.PauseTransition;
+import com.AlgoVista.utils.ShortcutManager;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,9 +10,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.animation.ScaleTransition;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class QueueController {
 
@@ -21,60 +26,51 @@ public class QueueController {
     @FXML private FlowPane queueContainer;
     @FXML private VBox stepLogContainer;
     @FXML private Label outputLabel;
-    @FXML private VBox complexitiesContainer;
+
+    @FXML private Slider speedSlider;
+    @FXML private Button playPauseBtn;
+    @FXML private Label dynamicComplexityLabel;
 
     private QueueModel model;
-    private boolean isAnimating = false;
+
+    // Animation Engine state
+    private List<QueueSnapshot> snapshots = new ArrayList<>();
+    private int currentStep = 0;
+    private boolean isPlaying = false;
+    private Thread animationThread;
+    private final Object playLock = new Object();
 
     @FXML
     public void initialize() {
         model = new QueueModel(8); // Default capacity 8
         capacitySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 20, 8));
-        
-        setupComplexities();
-        renderQueueInstantly();
-        logResult("Queue Visualizer initialized. Ready for simulation.");
-    }
 
-    private void setupComplexities() {
-        addComplexityRow("Enqueue", "Add an element to the rear of the queue", "O(1)");
-        addComplexityRow("Dequeue", "Remove the front element", "O(1)");
-        addComplexityRow("Peek / Front", "Access front element without removing", "O(1)");
-        addComplexityRow("Is Empty", "Check whether the queue has no elements", "O(1)");
-        addComplexityRow("Is Full", "Check whether the queue reached capacity", "O(1)");
-        addComplexityRow("Size", "Return the current number of elements", "O(1)");
-        addComplexityRow("Search", "Scan queue elements to find a value", "O(n)");
-        addComplexityRow("Traverse / Display", "Visit and display all elements", "O(n)");
-        addComplexityRow("Clear", "Remove all elements", "O(n)");
-        addComplexityRow("Space Complexity", "Memory used to store queue elements", "O(n)");
-    }
-
-    private void addComplexityRow(String operation, String description, String complexity) {
-        HBox row = new HBox(10);
-        row.getStyleClass().add("complexity-row");
-        row.setAlignment(Pos.CENTER_LEFT);
-
-        VBox textContainer = new VBox(2);
-        HBox.setHgrow(textContainer, Priority.ALWAYS);
-        
-        Label nameLbl = new Label(operation);
-        nameLbl.getStyleClass().add("complexity-op-name");
-        
-        Label descLbl = new Label(description);
-        descLbl.getStyleClass().add("complexity-op-desc");
-        descLbl.setWrapText(true);
-
-        textContainer.getChildren().addAll(nameLbl, descLbl);
-
-        Label badge = new Label(complexity);
-        if (complexity.equals("O(1)") || complexity.startsWith("O(1)")) {
-            badge.getStyleClass().add("complexity-badge-o1");
-        } else {
-            badge.getStyleClass().add("complexity-badge-on");
+        if (dynamicComplexityLabel != null) {
+            dynamicComplexityLabel.setText("O(1)");
         }
 
-        row.getChildren().addAll(textContainer, badge);
-        complexitiesContainer.getChildren().add(row);
+        updateVisualization();
+        logMessage("Queue Visualizer initialized. Ready for simulation.");
+
+        // Register keyboard shortcuts when scene is available
+        queueContainer.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                ShortcutManager.register(newScene, 
+                    () -> togglePlayPause(), 
+                    () -> stepForward(), 
+                    () -> resetAnimation(), 
+                    () -> backToMenu()
+                );
+            }
+        });
+    }
+
+    private void setComplexity(String comp) {
+        Platform.runLater(() -> {
+            if (dynamicComplexityLabel != null) {
+                dynamicComplexityLabel.setText(comp);
+            }
+        });
     }
 
     private Integer getInputValue() {
@@ -86,370 +82,391 @@ public class QueueController {
         }
     }
 
-    // --- Core Operations ---
-    
     @FXML
     private void createQueue() {
-        if (isAnimating) return;
+        if (isPlaying) resetAnimation();
         int cap = capacitySpinner.getValue();
         model = new QueueModel(cap);
+        clearSnapshots();
+        updateVisualization();
+        logMessage("Created empty circular queue with capacity " + cap + ".");
         stepLogContainer.getChildren().clear();
-        logStep("Created empty circular queue with capacity " + cap);
-        renderQueueInstantly();
-        logResult("New queue created successfully.");
     }
 
     @FXML
     private void generateRandom() {
-        if (isAnimating) return;
+        if (isPlaying) resetAnimation();
         int cap = capacitySpinner.getValue();
+        model = new QueueModel(cap);    // reinitialise with new capacity
         model.generateSample(cap, 1, 99);
+        clearSnapshots();
+        updateVisualization();
+        logMessage("Generated random queue of size " + cap + ".");
         stepLogContainer.getChildren().clear();
-        logStep("Generated random elements up to capacity " + cap);
-        renderQueueInstantly();
-        logResult("Random queue generated successfully.");
     }
 
     @FXML
     private void enqueue() {
-        if (isAnimating) return;
+        if (isPlaying) resetAnimation();
         Integer val = getInputValue();
         if (val == null) return;
 
+        clearSnapshots();
+        setComplexity("O(1)");
         stepLogContainer.getChildren().clear();
-        logStep("ENQUEUE OP initiating for value " + val + "...");
-        
-        isAnimating = true;
 
-        new Thread(() -> {
-            try {
-                Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
-                logStep("Step 1: Checking if queue is full...");
-                
-                if (model.isFull()) {
-                    logStep("Queue is full! Cannot enqueue.");
-                    logResult("Enqueue failed. Queue Overflow condition.");
-                    showAlert("Queue Overflow", "Cannot enqueue, the queue is full.");
-                    return;
-                }
-                
-                logStep("Queue is not full. Proceeding.");
-                Thread.sleep((long)((1000) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
-                
-                boolean success = model.enqueue(val);
-                if (success) {
-                    logStep("Step 2: Calculating new REAR index via (rear + 1) % capacity and inserting value " + val);
-                    Platform.runLater(this::renderQueueInstantly);
-                    
-                    Platform.runLater(() -> {
-                        int rearIndex = model.getRear();
-                        if (rearIndex >= 0 && rearIndex < queueContainer.getChildren().size()) {
-                            VBox cellBox = (VBox) queueContainer.getChildren().get(rearIndex);
-                            Label dataLabel = (Label) cellBox.getChildren().get(0);
-                            String oldStyle = dataLabel.getStyle();
-                            dataLabel.setStyle(oldStyle.replace("-fx-background-color: #34495e;", "-fx-background-color: #2ecc71;"));
-                            
-                            PauseTransition restore = new PauseTransition(Duration.millis(800));
-                            restore.setOnFinished(ev -> dataLabel.setStyle(oldStyle));
-                            restore.play();
-                        }
-                    });
-                    
-                    logStep("Step 3: Enqueued successfully.");
-                    logResult("Enqueued " + val + " to the queue.");
-                    Platform.runLater(() -> valueInput.clear());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                isAnimating = false;
-            }
-        }).start();
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), new HashMap<>(), "ENQUEUE OP initiating for value " + val + "...", "O(1)");
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), new HashMap<>(), "Step 1: Checking if queue is full...", "O(1)");
+
+        if (model.isFull()) {
+            recordSnapshot(model.getElements(), model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), new HashMap<>(), "Queue is full! Cannot enqueue.", "O(1)");
+            startAnimation();
+            logMessage("Enqueue failed. Queue Overflow condition.");
+            return;
+        }
+
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), new HashMap<>(), "Queue is not full. Proceeding.", "O(1)");
+
+        boolean success = model.enqueue(val);
+        if (success) {
+            Map<Integer, String> highlights = new HashMap<>();
+            highlights.put(model.getRear(), "#2ecc71"); // Green for inserted
+            recordSnapshot(model.getElements(), model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), highlights, "Step 2: Calculating new REAR index via (rear + 1) % capacity and inserting value " + val, "O(1)");
+            recordSnapshot(model.getElements(), model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), new HashMap<>(), "Step 3: Enqueued successfully.", "O(1)");
+            startAnimation();
+            valueInput.clear();
+            logMessage("Enqueued " + val + " to the queue.");
+        }
     }
 
     @FXML
     private void dequeue() {
-        if (isAnimating) return;
-        
+        if (isPlaying) resetAnimation();
+        clearSnapshots();
+        setComplexity("O(1)");
         stepLogContainer.getChildren().clear();
-        logStep("DEQUEUE OP initiating...");
-        isAnimating = true;
 
-        new Thread(() -> {
-            try {
-                Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
-                logStep("Step 1: Checking if queue is empty...");
-                
-                if (model.isEmpty()) {
-                    logStep("Queue is empty! Cannot dequeue.");
-                    logResult("Dequeue failed. Queue Underflow condition.");
-                    showAlert("Queue Underflow", "Cannot dequeue, the queue is empty.");
-                    return;
-                }
-                
-                logStep("Queue has elements. Proceeding.");
-                
-                Platform.runLater(() -> {
-                    int frontIndex = model.getFront();
-                    if (frontIndex >= 0 && frontIndex < queueContainer.getChildren().size()) {
-                        VBox cellBox = (VBox) queueContainer.getChildren().get(frontIndex);
-                        Label dataLabel = (Label) cellBox.getChildren().get(0);
-                        dataLabel.setStyle(dataLabel.getStyle().replace("-fx-background-color: #34495e;", "-fx-background-color: #e74c3c;"));
-                        logStep("Step 2: Identifying current FRONT element (" + model.peek() + ") for removal.");
-                    }
-                });
-                
-                Thread.sleep((long)((1000) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
-                if (model.isEmpty()) return;
-                
-                Integer dequeued = model.dequeue();
-                logStep("Step 3: Value " + dequeued + " removed. FRONT pointer incremented via (front + 1) % capacity.");
-                Platform.runLater(this::renderQueueInstantly);
-                logResult("Dequeued " + dequeued + " from the queue.");
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                isAnimating = false;
-            }
-        }).start();
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), new HashMap<>(), "DEQUEUE OP initiating...", "O(1)");
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), new HashMap<>(), "Step 1: Checking if queue is empty...", "O(1)");
+
+        if (model.isEmpty()) {
+            recordSnapshot(model.getElements(), model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), new HashMap<>(), "Queue is empty! Cannot dequeue.", "O(1)");
+            startAnimation();
+            logMessage("Dequeue failed. Queue Underflow condition.");
+            return;
+        }
+
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), new HashMap<>(), "Queue has elements. Proceeding.", "O(1)");
+
+        Map<Integer, String> highToRemove = new HashMap<>();
+        highToRemove.put(model.getFront(), "#e74c3c"); // Red for element to be removed
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), highToRemove, "Step 2: Identifying current FRONT element (" + model.peek() + ") for removal.", "O(1)");
+
+        Integer dequeued = model.dequeue();
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), new HashMap<>(), "Step 3: Value " + dequeued + " removed. FRONT pointer incremented via (front + 1) % capacity.", "O(1)");
+        startAnimation();
+        logMessage("Dequeued " + dequeued + " from the queue.");
     }
 
     @FXML
     private void peek() {
-        if (isAnimating) return;
-        
+        if (isPlaying) resetAnimation();
+        clearSnapshots();
+        setComplexity("O(1)");
         stepLogContainer.getChildren().clear();
-        logStep("PEEK OP initiating...");
-        
+
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), new HashMap<>(), "PEEK OP initiating...", "O(1)");
+
         if (model.isEmpty()) {
-            logStep("Queue is empty. No front element.");
-            logResult("Peek failed: Queue is empty.");
+            recordSnapshot(model.getElements(), model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), new HashMap<>(), "Queue is empty. No front element.", "O(1)");
+            startAnimation();
+            logMessage("Peek failed: Queue is empty.");
             return;
         }
 
-        isAnimating = true;
-        
-        new Thread(() -> {
-            try {
-                logStep("Accessing FRONT pointer...");
-                
-                String[] savedStyle = {null};
-                
-                Platform.runLater(() -> {
-                    int frontIndex = model.getFront();
-                    if (frontIndex >= 0 && frontIndex < queueContainer.getChildren().size()) {
-                        VBox cellBox = (VBox) queueContainer.getChildren().get(frontIndex);
-                        Label dataLabel = (Label) cellBox.getChildren().get(0);
-                        
-                        savedStyle[0] = dataLabel.getStyle();
-                        dataLabel.setStyle(savedStyle[0].replace("-fx-background-color: #34495e;", "-fx-background-color: #9b59b6;"));
-                    }
-                });
-                
-                Thread.sleep((long)((1200) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
-                
-                Platform.runLater(() -> {
-                    int frontIndex = model.getFront();
-                    if (frontIndex >= 0 && frontIndex < queueContainer.getChildren().size()) {
-                        VBox cellBox = (VBox) queueContainer.getChildren().get(frontIndex);
-                        Label dataLabel = (Label) cellBox.getChildren().get(0);
-                        if(savedStyle[0] != null) dataLabel.setStyle(savedStyle[0]);
-                    }
-                    logStep("Front element is " + model.peek() + ".");
-                    logResult("Front element is " + model.peek());
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                isAnimating = false;
-            }
-        }).start();
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), new HashMap<>(), "Accessing FRONT pointer...", "O(1)");
+
+        Map<Integer, String> peekHigh = new HashMap<>();
+        peekHigh.put(model.getFront(), "#9b59b6"); // Purple for peek
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), peekHigh, "Examining element at FRONT...", "O(1)");
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), new HashMap<>(), "Front element is " + model.peek() + ".", "O(1)");
+
+        startAnimation();
+        logMessage("Front element is " + model.peek() + ".");
     }
 
     @FXML
     private void search() {
-        if (isAnimating) return;
+        if (isPlaying) resetAnimation();
         Integer target = getInputValue();
         if (target == null) return;
 
+        clearSnapshots();
+        setComplexity("O(n)");
         stepLogContainer.getChildren().clear();
-        logStep("SEARCH OP initiating for value " + target + "...");
-        
+
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), new HashMap<>(), "SEARCH OP initiating for value " + target + "...", "O(n)");
+
         if (model.isEmpty()) {
-            logStep("Queue is empty. Search termination immediately.");
-            logResult("Value not found (Empty Queue).");
+            recordSnapshot(model.getElements(), model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), new HashMap<>(), "Queue is empty. Search termination immediately.", "O(n)");
+            startAnimation();
+            logMessage("Value not found (Empty Queue).");
             return;
         }
 
-        isAnimating = true;
-        
-        new Thread(() -> {
-            try {
-                int[] elements = model.getElements();
-                int front = model.getFront();
-                int size = model.getSize();
-                int capacity = model.getCapacity();
-                boolean[] foundTracker = {false};
+        Integer[] currentElements = model.getElements();
+        boolean found = false;
+        int front = model.getFront();
+        int capacity = model.getCapacity();
 
-                for (int count = 0; count < size; count++) {
-                    if (foundTracker[0]) break;
-                    
-                    int currIndex = (front + count) % capacity;
-                    Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
-                    
-                    logStep("Checking index " + currIndex + " from front (Value: " + elements[currIndex] + ")");
-                    
-                    final int finalCount = count;
-                    Platform.runLater(() -> {
-                        VBox cellBox = (VBox) queueContainer.getChildren().get(currIndex);
-                        Label dataLabel = (Label) cellBox.getChildren().get(0);
-                        String oldStyle = dataLabel.getStyle();
-                        
-                        dataLabel.setStyle(oldStyle.replace("-fx-background-color: #34495e;", "-fx-background-color: #f1c40f;")); // yellow
-                        
-                        if (elements[currIndex] == target) {
-                            foundTracker[0] = true;
-                            logStep("Match found! Distance from front = " + finalCount);
-                            logResult("Found value " + target + " at array index " + currIndex + ".");
-                            PauseTransition end = new PauseTransition(Duration.millis(1500));
-                            end.setOnFinished(ev -> dataLabel.setStyle(oldStyle));
-                            end.play();
-                        } else {
-                            PauseTransition end = new PauseTransition(Duration.millis(300));
-                            end.setOnFinished(ev -> dataLabel.setStyle(oldStyle));
-                            end.play();
-                        }
-                    });
-                    
-                    if (elements[currIndex] == target) {
-                        Thread.sleep((long)((1500) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
-                    } else {
-                        Thread.sleep((long)((300) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
-                    }
-                }
-                
-                Thread.sleep((long)((200) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
-                if (!foundTracker[0]) {
-                    logStep("Reached end of queue. Element not found.");
-                    logResult("Search failed. Element " + target + " not present.");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                isAnimating = false;
+        for (int count = 0; count < model.getSize(); count++) {
+            int currIndex = (front + count) % capacity;
+            Map<Integer, String> checkColor = new HashMap<>();
+            checkColor.put(currIndex, "#f1c40f"); // Yellow for checking
+            recordSnapshot(currentElements, model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), checkColor, "Checking index " + currIndex + " from front (Value: " + currentElements[currIndex] + ")", "O(n)");
+
+            if (currentElements[currIndex] != null && currentElements[currIndex].equals(target)) {
+                found = true;
+                Map<Integer, String> matchColor = new HashMap<>();
+                matchColor.put(currIndex, "#2ecc71"); // Green for match
+                recordSnapshot(currentElements, model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), matchColor, "Match found! Distance from front = " + count, "O(n)");
+                break;
+            } else {
+                recordSnapshot(currentElements, model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), new HashMap<>(), "No match at index " + currIndex + ". Moving next.", "O(n)");
             }
-        }).start();
+        }
+
+        if (!found) {
+            recordSnapshot(currentElements, model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), new HashMap<>(), "Reached end of queue. Element not found.", "O(n)");
+            logMessage("Search failed. Element " + target + " not present.");
+        } else {
+            logMessage("Found value " + target + ".");
+        }
+        startAnimation();
     }
 
     @FXML
     private void traverse() {
-        if (isAnimating) return;
-        
+        if (isPlaying) resetAnimation();
+        clearSnapshots();
+        setComplexity("O(n)");
         stepLogContainer.getChildren().clear();
-        logStep("TRAVERSE OP initiating...");
-        
+
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), new HashMap<>(), "TRAVERSE OP initiating...", "O(n)");
+
         if (model.isEmpty()) {
-            logStep("Empty Queue.");
-            logResult("Queue is empty.");
+            recordSnapshot(model.getElements(), model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), new HashMap<>(), "Empty Queue.", "O(n)");
+            startAnimation();
+            logMessage("Queue is empty.");
             return;
         }
-        
-        isAnimating = true;
 
-        new Thread(() -> {
-            try {
-                int[] elements = model.getElements();
-                int front = model.getFront();
-                int size = model.getSize();
-                int capacity = model.getCapacity();
-                
-                logStep("Traversing from FRONT to REAR...");
-                
-                for (int count = 0; count < size; count++) {
-                    int currIndex = (front + count) % capacity;
-                    Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
-                    
-                    logStep("Visiting element at index " + currIndex + " (Value: " + elements[currIndex] + ")");
-                    
-                    Platform.runLater(() -> {
-                        VBox cellBox = (VBox) queueContainer.getChildren().get(currIndex);
-                        Label dataLabel = (Label) cellBox.getChildren().get(0);
-                        String oldStyle = dataLabel.getStyle();
-                        
-                        dataLabel.setStyle(oldStyle.replace("-fx-background-color: #34495e;", "-fx-background-color: #9b59b6;")); // purple
-                        
-                        PauseTransition end = new PauseTransition(Duration.millis(800));
-                        end.setOnFinished(ev -> dataLabel.setStyle(oldStyle));
-                        end.play();
-                    });
-                    
-                    Thread.sleep((long)((1000) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier())); 
-                }
-                
-                logStep("Traversal complete.");
-                logResult("Traversing from FRONT to REAR:\n" + model.traverse());
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                isAnimating = false;
-            }
-        }).start();
+        Integer[] currentElements = model.getElements();
+        recordSnapshot(currentElements, model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), new HashMap<>(), "Traversing from FRONT to REAR...", "O(n)");
+
+        int front = model.getFront();
+        int capacity = model.getCapacity();
+
+        for (int count = 0; count < model.getSize(); count++) {
+            int currIndex = (front + count) % capacity;
+            Map<Integer, String> travColor = new HashMap<>();
+            travColor.put(currIndex, "#9b59b6"); // Purple
+            recordSnapshot(currentElements, model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), travColor, "Visiting element at index " + currIndex + " (Value: " + currentElements[currIndex] + ")", "O(n)");
+        }
+
+        recordSnapshot(currentElements, model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), new HashMap<>(), "Traversal complete.", "O(n)");
+        startAnimation();
+        logMessage("Traversing from FRONT to REAR:\n" + model.traverse());
     }
 
     @FXML
     private void checkEmpty() {
-        if (isAnimating) return;
+        if (isPlaying) resetAnimation();
         stepLogContainer.getChildren().clear();
         boolean empty = model.isEmpty();
-        logStep("Checked isEmpty(). Result: " + empty);
-        logResult("Is Queue Empty? -> " + String.valueOf(empty).toUpperCase());
+        addLogStep("Checked isEmpty(). Result: " + empty);
+        logMessage("Is Queue Empty? -> " + String.valueOf(empty).toUpperCase());
     }
 
     @FXML
     private void checkFull() {
-        if (isAnimating) return;
+        if (isPlaying) resetAnimation();
         stepLogContainer.getChildren().clear();
         boolean full = model.isFull();
-        logStep("Checked isFull(). Result: " + full);
-        logResult("Is Queue Full? -> " + String.valueOf(full).toUpperCase());
+        addLogStep("Checked isFull(). Result: " + full);
+        logMessage("Is Queue Full? -> " + String.valueOf(full).toUpperCase());
     }
 
     @FXML
     private void getSize() {
-        if (isAnimating) return;
+        if (isPlaying) resetAnimation();
         stepLogContainer.getChildren().clear();
         int size = model.getSize();
-        logStep("Counted nodes from Front to Rear.");
-        logResult("Current Size: " + size + " / " + model.getCapacity());
+        addLogStep("Counted nodes from Front to Rear.");
+        logMessage("Current Size: " + size);
     }
 
     @FXML
     private void clear() {
-        if (isAnimating) return;
+        if (isPlaying) resetAnimation();
         stepLogContainer.getChildren().clear();
-        logStep("CLEAR OP Executed.");
+        addLogStep("CLEAR OP Executed.");
         model.clear();
-        renderQueueInstantly();
-        logResult("Queue fully cleared.");
+        clearSnapshots();
+        updateVisualization();
+        logMessage("Queue fully cleared.");
     }
 
-    // --- Visualization & Helpers ---
+    // --- Animation Handling ---
 
-    private void renderQueueInstantly() {
+    private void clearSnapshots() {
+        snapshots.clear();
+    }
+
+    private void recordSnapshot(Integer[] elements, int capacity, int front, int rear, int size, Map<Integer, String> nodeColors, String message, String timeComplexity) {
+        snapshots.add(new QueueSnapshot(elements, capacity, front, rear, size, nodeColors, message, timeComplexity));
+    }
+
+    private void startAnimation() {
+        if (snapshots.isEmpty()) return;
+        isPlaying = true;
+        currentStep = 0;
+        playPauseBtn.setText("Pause");
+
+        animationThread = new Thread(() -> {
+            try {
+                while (currentStep < snapshots.size() && isPlaying) {
+                    final int stepToRender = currentStep;
+                    Platform.runLater(() -> renderSnapshot(snapshots.get(stepToRender)));
+
+                    responsiveSleep();
+
+                    synchronized (playLock) {
+                        if (isPlaying) {
+                            currentStep++;
+                        }
+                    }
+                }
+
+                Platform.runLater(() -> {
+                    isPlaying = false;
+                    playPauseBtn.setText("Play");
+                    if (currentStep >= snapshots.size()) {
+                        updateVisualization();
+                    }
+                });
+            } catch (InterruptedException e) {
+                // Interrupted
+            }
+        });
+        animationThread.setDaemon(true);
+        animationThread.start();
+    }
+
+    /** Reads local slider (or global if no local slider). Does NOT write to SettingsManager. */
+    private long getDelay() {
+        double sliderVal = (speedSlider != null) ? speedSlider.getValue()
+                                                 : com.AlgoVista.utils.SettingsManager.getSpeed();
+        double rate = com.AlgoVista.utils.SettingsManager.getTimelineRate(sliderVal);
+        return (long)(1000.0 / Math.max(rate, 0.01));
+    }
+
+    /** Sleeps in 50ms chunks, re-reading the delay on each chunk for live responsiveness. */
+    private void responsiveSleep() throws InterruptedException {
+        long target = getDelay();
+        long elapsed = 0;
+        final long chunk = 50;
+        while (elapsed < target && isPlaying) {
+            Thread.sleep(Math.min(chunk, target - elapsed));
+            elapsed += chunk;
+            target = getDelay();
+        }
+    }
+
+    @FXML
+    private void togglePlayPause() {
+        if (snapshots.isEmpty()) return;
+        synchronized (playLock) {
+            isPlaying = !isPlaying;
+            playPauseBtn.setText(isPlaying ? "Pause" : "Play");
+            if (isPlaying) {
+                if (currentStep >= snapshots.size()) {
+                    currentStep = 0;
+                }
+                startAnimation();
+            } else {
+                if (animationThread != null && animationThread.isAlive()) {
+                    animationThread.interrupt();
+                }
+            }
+        }
+    }
+
+    @FXML
+    private void stepForward() {
+        if (snapshots.isEmpty()) return;
+        synchronized (playLock) {
+            if (isPlaying) togglePlayPause();
+            if (currentStep < snapshots.size() - 1) {
+                currentStep++;
+                renderSnapshot(snapshots.get(currentStep));
+            }
+        }
+    }
+
+    @FXML
+    private void stepBackward() {
+        if (snapshots.isEmpty()) return;
+        synchronized (playLock) {
+            if (isPlaying) togglePlayPause();
+            if (currentStep > 0) {
+                currentStep--;
+                renderSnapshot(snapshots.get(currentStep));
+            }
+        }
+    }
+
+    @FXML
+    private void resetAnimation() {
+        synchronized (playLock) {
+            isPlaying = false;
+            if (animationThread != null && animationThread.isAlive()) {
+                animationThread.interrupt();
+            }
+            playPauseBtn.setText("Play");
+            currentStep = 0;
+            if (!snapshots.isEmpty()) {
+                renderSnapshot(snapshots.get(0));
+            } else {
+                updateVisualization();
+            }
+        }
+    }
+
+    // --- Visualization ---
+
+    private void updateVisualization() {
+        renderArray(model.getElements(), model.getCapacity(), model.getFront(), model.getRear(), model.getSize(), new HashMap<>());
+    }
+
+    private void renderSnapshot(QueueSnapshot snapshot) {
+        if (snapshot == null) return;
+        renderArray(snapshot.getElements(), snapshot.getCapacity(), snapshot.getFront(), snapshot.getRear(), snapshot.getSize(), snapshot.getNodeColors());
+        if (snapshot.getMessage() != null && !snapshot.getMessage().isEmpty()) {
+            addLogStep(snapshot.getMessage());
+        }
+        if (snapshot.getTimeComplexity() != null) {
+            setComplexity(snapshot.getTimeComplexity());
+        }
+    }
+
+    private void renderArray(Integer[] elements, int capacity, int front, int rear, int size, Map<Integer, String> nodeColors) {
         queueContainer.getChildren().clear();
-        
-        int capacity = model.getCapacity();
-        int[] elements = model.getElements();
-        int front = model.getFront();
-        int rear = model.getRear();
-        boolean isEmpty = model.isEmpty();
-        int size = model.getSize();
+        boolean isEmpty = (size == 0);
 
-        // Render entire array capacity
         for (int i = 0; i < capacity; i++) {
             boolean isActive = false;
             
-            // Check if current index i is within the active logical queue range
             if (!isEmpty) {
                 if (front <= rear) {
                     isActive = (i >= front && i <= rear);
@@ -461,20 +478,32 @@ public class QueueController {
             boolean isFront = (!isEmpty && i == front);
             boolean isRear = (!isEmpty && i == rear);
             
-            String val = isActive ? String.valueOf(elements[i]) : "";
-            
-            VBox cell = createQueueCell(val, i, isActive, isFront, isRear);
+            String valStr = (isActive && elements[i] != null) ? String.valueOf(elements[i]) : "";
+            String highlightColor = nodeColors.getOrDefault(i, null);
+
+            VBox cell = createQueueCell(valStr, i, isActive, isFront, isRear, highlightColor);
             queueContainer.getChildren().add(cell);
         }
     }
 
-    private VBox createQueueCell(String valStr, int index, boolean isActive, boolean isFront, boolean isRear) {
+    private VBox createQueueCell(String valStr, int index, boolean isActive, boolean isFront, boolean isRear, String highlightColor) {
         VBox box = new VBox(5);
         box.setAlignment(Pos.CENTER);
-        
-        String bgStyle = isActive ? "-fx-background-color: #34495e;" : "-fx-background-color: #ecf0f1;";
+
+        String bgStyle;
+        if (highlightColor != null) {
+            bgStyle = "-fx-background-color: " + highlightColor + ";";
+            ScaleTransition st = new ScaleTransition(Duration.millis(300), box);
+            st.setFromX(1.0); st.setToX(1.1);
+            st.setFromY(1.0); st.setToY(1.1);
+            st.setCycleCount(2);
+            st.setAutoReverse(true);
+            st.play();
+        } else {
+            bgStyle = isActive ? "-fx-background-color: #34495e;" : "-fx-background-color: #ecf0f1;";
+        }
         String textFill = isActive ? "white" : "transparent";
-        
+
         Label dataLabel = new Label(valStr);
         dataLabel.setStyle(
                 bgStyle +
@@ -485,14 +514,14 @@ public class QueueController {
                 "-fx-min-height: 50;" +
                 "-fx-max-height: 50;" +
                 "-fx-alignment: center;" +
-                "-fx-font-size: 18;" + // Enhanced text size
+                "-fx-font-size: 18;" +
                 "-fx-font-weight: bold;" +
                 "-fx-text-fill: " + textFill + ";"
         );
-        
+
         Label idxLabel = new Label("[" + index + "]");
         idxLabel.setStyle("-fx-text-fill: #7f8c8d; -fx-font-size: 11;");
-        
+
         HBox tags = new HBox(5);
         tags.setAlignment(Pos.CENTER);
         if (isFront) {
@@ -505,39 +534,48 @@ public class QueueController {
             rTag.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 2 5; -fx-background-radius: 3; -fx-font-size: 10; -fx-font-weight: bold;");
             tags.getChildren().add(rTag);
         }
-        
+
         box.getChildren().addAll(dataLabel, idxLabel, tags);
         return box;
     }
 
-    private void logStep(String stepDescription) {
-        Label l = new Label("• " + stepDescription);
-        l.setStyle("-fx-text-fill: #34495e; -fx-font-size: 13;");
-        l.setWrapText(true);
-        Platform.runLater(() -> stepLogContainer.getChildren().add(l));
+    private void addLogStep(String stepDescription) {
+        Platform.runLater(() -> {
+            Label l = new Label("• " + stepDescription);
+            l.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13;");
+            l.setWrapText(true);
+            stepLogContainer.getChildren().add(l);
+        });
     }
 
-    private void logResult(String msg) {
-        Platform.runLater(() -> outputLabel.setText(msg));
+    private void logMessage(String msg) {
+        Platform.runLater(() -> {
+            if (outputLabel != null) {
+                outputLabel.setText(msg);
+            }
+        });
     }
 
-        private void showAlert(String title, String message) {
-        if (title != null && (title.toLowerCase().contains("complete") || title.toLowerCase().contains("ready") || title.toLowerCase().contains("custom mode"))) {
-            com.AlgoVista.utils.CustomAlert.showInfo(title, message);
-        } else {
-            com.AlgoVista.utils.CustomAlert.showError(title, message);
-        }
+    private void showAlert(String title, String message) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle(title);
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
+        });
     }
 
     @FXML
     private void backToMenu() {
+        if (isPlaying) resetAnimation();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/dashboard.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) queueContainer.getScene().getWindow();
-            double width = stage.getScene().getWidth();
-            double height = stage.getScene().getHeight();
+            double width = stage.getWidth();
+            double height = stage.getHeight();
             Scene scene = new Scene(root, width, height);
             stage.setScene(scene);
         } catch (IOException e) {

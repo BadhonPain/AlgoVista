@@ -46,9 +46,9 @@ public class DashboardController {
 
     @FXML
     public void initialize() {
-        loadCards(""); // Load all cards initially
+        loadCards("");   // Load all cards initially
         
-        // Setup overlay interaction
+
         overlayPane.setOnMouseClicked(e -> closeModal());
         modalContent.setOnMouseClicked(e -> e.consume()); 
 
@@ -129,10 +129,10 @@ public class DashboardController {
         HBox teamBox = new HBox(40);
         teamBox.setAlignment(Pos.CENTER);
         
-        // Left Card: Badhon Pain (Cyan) - with photo
+        // badhon card
         VBox badhonCard = createBadhonCard();
         
-        // Right Card: Joyshree Mukharjee Joya (Purple)
+        // joya card
         VBox joyaCard = createJoyaCard();
 
         teamBox.getChildren().addAll(badhonCard, joyaCard);
@@ -237,7 +237,10 @@ public class DashboardController {
         deptLbl.setStyle("-fx-text-fill: " + accentColor + "; -fx-font-size: 14px; -fx-opacity: 0.9;");
         academicBox.getChildren().addAll(idLbl, deptLbl);
 
-        card.getChildren().addAll(avatarPane, nameLbl, sep, contribBox, academicBox);
+        // GitHub button
+        HBox badhonGithub = createGithubButton("https://github.com/BadhonPain", accentColor);
+
+        card.getChildren().addAll(avatarPane, nameLbl, sep, contribBox, academicBox, badhonGithub);
         return card;
     }
 
@@ -313,14 +316,99 @@ public class DashboardController {
         deptLbl.setStyle("-fx-text-fill: " + accentColor + "; -fx-font-size: 14px; -fx-opacity: 0.9;");
         academicBox.getChildren().addAll(idLbl, deptLbl);
 
-        card.getChildren().addAll(avatarPane, nameLbl, sep, contribBox, academicBox);
+        // GitHub button
+        HBox joyaGithub = createGithubButton("https://github.com/joyshree-joya", accentColor);
+
+        card.getChildren().addAll(avatarPane, nameLbl, sep, contribBox, academicBox, joyaGithub);
         return card;
+    }
+
+    private HBox createGithubButton(String url, String accentColor) {
+        // GitHub Octocat SVG path (official mark, scaled to ~20px)
+        javafx.scene.shape.SVGPath githubIcon = new javafx.scene.shape.SVGPath();
+        githubIcon.setContent(
+            "M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21" +
+            "C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97" +
+            "C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9" +
+            "C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76" +
+            "C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5" +
+            "C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15" +
+            "C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84" +
+            "C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15" +
+            "C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5" +
+            "C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26" +
+            "C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5" +
+            "C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z"
+        );
+        // Scale SVG from 24px to 18px
+        double scale = 18.0 / 24.0;
+        githubIcon.setScaleX(scale);
+        githubIcon.setScaleY(scale);
+        githubIcon.setFill(javafx.scene.paint.Color.web(accentColor));
+
+        Label githubText = new Label("View on GitHub");
+        githubText.setStyle("-fx-text-fill: " + accentColor + "; -fx-font-size: 13px; -fx-font-weight: bold;");
+
+        HBox btn = new HBox(8);
+        btn.setAlignment(Pos.CENTER);
+        btn.setPadding(new Insets(8, 20, 8, 20));
+        btn.setStyle(
+            "-fx-background-color: transparent; " +
+            "-fx-border-color: " + accentColor + "; " +
+            "-fx-border-width: 1.5; " +
+            "-fx-border-radius: 20; " +
+            "-fx-background-radius: 20; " +
+            "-fx-cursor: hand;"
+        );
+        btn.getChildren().addAll(githubIcon, githubText);
+
+        // Hover effects
+        btn.setOnMouseEntered(e -> {
+            btn.setStyle(
+                "-fx-background-color: " + accentColor + "33; " +
+                "-fx-border-color: " + accentColor + "; " +
+                "-fx-border-width: 1.5; " +
+                "-fx-border-radius: 20; " +
+                "-fx-background-radius: 20; " +
+                "-fx-cursor: hand; " +
+                "-fx-effect: dropshadow(gaussian, " + accentColor + ", 10, 0.4, 0, 0);"
+            );
+        });
+        btn.setOnMouseExited(e -> {
+            btn.setStyle(
+                "-fx-background-color: transparent; " +
+                "-fx-border-color: " + accentColor + "; " +
+                "-fx-border-width: 1.5; " +
+                "-fx-border-radius: 20; " +
+                "-fx-background-radius: 20; " +
+                "-fx-cursor: hand;"
+            );
+        });
+
+        // Click → open GitHub in default browser (cross-platform, no java.awt module needed)
+        btn.setOnMouseClicked(e -> {
+            try {
+                String os = System.getProperty("os.name").toLowerCase();
+                ProcessBuilder pb;
+                if (os.contains("win")) {
+                    pb = new ProcessBuilder("rundll32", "url.dll,FileProtocolHandler", url);
+                } else if (os.contains("mac")) {
+                    pb = new ProcessBuilder("open", url);
+                } else {
+                    pb = new ProcessBuilder("xdg-open", url);
+                }
+                pb.start();
+            } catch (Exception ex) {
+                System.err.println("Could not open GitHub URL: " + ex.getMessage());
+            }
+        });
+
+        return btn;
     }
 
     private Region createSocialIcon(String type) {
         Region icon = new Region();
         icon.getStyleClass().add("social-icon-mini");
-        // Simplified shapes for Github, LinkedIn
         return icon;
     }
 

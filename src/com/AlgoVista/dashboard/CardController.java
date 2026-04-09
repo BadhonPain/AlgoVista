@@ -25,7 +25,7 @@ public class CardController {
                 Image img = new Image(getClass().getResourceAsStream(imgPath));
                 algoIcon.setImage(img);
             } catch (Exception e) {
-                System.out.println("Could not load image: " + imgPath);
+                // Silently skip missing images
             }
         }
     }

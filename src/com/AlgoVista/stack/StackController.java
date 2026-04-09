@@ -1,6 +1,6 @@
 package com.AlgoVista.stack;
 
-import javafx.animation.PauseTransition;
+import com.AlgoVista.utils.ShortcutManager;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,11 +9,15 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.animation.ScaleTransition;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class StackController {
 
@@ -22,459 +26,473 @@ public class StackController {
     @FXML private VBox stackContainer;
     @FXML private VBox stepLogContainer;
     @FXML private Label outputLabel;
-    @FXML private VBox complexitiesContainer;
+
+    @FXML private Slider speedSlider;
+    @FXML private Button playPauseBtn;
+    @FXML private Label dynamicComplexityLabel;
 
     private StackModel model;
-    private boolean isAnimating = false;
+
+    // Animation Engine state
+    private List<StackSnapshot> snapshots = new ArrayList<>();
+    private int currentStep = 0;
+    private boolean isPlaying = false;
+    private Thread animationThread;
+    private final Object playLock = new Object();
 
     @FXML
     public void initialize() {
         model = new StackModel(8); // Default capacity 8
         capacitySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 20, 8));
-        
-        setupComplexities();
-        renderStackInstantly();
-        logResult("Stack Visualizer initialized. Ready for simulation.");
-    }
 
-    private void setupComplexities() {
-        addComplexityRow("Push", "Insert an element at the top of the stack", "O(1)");
-        addComplexityRow("Pop", "Remove the top element", "O(1)");
-        addComplexityRow("Peek / Top", "Access the top element without removing it", "O(1)");
-        addComplexityRow("Is Empty", "Check whether the stack has no elements", "O(1)");
-        addComplexityRow("Is Full", "Check whether the stack reached capacity", "O(1)");
-        addComplexityRow("Size", "Return the current number of elements", "O(1)");
-        addComplexityRow("Search", "Scan stack elements to find a value", "O(n)");
-        addComplexityRow("Traverse / Display", "Visit and display all elements", "O(n)");
-        addComplexityRow("Clear", "Remove all elements", "O(n)");
-        addComplexityRow("Generate Random Stack", "Fill stack with multiple random values", "O(n)");
-        addComplexityRow("Space Complexity", "Memory used to store stack elements", "O(n)");
-    }
-
-    private void addComplexityRow(String operation, String description, String complexity) {
-        HBox row = new HBox(10);
-        row.getStyleClass().add("complexity-row");
-        row.setAlignment(Pos.CENTER_LEFT);
-
-        VBox textContainer = new VBox(2);
-        HBox.setHgrow(textContainer, Priority.ALWAYS);
-        
-        Label nameLbl = new Label(operation);
-        nameLbl.getStyleClass().add("complexity-op-name");
-        
-        Label descLbl = new Label(description);
-        descLbl.getStyleClass().add("complexity-op-desc");
-        descLbl.setWrapText(true);
-
-        textContainer.getChildren().addAll(nameLbl, descLbl);
-
-        Label badge = new Label(complexity);
-        if (complexity.equals("O(1)") || complexity.startsWith("O(1)")) {
-            badge.getStyleClass().add("complexity-badge-o1");
-        } else {
-            badge.getStyleClass().add("complexity-badge-on");
+        if (dynamicComplexityLabel != null) {
+            dynamicComplexityLabel.setText("O(1)");
         }
 
-        row.getChildren().addAll(textContainer, badge);
-        complexitiesContainer.getChildren().add(row);
+        updateVisualization();
+        logMessage("Stack Visualizer initialized. Ready for simulation.");
+
+        // Register keyboard shortcuts when scene is available
+        stackContainer.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                ShortcutManager.register(newScene, 
+                    () -> togglePlayPause(), 
+                    () -> stepForward(), 
+                    () -> resetAnimation(), 
+                    () -> backToMenu()
+                );
+            }
+        });
+    }
+
+    private void setComplexity(String comp) {
+        Platform.runLater(() -> {
+            if (dynamicComplexityLabel != null) {
+                dynamicComplexityLabel.setText(comp);
+            }
+        });
     }
 
     private Integer getInputValue() {
         try {
             return Integer.parseInt(valueInput.getText().trim());
         } catch (NumberFormatException e) {
-            showAlert("Invalid Input", "Please enter a valid integer.");
+            showAlert("Invalid Input", "Please enter a valid integer for the value.");
             return null;
         }
     }
 
-    // --- Core Operations ---
-    
     @FXML
     private void createStack() {
-        if (isAnimating) return;
+        if (isPlaying) resetAnimation();
         int cap = capacitySpinner.getValue();
         model = new StackModel(cap);
+        clearSnapshots();
+        updateVisualization();
+        logMessage("Created empty stack with capacity " + cap + ".");
         stepLogContainer.getChildren().clear();
-        logStep("Created empty stack with capacity " + cap);
-        renderStackInstantly();
-        logResult("New stack created successfully.");
     }
 
     @FXML
     private void generateRandom() {
-        if (isAnimating) return;
+        if (isPlaying) resetAnimation();
         int cap = capacitySpinner.getValue();
+        model = new StackModel(cap);    // reinitialise with new capacity
         model.generateSample(cap, 1, 99);
+        clearSnapshots();
+        updateVisualization();
+        logMessage("Generated random stack of size " + cap + ".");
         stepLogContainer.getChildren().clear();
-        logStep("Generated random elements up to capacity " + cap);
-        renderStackInstantly();
-        logResult("Random stack generated successfully.");
     }
 
     @FXML
     private void push() {
-        if (isAnimating) return;
+        if (isPlaying) resetAnimation();
         Integer val = getInputValue();
         if (val == null) return;
 
+        clearSnapshots();
+        setComplexity("O(1)");
         stepLogContainer.getChildren().clear();
-        logStep("PUSH OP initiating for value " + val + "...");
-        
-        isAnimating = true;
 
-        new Thread(() -> {
-            try {
-                Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
-                logStep("Step 1: Checking if stack is full...");
-                
-                if (model.isFull()) {
-                    logStep("Stack is full! Cannot push.");
-                    logResult("Push failed. Stack Overflow condition.");
-                    showAlert("Stack Overflow", "Cannot push, the stack is full.");
-                    return;
-                }
-                
-                logStep("Stack is not full. Proceeding.");
-                Thread.sleep((long)((1000) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
-                
-                boolean success = model.push(val);
-                if (success) {
-                    logStep("Step 2: Incrementing TOP pointer and inserting value " + val);
-                    Platform.runLater(this::renderStackInstantly); // Redraw with new element
-                    
-                    Platform.runLater(() -> {
-                        int indexInVBox = model.getCapacity() - 1 - model.getTopIndex();
-                        if (indexInVBox >= 0 && indexInVBox < stackContainer.getChildren().size()) {
-                            HBox row = (HBox) stackContainer.getChildren().get(indexInVBox);
-                            VBox cellBox = (VBox) row.getChildren().get(1);
-                            Label dataLabel = (Label) cellBox.getChildren().get(0);
-                            String oldStyle = dataLabel.getStyle();
-                            dataLabel.setStyle(oldStyle.replace("-fx-background-color: #34495e;", "-fx-background-color: #2ecc71;"));
-                            
-                            PauseTransition restore = new PauseTransition(Duration.millis(800));
-                            restore.setOnFinished(ev -> dataLabel.setStyle(oldStyle));
-                            restore.play();
-                        }
-                    });
-                    
-                    logStep("Step 3: Pushed value successfully.");
-                    logResult("Pushed " + val + " onto the stack.");
-                    Platform.runLater(() -> valueInput.clear());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                isAnimating = false;
-            }
-        }).start();
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getTopIndex(), new HashMap<>(), "PUSH OP initiating for value " + val + "...", "O(1)");
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getTopIndex(), new HashMap<>(), "Step 1: Checking if stack is full...", "O(1)");
+
+        if (model.isFull()) {
+            recordSnapshot(model.getElements(), model.getCapacity(), model.getTopIndex(), new HashMap<>(), "Stack is full! Cannot push.", "O(1)");
+            startAnimation();
+            logMessage("Push failed. Stack Overflow condition.");
+            return;
+        }
+
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getTopIndex(), new HashMap<>(), "Stack is not full. Proceeding.", "O(1)");
+
+        boolean success = model.push(val);
+        if (success) {
+            Map<Integer, String> highlights = new HashMap<>();
+            highlights.put(model.getTopIndex(), "#2ecc71"); // Green for inserted element
+            recordSnapshot(model.getElements(), model.getCapacity(), model.getTopIndex(), highlights, "Step 2: Incrementing TOP pointer and inserting value " + val, "O(1)");
+            recordSnapshot(model.getElements(), model.getCapacity(), model.getTopIndex(), new HashMap<>(), "Step 3: Pushed value successfully.", "O(1)");
+            startAnimation();
+            valueInput.clear();
+            logMessage("Pushed " + val + " onto the stack.");
+        }
     }
 
     @FXML
     private void pop() {
-        if (isAnimating) return;
-        
+        if (isPlaying) resetAnimation();
+        clearSnapshots();
+        setComplexity("O(1)");
         stepLogContainer.getChildren().clear();
-        logStep("POP OP initiating...");
-        isAnimating = true;
 
-        new Thread(() -> {
-            try {
-                Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
-                logStep("Step 1: Checking if stack is empty...");
-                
-                if (model.isEmpty()) {
-                    logStep("Stack is empty! Cannot pop.");
-                    logResult("Pop failed. Stack Underflow condition.");
-                    showAlert("Stack Underflow", "Cannot pop, the stack is empty.");
-                    return;
-                }
-                
-                logStep("Stack has elements. Proceeding.");
-                
-                Platform.runLater(() -> {
-                    int indexInVBox = model.getCapacity() - 1 - model.getTopIndex();
-                    if (indexInVBox >= 0 && indexInVBox < stackContainer.getChildren().size()) {
-                        HBox row = (HBox) stackContainer.getChildren().get(indexInVBox);
-                        VBox cellBox = (VBox) row.getChildren().get(1);
-                        Label dataLabel = (Label) cellBox.getChildren().get(0);
-                        dataLabel.setStyle(dataLabel.getStyle().replace("-fx-background-color: #34495e;", "-fx-background-color: #e74c3c;"));
-                        logStep("Step 2: Identifying current TOP element (" + model.peek() + ") for removal.");
-                    }
-                });
-                
-                Thread.sleep((long)((1000) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
-                if (model.isEmpty()) return;
-                
-                Integer popped = model.pop();
-                logStep("Step 3: Value " + popped + " removed. TOP pointer decremented.");
-                Platform.runLater(this::renderStackInstantly);
-                logResult("Popped " + popped + " from the stack.");
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                isAnimating = false;
-            }
-        }).start();
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getTopIndex(), new HashMap<>(), "POP OP initiating...", "O(1)");
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getTopIndex(), new HashMap<>(), "Step 1: Checking if stack is empty...", "O(1)");
+
+        if (model.isEmpty()) {
+            recordSnapshot(model.getElements(), model.getCapacity(), model.getTopIndex(), new HashMap<>(), "Stack is empty! Cannot pop.", "O(1)");
+            startAnimation();
+            logMessage("Pop failed. Stack Underflow condition.");
+            return;
+        }
+
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getTopIndex(), new HashMap<>(), "Stack has elements. Proceeding.", "O(1)");
+
+        Map<Integer, String> highToRemove = new HashMap<>();
+        highToRemove.put(model.getTopIndex(), "#e74c3c"); // Red for element about to be removed
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getTopIndex(), highToRemove, "Step 2: Identifying current TOP element (" + model.peek() + ") for removal.", "O(1)");
+
+        Integer popped = model.pop();
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getTopIndex(), new HashMap<>(), "Step 3: Value " + popped + " removed. TOP pointer decremented.", "O(1)");
+        startAnimation();
+        logMessage("Popped " + popped + " from the stack.");
     }
 
     @FXML
     private void peek() {
-        if (isAnimating) return;
-        
+        if (isPlaying) resetAnimation();
+        clearSnapshots();
+        setComplexity("O(1)");
         stepLogContainer.getChildren().clear();
-        logStep("PEEK OP initiating...");
-        
+
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getTopIndex(), new HashMap<>(), "PEEK OP initiating...", "O(1)");
+
         if (model.isEmpty()) {
-            logStep("Stack is empty. No top element.");
-            logResult("Peek failed: Stack is empty.");
+            recordSnapshot(model.getElements(), model.getCapacity(), model.getTopIndex(), new HashMap<>(), "Stack is empty. No top element.", "O(1)");
+            startAnimation();
+            logMessage("Peek failed: Stack is empty.");
             return;
         }
 
-        isAnimating = true;
-        
-        new Thread(() -> {
-            try {
-                logStep("Accessing top element pointer...");
-                
-                String[] savedStyle = {null};
-                
-                Platform.runLater(() -> {
-                    int indexInVBox = model.getCapacity() - 1 - model.getTopIndex();
-                    if (indexInVBox >= 0 && indexInVBox < stackContainer.getChildren().size()) {
-                        HBox row = (HBox) stackContainer.getChildren().get(indexInVBox);
-                        VBox cellBox = (VBox) row.getChildren().get(1);
-                        Label dataLabel = (Label) cellBox.getChildren().get(0);
-                        
-                        savedStyle[0] = dataLabel.getStyle();
-                        dataLabel.setStyle(savedStyle[0].replace("-fx-background-color: #34495e;", "-fx-background-color: #9b59b6;"));
-                    }
-                });
-                
-                Thread.sleep((long)((1200) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
-                
-                Platform.runLater(() -> {
-                    int indexInVBox = model.getCapacity() - 1 - model.getTopIndex();
-                    if (indexInVBox >= 0 && indexInVBox < stackContainer.getChildren().size()) {
-                        HBox row = (HBox) stackContainer.getChildren().get(indexInVBox);
-                        VBox cellBox = (VBox) row.getChildren().get(1);
-                        Label dataLabel = (Label) cellBox.getChildren().get(0);
-                        if(savedStyle[0] != null) dataLabel.setStyle(savedStyle[0]);
-                    }
-                    logStep("Top element is " + model.peek() + ".");
-                    logResult("Top element is " + model.peek());
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                isAnimating = false;
-            }
-        }).start();
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getTopIndex(), new HashMap<>(), "Accessing top element pointer...", "O(1)");
+
+        Map<Integer, String> peekHigh = new HashMap<>();
+        peekHigh.put(model.getTopIndex(), "#9b59b6"); // Purple for peek
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getTopIndex(), peekHigh, "Examining element at TOP...", "O(1)");
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getTopIndex(), new HashMap<>(), "Top element is " + model.peek() + ".", "O(1)");
+
+        startAnimation();
+        logMessage("Top element is " + model.peek() + ".");
     }
 
     @FXML
     private void search() {
-        if (isAnimating) return;
+        if (isPlaying) resetAnimation();
         Integer target = getInputValue();
         if (target == null) return;
 
+        clearSnapshots();
+        setComplexity("O(n)");
         stepLogContainer.getChildren().clear();
-        logStep("SEARCH OP initiating for value " + target + "...");
-        
+
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getTopIndex(), new HashMap<>(), "SEARCH OP initiating for value " + target + "...", "O(n)");
+
         if (model.isEmpty()) {
-            logStep("Stack is empty. Search termination immediately.");
-            logResult("Value not found (Empty Stack).");
+            recordSnapshot(model.getElements(), model.getCapacity(), model.getTopIndex(), new HashMap<>(), "Stack is empty. Search termination immediately.", "O(n)");
+            startAnimation();
+            logMessage("Value not found (Empty Stack).");
             return;
         }
 
-        isAnimating = true;
-        
-        new Thread(() -> {
-            try {
-                int[] elements = model.getElements();
-                int top = model.getTopIndex();
-                boolean[] foundTracker = {false};
+        Integer[] currentElements = model.getElements();
+        boolean found = false;
 
-                for (int i = top; i >= 0; i--) {
-                    if (foundTracker[0]) break;
-                    
-                    final int currIndex = i;
-                    Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
-                    
-                    logStep("Checking index " + currIndex + " from bottom (Value: " + elements[currIndex] + ")");
-                    
-                    Platform.runLater(() -> {
-                        int vBoxIdx = model.getCapacity() - 1 - currIndex;
-                        HBox row = (HBox) stackContainer.getChildren().get(vBoxIdx);
-                        VBox cellBox = (VBox) row.getChildren().get(1);
-                        Label dataLabel = (Label) cellBox.getChildren().get(0);
-                        String oldStyle = dataLabel.getStyle();
-                        
-                        dataLabel.setStyle(oldStyle.replace("-fx-background-color: #34495e;", "-fx-background-color: #f1c40f;")); // yellow
-                        
-                        if (elements[currIndex] == target) {
-                            foundTracker[0] = true;
-                            logStep("Match found! Distance from top = " + (top - currIndex + 1));
-                            logResult("Found value " + target + " at logical index " + currIndex + ".");
-                            PauseTransition end = new PauseTransition(Duration.millis(1500));
-                            end.setOnFinished(ev -> dataLabel.setStyle(oldStyle));
-                            end.play();
-                        } else {
-                            PauseTransition end = new PauseTransition(Duration.millis(300));
-                            end.setOnFinished(ev -> dataLabel.setStyle(oldStyle));
-                            end.play();
-                        }
-                    });
-                    
-                    // Wait out the visual highlight phase
-                    if (elements[currIndex] == target) {
-                        Thread.sleep((long)((1500) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
-                    } else {
-                        Thread.sleep((long)((300) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
-                    }
-                }
-                
-                Thread.sleep((long)((200) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
-                if (!foundTracker[0]) {
-                    logStep("Reached bottom. Element not found.");
-                    logResult("Search failed. Element " + target + " not present.");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                isAnimating = false;
+        for (int i = model.getTopIndex(); i >= 0; i--) {
+            Map<Integer, String> checkColor = new HashMap<>();
+            checkColor.put(i, "#f1c40f"); // Yellow for checking
+            recordSnapshot(currentElements, model.getCapacity(), model.getTopIndex(), checkColor, "Checking index " + i + " from bottom (Value: " + currentElements[i] + ")", "O(n)");
+
+            if (currentElements[i] != null && currentElements[i].equals(target)) {
+                found = true;
+                Map<Integer, String> matchColor = new HashMap<>();
+                matchColor.put(i, "#2ecc71"); // Green for match
+                recordSnapshot(currentElements, model.getCapacity(), model.getTopIndex(), matchColor, "Match found! Distance from top = " + (model.getTopIndex() - i + 1), "O(n)");
+                break;
+            } else {
+                recordSnapshot(currentElements, model.getCapacity(), model.getTopIndex(), new HashMap<>(), "No match at index " + i + ". Moving down.", "O(n)");
             }
-        }).start();
+        }
+
+        if (!found) {
+            recordSnapshot(currentElements, model.getCapacity(), model.getTopIndex(), new HashMap<>(), "Reached bottom. Element not found.", "O(n)");
+            logMessage("Search failed. Element " + target + " not present.");
+        } else {
+            logMessage("Found value " + target + ".");
+        }
+        startAnimation();
     }
 
     @FXML
     private void traverse() {
-        if (isAnimating) return;
-        
+        if (isPlaying) resetAnimation();
+        clearSnapshots();
+        setComplexity("O(n)");
         stepLogContainer.getChildren().clear();
-        logStep("TRAVERSE OP initiating...");
-        
+
+        recordSnapshot(model.getElements(), model.getCapacity(), model.getTopIndex(), new HashMap<>(), "TRAVERSE OP initiating...", "O(n)");
+
         if (model.isEmpty()) {
-            logStep("Empty Stack.");
-            logResult("Stack is empty.");
+            recordSnapshot(model.getElements(), model.getCapacity(), model.getTopIndex(), new HashMap<>(), "Empty Stack.", "O(n)");
+            startAnimation();
+            logMessage("Stack is empty.");
             return;
         }
-        
-        isAnimating = true;
 
-        new Thread(() -> {
-            try {
-                int[] elements = model.getElements();
-                int top = model.getTopIndex();
-                
-                logStep("Traversing from TOP down to BOTTOM...");
-                
-                for (int i = top; i >= 0; i--) {
-                    final int currIndex = i;
-                    Thread.sleep((long)((800) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier()));
-                    
-                    logStep("Visiting element at index " + currIndex + " (Value: " + elements[currIndex] + ")");
-                    
-                    Platform.runLater(() -> {
-                        int vBoxIdx = model.getCapacity() - 1 - currIndex;
-                        HBox row = (HBox) stackContainer.getChildren().get(vBoxIdx);
-                        VBox cellBox = (VBox) row.getChildren().get(1);
-                        Label dataLabel = (Label) cellBox.getChildren().get(0);
-                        String oldStyle = dataLabel.getStyle();
-                        
-                        dataLabel.setStyle(oldStyle.replace("-fx-background-color: #34495e;", "-fx-background-color: #9b59b6;")); // purple
-                        
-                        PauseTransition end = new PauseTransition(Duration.millis(800));
-                        end.setOnFinished(ev -> dataLabel.setStyle(oldStyle));
-                        end.play();
-                    });
-                    
-                    Thread.sleep((long)((1000) * com.AlgoVista.utils.SettingsManager.getSleepMultiplier())); // Wait for highlight to mostly finish
-                }
-                
-                logStep("Traversal complete.");
-                logResult("Traversing from TOP to BOTTOM:\n" + model.traverse());
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                isAnimating = false;
-            }
-        }).start();
+        Integer[] currentElements = model.getElements();
+        recordSnapshot(currentElements, model.getCapacity(), model.getTopIndex(), new HashMap<>(), "Traversing from TOP down to BOTTOM...", "O(n)");
+
+        for (int i = model.getTopIndex(); i >= 0; i--) {
+            Map<Integer, String> travColor = new HashMap<>();
+            travColor.put(i, "#9b59b6"); // Purple
+            recordSnapshot(currentElements, model.getCapacity(), model.getTopIndex(), travColor, "Visiting element at index " + i + " (Value: " + currentElements[i] + ")", "O(n)");
+        }
+
+        recordSnapshot(currentElements, model.getCapacity(), model.getTopIndex(), new HashMap<>(), "Traversal complete.", "O(n)");
+        startAnimation();
+        logMessage("Traversing from TOP to BOTTOM:\n" + model.traverse());
     }
 
     @FXML
     private void checkEmpty() {
-        if (isAnimating) return;
+        if (isPlaying) resetAnimation();
         stepLogContainer.getChildren().clear();
         boolean empty = model.isEmpty();
-        logStep("Checked isEmpty(). Result: " + empty);
-        logResult("Is Stack Empty? -> " + String.valueOf(empty).toUpperCase());
+        addLogStep("Checked isEmpty(). Result: " + empty);
+        logMessage("Is Stack Empty? -> " + String.valueOf(empty).toUpperCase());
     }
 
     @FXML
     private void checkFull() {
-        if (isAnimating) return;
+        if (isPlaying) resetAnimation();
         stepLogContainer.getChildren().clear();
         boolean full = model.isFull();
-        logStep("Checked isFull(). Result: " + full);
-        logResult("Is Stack Full? -> " + String.valueOf(full).toUpperCase());
+        addLogStep("Checked isFull(). Result: " + full);
+        logMessage("Is Stack Full? -> " + String.valueOf(full).toUpperCase());
     }
 
     @FXML
     private void getSize() {
-        if (isAnimating) return;
+        if (isPlaying) resetAnimation();
         stepLogContainer.getChildren().clear();
         int size = model.size();
-        logStep("Top pointer is at index " + model.getTopIndex() + ". Size is Top+1.");
-        logResult("Current Size: " + size + " / " + model.getCapacity());
+        addLogStep("Top pointer is at index " + model.getTopIndex() + ". Size is Top+1.");
+        logMessage("Current Size: " + size);
     }
 
     @FXML
     private void clear() {
-        if (isAnimating) return;
+        if (isPlaying) resetAnimation();
         stepLogContainer.getChildren().clear();
-        logStep("CLEAR OP Executed.");
+        addLogStep("CLEAR OP Executed.");
         model.clear();
-        renderStackInstantly();
-        logResult("Stack fully cleared.");
+        clearSnapshots();
+        updateVisualization();
+        logMessage("Stack fully cleared.");
     }
 
-    // --- Visualization & Helpers ---
+    // --- Animation Handling ---
 
-    private void renderStackInstantly() {
+    private void clearSnapshots() {
+        snapshots.clear();
+    }
+
+    private void recordSnapshot(Integer[] elements, int capacity, int topIndex, Map<Integer, String> nodeColors, String message, String timeComplexity) {
+        snapshots.add(new StackSnapshot(elements, capacity, topIndex, nodeColors, message, timeComplexity));
+    }
+
+    private void startAnimation() {
+        if (snapshots.isEmpty()) return;
+        isPlaying = true;
+        currentStep = 0;
+        playPauseBtn.setText("Pause");
+
+        animationThread = new Thread(() -> {
+            try {
+                while (currentStep < snapshots.size() && isPlaying) {
+                    final int stepToRender = currentStep;
+                    Platform.runLater(() -> renderSnapshot(snapshots.get(stepToRender)));
+
+                    responsiveSleep();
+
+                    synchronized (playLock) {
+                        if (isPlaying) {
+                            currentStep++;
+                        }
+                    }
+                }
+
+                Platform.runLater(() -> {
+                    isPlaying = false;
+                    playPauseBtn.setText("Play");
+                    if (currentStep >= snapshots.size()) {
+                        updateVisualization();
+                    }
+                });
+            } catch (InterruptedException e) {
+                // Interrupted
+            }
+        });
+        animationThread.setDaemon(true);
+        animationThread.start();
+    }
+
+    /** Reads local slider (or global if no local slider). Does NOT write to SettingsManager. */
+    private long getDelay() {
+        double sliderVal = (speedSlider != null) ? speedSlider.getValue()
+                                                 : com.AlgoVista.utils.SettingsManager.getSpeed();
+        double rate = com.AlgoVista.utils.SettingsManager.getTimelineRate(sliderVal);
+        return (long)(1000.0 / Math.max(rate, 0.01));
+    }
+
+    /** Sleeps in 50ms chunks, re-reading the delay on each chunk for live responsiveness. */
+    private void responsiveSleep() throws InterruptedException {
+        long target = getDelay();
+        long elapsed = 0;
+        final long chunk = 50;
+        while (elapsed < target && isPlaying) {
+            Thread.sleep(Math.min(chunk, target - elapsed));
+            elapsed += chunk;
+            target = getDelay(); // re-read slider each chunk
+        }
+    }
+
+    @FXML
+    private void togglePlayPause() {
+        if (snapshots.isEmpty()) return;
+        synchronized (playLock) {
+            isPlaying = !isPlaying;
+            playPauseBtn.setText(isPlaying ? "Pause" : "Play");
+            if (isPlaying) {
+                if (currentStep >= snapshots.size()) {
+                    currentStep = 0;
+                }
+                startAnimation();
+            } else {
+                if (animationThread != null && animationThread.isAlive()) {
+                    animationThread.interrupt();
+                }
+            }
+        }
+    }
+
+    @FXML
+    private void stepForward() {
+        if (snapshots.isEmpty()) return;
+        synchronized (playLock) {
+            if (isPlaying) togglePlayPause();
+            if (currentStep < snapshots.size() - 1) {
+                currentStep++;
+                renderSnapshot(snapshots.get(currentStep));
+            }
+        }
+    }
+
+    @FXML
+    private void stepBackward() {
+        if (snapshots.isEmpty()) return;
+        synchronized (playLock) {
+            if (isPlaying) togglePlayPause();
+            if (currentStep > 0) {
+                currentStep--;
+                renderSnapshot(snapshots.get(currentStep));
+            }
+        }
+    }
+
+    @FXML
+    private void resetAnimation() {
+        synchronized (playLock) {
+            isPlaying = false;
+            if (animationThread != null && animationThread.isAlive()) {
+                animationThread.interrupt();
+            }
+            playPauseBtn.setText("Play");
+            currentStep = 0;
+            if (!snapshots.isEmpty()) {
+                renderSnapshot(snapshots.get(0));
+            } else {
+                updateVisualization();
+            }
+        }
+    }
+
+    // --- Visualization ---
+
+    private void updateVisualization() {
+        renderArray(model.getElements(), model.getCapacity(), model.getTopIndex(), new HashMap<>());
+    }
+
+    private void renderSnapshot(StackSnapshot snapshot) {
+        if (snapshot == null) return;
+        renderArray(snapshot.getElements(), snapshot.getCapacity(), snapshot.getTopIndex(), snapshot.getNodeColors());
+        if (snapshot.getMessage() != null && !snapshot.getMessage().isEmpty()) {
+            addLogStep(snapshot.getMessage());
+        }
+        if (snapshot.getTimeComplexity() != null) {
+            setComplexity(snapshot.getTimeComplexity());
+        }
+    }
+
+    private void renderArray(Integer[] elements, int capacity, int topIndex, Map<Integer, String> nodeColors) {
         stackContainer.getChildren().clear();
-        
-        int capacity = model.getCapacity();
-        int[] elements = model.getElements();
-        int top = model.getTopIndex();
 
-        // VBox renders from top to bottom child-wise.
-        // Array index capacities: top of container is index (capacity - 1), bottom is index 0.
         for (int i = capacity - 1; i >= 0; i--) {
-            boolean isActive = (i <= top);
-            boolean isTop = (i == top);
-            String val = isActive ? String.valueOf(elements[i]) : "";
-            
-            HBox row = createStackCell(val, i, isActive, isTop);
+            boolean isActive = (i <= topIndex && elements[i] != null);
+            boolean isTop = (i == topIndex);
+            String valStr = isActive ? String.valueOf(elements[i]) : "";
+            String highlightColor = nodeColors.getOrDefault(i, null);
+
+            HBox row = createStackCell(valStr, i, isActive, isTop, highlightColor);
             stackContainer.getChildren().add(row);
         }
     }
 
-    private HBox createStackCell(String valStr, int index, boolean isActive, boolean isTop) {
+    private HBox createStackCell(String valStr, int index, boolean isActive, boolean isTop, String highlightColor) {
         HBox row = new HBox(15);
         row.setAlignment(Pos.CENTER);
 
-        // Optional Left space padding or pointer (TOP marker)
+        // Top marker
         Label topMarker = new Label(isTop ? "TOP →" : "     ");
         topMarker.setStyle("-fx-font-weight: bold; -fx-text-fill: #e74c3c; -fx-min-width: 45;");
 
         // Main Box
         VBox box = new VBox(0);
         box.setAlignment(Pos.CENTER);
-        
-        String bgStyle = isActive ? "-fx-background-color: #34495e;" : "-fx-background-color: #ecf0f1;";
+
+        String bgStyle;
+        if (highlightColor != null) {
+            bgStyle = "-fx-background-color: " + highlightColor + ";";
+            ScaleTransition st = new ScaleTransition(Duration.millis(300), box);
+            st.setFromX(1.0); st.setToX(1.1);
+            st.setFromY(1.0); st.setToY(1.1);
+            st.setCycleCount(2);
+            st.setAutoReverse(true);
+            st.play();
+        } else {
+            bgStyle = isActive ? "-fx-background-color: #34495e;" : "-fx-background-color: #ecf0f1;";
+        }
         String textFill = isActive ? "white" : "transparent";
-        
+
         Label dataLabel = new Label(valStr);
         dataLabel.setStyle(
                 bgStyle +
@@ -491,42 +509,51 @@ public class StackController {
         );
         box.getChildren().add(dataLabel);
 
-        // Right side index marker cleanly integrated
+        // Index marker
         Label idxMarker = new Label("[" + index + "]");
         idxMarker.setStyle("-fx-text-fill: #7f8c8d; -fx-font-size: 13; -fx-min-width: 25;");
-        
+
         row.getChildren().addAll(topMarker, box, idxMarker);
         return row;
     }
 
-    private void logStep(String stepDescription) {
-        Label l = new Label("• " + stepDescription);
-        l.setStyle("-fx-text-fill: #34495e; -fx-font-size: 15;");
-        l.setWrapText(true);
-        Platform.runLater(() -> stepLogContainer.getChildren().add(l));
+    private void addLogStep(String stepDescription) {
+        Platform.runLater(() -> {
+            Label l = new Label("• " + stepDescription);
+            l.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 15;");
+            l.setWrapText(true);
+            stepLogContainer.getChildren().add(l);
+        });
     }
 
-    private void logResult(String msg) {
-        Platform.runLater(() -> outputLabel.setText(msg));
+    private void logMessage(String msg) {
+        Platform.runLater(() -> {
+            if (outputLabel != null) {
+                outputLabel.setText(msg);
+            }
+        });
     }
 
-        private void showAlert(String title, String message) {
-        if (title != null && (title.toLowerCase().contains("complete") || title.toLowerCase().contains("ready") || title.toLowerCase().contains("custom mode"))) {
-            com.AlgoVista.utils.CustomAlert.showInfo(title, message);
-        } else {
-            com.AlgoVista.utils.CustomAlert.showError(title, message);
-        }
+    private void showAlert(String title, String message) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle(title);
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
+        });
     }
 
     @FXML
     private void backToMenu() {
+        if (isPlaying) resetAnimation();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/dashboard.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) stackContainer.getScene().getWindow();
-            double width = stage.getScene().getWidth();
-            double height = stage.getScene().getHeight();
+            double width = stage.getWidth();
+            double height = stage.getHeight();
             Scene scene = new Scene(root, width, height);
             stage.setScene(scene);
         } catch (IOException e) {

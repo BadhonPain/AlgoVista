@@ -27,14 +27,26 @@ public class SortingCategoryController {
         String algoType = "";
         Node source = (Node) event.getSource();
         String id = source.getId();
-        
+
         switch (id) {
-            case "bubbleCard": algoType = "Bubble Sort"; break;
-            case "selectionCard": algoType = "Selection Sort"; break;
-            case "insertionCard": algoType = "Insertion Sort"; break;
-            case "mergeCard": algoType = "Merge Sort"; break;
-            case "quickCard": algoType = "Quick Sort"; break;
-            case "heapCard": algoType = "Heap Sort"; break;
+            case "bubbleCard":
+                algoType = "Bubble Sort";
+                break;
+            case "selectionCard":
+                algoType = "Selection Sort";
+                break;
+            case "insertionCard":
+                algoType = "Insertion Sort";
+                break;
+            case "countingCard":
+                algoType = "Counting Sort";
+                break;
+            case "radixCard":
+                algoType = "Radix Sort";
+                break;
+            case "bucketCard":
+                algoType = "Bucket Sort";
+                break;
         }
 
         try {
@@ -42,7 +54,7 @@ public class SortingCategoryController {
             Parent root = loader.load();
             SortingVisualizerController controller = loader.getController();
             controller.initAlgorithm(algoType);
-            
+
             Stage stage = (Stage) source.getScene().getWindow();
             stage.setScene(new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight()));
         } catch (IOException e) {
