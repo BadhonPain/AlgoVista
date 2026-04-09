@@ -264,7 +264,7 @@ Optimizing solutions through tabulation and memoization.
 * **Java Development Kit (JDK) 17 or higher** (Tested on JDK 21).
 * **JavaFX SDK 21+** (Necessary for the GUI animations).
 
-### 🛠️ Installation Guideline (ZIP Workflow)
+### 🛠️ Installation Guideline
 
 1. **Open in Your IDE:**
    * **IntelliJ IDEA:** File > Open > Select the `Java_Fx` folder.
