@@ -104,8 +104,12 @@ Solving complex connectivity problems through sub-problems and pathfinding.
   <p align="center">
     <img src="resources/com/AlgoVista/ss's/graph_struct.png" width="400" alt="Graph Structure">
     <img src="resources/com/AlgoVista/ss's/graph_traverse.png" width="400" alt="Graph Traverse">
-    <br><i>Left: Defining the adjacency matrix/list structure. Right: Real-time visualization of Bellman Ford across connected nodes.</i>
+    <br><i>Left: Defining the adjacency matrix/list structure. Right: Real-time visualization of BFS across connected nodes.</i>
   </p>
+
+* **Algorithm Compatibility & Alerts:**
+  ![Dijkstra Alert](resources/com/AlgoVista/ss's/alert_djs.png)
+  *Proactive educational alerts: A custom dialogue warns the user when trying to run Dijkstra’s algorithm on a graph with negative weights.*
 
 ---
 
@@ -243,3 +247,77 @@ Optimizing solutions through tabulation and memoization.
 
 ---
 
+## 🛠️ Tech Stack & Architecture
+
+* **Language:** Java 17+
+* **Framework:** JavaFX 21+ (Rich Client Platform)
+* **Styling:** Vanilla CSS (Modern aesthetic with custom transitions)
+* **Layout:** FXML (Declarative UI structure)
+* **Build System:** IntelliJ IDEA / Gradle / Maven (depending on your setup)
+
+---
+
+## 🚀 Getting Started 
+
+
+### 📋 Prerequisites
+* **Java Development Kit (JDK) 17 or higher** (Tested on JDK 21).
+* **JavaFX SDK 21+** (Necessary for the GUI animations).
+
+### 🛠️ Installation Guideline (ZIP Workflow)
+
+1. **Open in Your IDE:**
+   * **IntelliJ IDEA:** File > Open > Select the `Java_Fx` folder.
+   * **Eclipse/NetBeans:** Import as an existing project.
+2. **Configure JavaFX Libraries:**
+   * Go to **Project Structure** (Ctrl+Alt+Shift+S in IntelliJ).
+   * Under **Libraries**, add the JavaFX `lib` folder from your local SDK.
+   * Add the following **VM Options** in your Run Configuration to link the modules:
+     ```text
+     --module-path /path/to/javafx-sdk/lib --add-modules javafx.controls,javafx.fxml,javafx.media
+     ```
+3. **Run the Application:**
+   Run the `Main.java` file found at:  
+   `src/com/AlgoVista/dashboard/Main.java`.
+
+---
+
+## 🛠️ Maintenance & Utilities
+The project includes a `maintenance/` folder containing Python utility scripts used during development for FXML decoding and project auditing. These are not required to run the main Java application but are included for structural completeness.
+
+---
+
+## 📖 Usage Workflow
+
+1. **Select a Category:** Choose from Sorting, Graphs, Trees, Recursion, etc., from the main dashboard.
+2. **Input Data:** Generate random data or input your own custom values (e.g., custom arrays for BST).
+3. **Control Animation:** Use the slider at the bottom to speed up or slow down the visualization.
+4. **Analyze:** Watch the code highlights and complexity labels to understand the logic deeply.
+
+---
+
+## 🤝 Contributing
+Contributions are welcome! If you'd like to add new algorithms or improve the UI, feel free to fork the repo and submit a PR. 
+
+---
+
+## 📄 License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+### ✨ Connect with Me
+
+<p align="left">
+  <a href="https://www.linkedin.com/in/badhon-pain-634341378" target="_blank">
+    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn">
+  </a>
+  <a href="https://www.youtube.com/@thursty_pain_2022" target="_blank">
+    <img src="https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="YouTube">
+  </a>
+  <a href="mailto:badhonpain48@gmail.com">
+    <img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email">
+  </a>
+</p>
+
+Created by [Badhon Pain](https://github.com/BadhonPain) & [Joyshree Mukharjee Joya](https://github.com/joyshree-joya)

@@ -33,7 +33,7 @@ public class Main extends Application {
                 });
             }
         } catch (Exception e) {
-            System.out.println("Global click sound failed to load: " + e.getMessage());
+            // Sound is optional; fail silently
         }
 
         stage.setTitle("AlgoVista");

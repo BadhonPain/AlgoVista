@@ -67,15 +67,13 @@ public class SplashController {
                 Media media = new Media(resource.toString());
                 mediaPlayer = new MediaPlayer(media);
                 mediaPlayer.setOnError(() -> {
-                    System.out.println("CRITICAL AUDIO ERROR: " + mediaPlayer.getError());
+                    // Silently ignore audio errors in production
                 });
                 mediaPlayer.setVolume(1.0);  // setting full volume
                 mediaPlayer.play();
-            } else {
-                System.out.println("Audio file not found at: /com/AlgoVista/sounds/helicopter.mp3");
             }
         } catch (Exception e) {
-            System.out.println("Audio could not be loaded: " + e.getMessage());
+            // Silently ignore audio errors
         }
     }
 

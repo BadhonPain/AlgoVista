@@ -27,10 +27,10 @@ public class CustomAlert {
                 errorSound = new AudioClip(resource.toExternalForm());
                 errorSound.setVolume(1.0);
             } else {
-                System.out.println("Audio resource not found: /com/AlgoVista/sounds/error_click.wav");
+                // Audio is optional; fail silently
             }
         } catch (Exception e) {
-            System.out.println("Error Audio could not be loaded: " + e.getMessage());
+            // Silently ignore audio errors
         }
     }
 
@@ -44,7 +44,7 @@ public class CustomAlert {
             try { 
                 errorSound.play(); 
             } catch(Exception e) {
-                System.out.println("Could not play error sound: " + e.getMessage());
+                // Silently ignore audio errors
             }
         }
         

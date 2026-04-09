@@ -16,16 +16,13 @@ public class GraphCategoryController {
 
     @FXML
     public void initialize() {
-        System.out.println("GraphCategoryController initialized!");
         loadCards();
     }
 
     private void loadCards() {
-        System.out.println("Loading cards...");
 
         // Structure card
         try {
-            System.out.println("Loading Structure card...");
             FXMLLoader loader1 = new FXMLLoader(getClass().getResource("/fxml/GraphSubCard.fxml"));
             VBox structureCard = loader1.load();
             GraphSubCardController controller1 = loader1.getController();
@@ -130,13 +127,9 @@ public class GraphCategoryController {
             traversalCard.setOnMouseClicked(e -> openTraversalView());
 
             cardContainer.getChildren().add(traversalCard);
-            System.out.println("Traversal card loaded successfully!");
         } catch (IOException e) {
-            System.out.println("Error loading Traversal card:");
             e.printStackTrace();
         }
-
-        System.out.println("Total cards in container: " + cardContainer.getChildren().size());
     }
 
     @FXML
@@ -167,7 +160,6 @@ public class GraphCategoryController {
     }
 
     private void openStructureView() {
-        System.out.println("Structure card clicked - Opening structure view");
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/fxml/GraphStructure.fxml"));
@@ -185,13 +177,11 @@ public class GraphCategoryController {
             stage.setY(y);
 
         } catch (IOException e) {
-            System.out.println("Error loading GraphStructure.fxml:");
             e.printStackTrace();
         }
     }
 
     private void openTraversalView() {
-        System.out.println("Traversal card clicked - Opening traversal view");
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/fxml/GraphTraversal.fxml"));
@@ -209,7 +199,6 @@ public class GraphCategoryController {
             stage.setY(y);
 
         } catch (IOException e) {
-            System.out.println("Error loading GraphTraversal.fxml:");
             e.printStackTrace();
         }
     }
