@@ -253,7 +253,7 @@ Optimizing solutions through tabulation and memoization.
 * **Framework:** JavaFX 21+ (Rich Client Platform)
 * **Styling:** Vanilla CSS (Modern aesthetic with custom transitions)
 * **Layout:** FXML (Declarative UI structure)
-* **Build System:** IntelliJ IDEA / Gradle / Maven (depending on your setup)
+* **Build System:** IntelliJ IDEA 
 
 ---
 
